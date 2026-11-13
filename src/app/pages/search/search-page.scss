@@ -1,0 +1,62 @@
+:host { display: block; padding: 40px 40px 80px; max-width: 900px; }
+h1 { margin: 0 0 20px; font-size: 2rem; letter-spacing: -0.02em; color: var(--text-strong); }
+h2 { margin: 40px 0 12px; font-size: 1.1rem; color: var(--text-strong); }
+
+.field {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 16px;
+  border: 1px solid var(--border-strong);
+  border-radius: 12px;
+  background: var(--surface);
+  color: var(--text-faint);
+  &:focus-within { border-color: var(--accent); box-shadow: 0 0 0 4px var(--accent-soft); }
+  input { flex: 1; height: 50px; border: 0; outline: 0; background: none; color: var(--text-strong); font: inherit; font-size: 1.05rem; }
+}
+
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin: 14px 0 6px;
+  select {
+    height: 34px;
+    padding: 0 10px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--surface);
+    color: var(--text);
+    font: inherit;
+    font-size: 0.85rem;
+  }
+}
+
+.count { margin: 18px 0 12px; font-size: 0.85rem; color: var(--text-faint); }
+.muted { color: var(--text-muted); }
+
+.results {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 22px;
+  .title { display: inline-flex; align-items: center; gap: 6px; font-size: 1.08rem; font-weight: 600; color: var(--accent-strong); text-decoration: none; &:hover { text-decoration: underline; } }
+  .meta { margin: 2px 0 6px; font-size: 0.78rem; color: var(--text-faint); text-transform: capitalize; }
+  .section {
+    display: block;
+    padding: 6px 0 6px 12px;
+    border-left: 2px solid var(--border);
+    color: var(--text-muted);
+    text-decoration: none;
+    font-size: 0.88rem;
+    line-height: 1.5;
+    &:hover { border-left-color: var(--accent); color: var(--text); }
+    strong { display: block; color: var(--text-strong); font-size: 0.84rem; }
+  }
+}
+
+.tags { display: flex; flex-wrap: wrap; gap: 8px; small { color: var(--text-faint); margin-left: 2px; } }
+
+@media (max-width: 600px) { :host { padding: 24px 16px 64px; } }

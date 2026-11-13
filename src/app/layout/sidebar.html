@@ -1,0 +1,45 @@
+<nav aria-label="Main">
+  <div class="primary">
+    <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" (click)="close()">
+      <app-icon name="home" /> Home
+    </a>
+    <a routerLink="/search" routerLinkActive="active" (click)="close()"><app-icon name="search" /> Explore</a>
+    <a routerLink="/review" routerLinkActive="active" (click)="close()">
+      <app-icon name="brain" /> Review
+      @if (user.dueCards().length) { <span class="count due">{{ user.dueCards().length }}</span> }
+    </a>
+    <a routerLink="/library" routerLinkActive="active" (click)="close()"><app-icon name="library" /> My library</a>
+  </div>
+
+  <p class="label">Encyclopedia</p>
+  <ul class="categories">
+    @for (c of content.categories(); track c.id) {
+      <li [class.expanded]="isExpanded(c.id)">
+        <div class="category-row">
+          <a class="category" [routerLink]="['/c', c.id]" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" (click)="close()">
+            <app-icon [name]="c.icon" />
+            <span class="name">{{ c.title }}</span>
+            <span class="count">{{ studiedIn(c.id) }}/{{ c.count }}</span>
+          </a>
+          <button type="button" class="chevron" (click)="toggle(c.id, $event)" [attr.aria-expanded]="isExpanded(c.id)"
+            [attr.aria-label]="(isExpanded(c.id) ? 'Collapse ' : 'Expand ') + c.title">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 6 6 6-6 6" /></svg>
+          </button>
+        </div>
+        @if (isExpanded(c.id)) {
+          <ul class="articles">
+            @for (a of content.inCategory(c.id); track a.slug) {
+              <li>
+                <a [routerLink]="['/a', a.slug]" routerLinkActive="active" (click)="close()">
+                  <span class="dot" [class.done]="user.isStudied(a.slug)"></span>
+                  {{ a.title }}
+                  @if (a.type === 'html') { <app-icon name="play" [size]="11" /> }
+                </a>
+              </li>
+            }
+          </ul>
+        }
+      </li>
+    }
+  </ul>
+</nav>

@@ -1,0 +1,73 @@
+<section class="hero">
+  <p class="eyebrow">The full-stack developer’s encyclopedia</p>
+  <h1>Understand it deeply.<br /><span>Remember it for good.</span></h1>
+  <p class="tagline">
+    AI can write the code. You still need to know whether it’s right. Developer Codex is a living knowledge base for
+    the fundamentals, patterns and judgement that make you effective — with built-in recall practice so it sticks.
+  </p>
+  <button type="button" class="hero-search" (click)="ui.openPalette()">
+    <app-icon name="search" [size]="20" />
+    <span>Search {{ content.articles().length }} entries, every heading, every code sample…</span>
+    <kbd>/</kbd>
+  </button>
+  <div class="suggest">
+    <span>Try:</span>
+    @for (s of suggestions; track s) {
+      <button type="button" (click)="ui.openPalette(s)">{{ s }}</button>
+    }
+  </div>
+</section>
+
+<section class="stats" aria-label="Your progress">
+  <a routerLink="/library" class="stat">
+    <strong>{{ user.studiedCount() }}<small>/{{ content.articles().length }}</small></strong>
+    <span>entries studied</span>
+    <div class="bar"><div [style.width.%]="progress()"></div></div>
+  </a>
+  <a routerLink="/review" class="stat" [class.attention]="user.dueCards().length">
+    <strong>{{ user.dueCards().length }}</strong>
+    <span>recall cards due</span>
+  </a>
+  <div class="stat">
+    <strong>{{ content.totalCards() }}</strong>
+    <span>recall cards in the codex</span>
+  </div>
+  <a routerLink="/library" class="stat">
+    <strong>{{ user.bookmarks().length }}</strong>
+    <span>bookmarks</span>
+  </a>
+</section>
+
+@if (recent().length) {
+  <section class="block">
+    <div class="block-head"><h2>Continue learning</h2><a routerLink="/library">History →</a></div>
+    <app-article-list [articles]="recent()" [compact]="true" />
+  </section>
+}
+
+<section class="block">
+  <div class="block-head"><h2>Browse the codex</h2><a routerLink="/search">Explore all →</a></div>
+  <div class="categories">
+    @for (c of content.categories(); track c.id) {
+      <a class="category" [routerLink]="['/c', c.id]">
+        <span class="cat-icon"><app-icon [name]="c.icon" [size]="20" /></span>
+        <strong>{{ c.title }}</strong>
+        <p>{{ c.description }}</p>
+        <span class="cat-meta">{{ c.count }} {{ c.count === 1 ? 'entry' : 'entries' }} · {{ studiedIn(c.id) }} studied</span>
+      </a>
+    }
+  </div>
+</section>
+
+<div class="split">
+  <section class="block">
+    <div class="block-head"><h2>Recently updated</h2></div>
+    <app-article-list [articles]="content.recentlyUpdated()" [compact]="true" />
+  </section>
+  @if (content.interactive().length) {
+    <section class="block">
+      <div class="block-head"><h2>Interactive labs</h2></div>
+      <app-article-list [articles]="content.interactive()" [compact]="true" />
+    </section>
+  }
+</div>

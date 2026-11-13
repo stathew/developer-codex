@@ -1,0 +1,52 @@
+/* Shared styles for interactive (HTML) codex entries. Theme follows the host app via codex-embed.js. */
+:root {
+  color-scheme: light;
+  --bg: #ffffff;
+  --surface: #f6f7fa;
+  --border: #e3e6ec;
+  --text: #2b3240;
+  --text-strong: #0f1420;
+  --muted: #667085;
+  --accent: #4f46e5;
+  --accent-soft: #eef0ff;
+  --success: #15803d;
+  --warning: #b45309;
+  --danger: #c2410c;
+  --font-sans: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, Consolas, monospace;
+}
+:root[data-theme='dark'] {
+  color-scheme: dark;
+  --bg: #141923;
+  --surface: #1b2130;
+  --border: #2a3242;
+  --text: #c9d0dc;
+  --text-strong: #f1f4f9;
+  --muted: #9aa4b5;
+  --accent: #8b8cf8;
+  --accent-soft: rgb(129 131 248 / 0.16);
+  --success: #4ade80;
+  --warning: #fbbf24;
+  --danger: #fb7c5c;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body { padding: 24px; background: var(--bg); color: var(--text); font: 15px/1.6 var(--font-sans); }
+h1, h2, h3 { color: var(--text-strong); letter-spacing: -0.01em; }
+h2 { font-size: 1.15rem; margin: 0 0 8px; }
+p { margin: 0 0 12px; }
+code { font-family: var(--font-mono); font-size: 0.88em; padding: 0.1em 0.35em; border-radius: 4px; background: var(--surface); border: 1px solid var(--border); }
+.panel { padding: 16px 18px; border: 1px solid var(--border); border-radius: 12px; background: var(--surface); }
+.controls { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin: 14px 0; }
+button, select, input[type='number'] {
+  height: 34px; padding: 0 12px; border: 1px solid var(--border); border-radius: 8px;
+  background: var(--bg); color: var(--text-strong); font: inherit; font-size: 0.88rem; cursor: pointer;
+}
+button:hover:not(:disabled) { border-color: var(--accent); }
+button:disabled { opacity: 0.5; cursor: not-allowed; }
+button.primary { background: var(--accent); border-color: var(--accent); color: var(--bg); font-weight: 600; }
+label { display: inline-flex; align-items: center; gap: 8px; font-size: 0.88rem; color: var(--muted); }
+input[type='range'] { accent-color: var(--accent); }
+.muted { color: var(--muted); }
+.stats { display: flex; flex-wrap: wrap; gap: 18px; font-size: 0.85rem; color: var(--muted); }
+.stats strong { color: var(--text-strong); font-variant-numeric: tabular-nums; }

@@ -1,0 +1,103 @@
+@if (meta(); as m) {
+  <div class="layout" [class.wide]="m.type === 'html'">
+    <article>
+      <nav class="crumbs" aria-label="Breadcrumb">
+        <a routerLink="/">Home</a>
+        <span>/</span>
+        <a [routerLink]="['/c', m.category]">{{ category()?.title ?? m.category }}</a>
+      </nav>
+
+      <header class="head">
+        <h1>{{ m.title }}</h1>
+        @if (m.summary) { <p class="lead">{{ m.summary }}</p> }
+        <div class="meta">
+          @if (m.type === 'html') { <span class="badge badge-accent"><app-icon name="play" [size]="11" /> Interactive</span> }
+          @if (m.difficulty) { <span class="difficulty" [attr.data-level]="m.difficulty">{{ m.difficulty }}</span> }
+          <span><app-icon name="clock" [size]="14" /> {{ m.readingMinutes }} min</span>
+          <span>Updated {{ formatDate(m.updated) }}</span>
+          @for (t of m.tags; track t) {
+            <a class="tag" routerLink="/search" [queryParams]="{ tag: t }">#{{ t }}</a>
+          }
+        </div>
+        <div class="actions">
+          <button type="button" class="btn" [class.on]="user.isStudied(m.slug)" (click)="user.toggleStudied(m.slug)"
+            [attr.aria-pressed]="user.isStudied(m.slug)">
+            <app-icon [name]="user.isStudied(m.slug) ? 'check-circle' : 'check'" [size]="16" />
+            {{ user.isStudied(m.slug) ? 'Studied' : 'Mark as studied' }}
+          </button>
+          <button type="button" class="btn" [class.on]="user.isBookmarked(m.slug)" (click)="user.toggleBookmark(m.slug)"
+            [attr.aria-pressed]="user.isBookmarked(m.slug)">
+            <app-icon name="bookmark" [size]="16" /> {{ user.isBookmarked(m.slug) ? 'Bookmarked' : 'Bookmark' }}
+          </button>
+          @if (m.type === 'html') {
+            <a class="btn" [href]="m.path" target="_blank" rel="noopener"><app-icon name="external" [size]="16" /> Open full screen</a>
+          }
+        </div>
+      </header>
+
+      @if (m.type === 'html') {
+        <iframe #frame class="frame" [src]="frameUrl()" [title]="m.title" [style.height.px]="frameHeight()"
+          sandbox="allow-scripts allow-forms allow-modals allow-popups" loading="lazy"></iframe>
+      } @else if (doc.error()) {
+        <div class="notice">Couldn’t load this entry. <button type="button" class="link" (click)="doc.reload()">Try again</button></div>
+      } @else if (html()) {
+        <div #body class="prose" [innerHTML]="html()" (click)="onBodyClick($event)"></div>
+      } @else {
+        <div class="skeleton" aria-busy="true"><span></span><span></span><span></span><span></span></div>
+      }
+
+      @if (m.cards.length) {
+        <section class="recall-panel">
+          <app-icon name="brain" [size]="22" />
+          <div>
+            <strong>{{ m.cards.length }} recall {{ m.cards.length === 1 ? 'card' : 'cards' }} in this entry.</strong>
+            @if (user.isStudied(m.slug)) {
+              They’re in your spaced-repetition deck. <a routerLink="/review">Review due cards →</a>
+            } @else {
+              Mark it as studied to add them to your spaced-repetition deck — retrieval beats re-reading.
+            }
+          </div>
+        </section>
+      }
+
+      @if (related().length) {
+        <section class="related">
+          <h2>Related entries</h2>
+          <div class="related-grid">
+            @for (r of related(); track r.slug) {
+              <a [routerLink]="['/a', r.slug]"><strong>{{ r.title }}</strong><span>{{ r.summary }}</span></a>
+            }
+          </div>
+        </section>
+      }
+
+      <nav class="pager" aria-label="Next and previous entries">
+        @if (neighbours().prev; as p) {
+          <a [routerLink]="['/a', p.slug]" class="prev"><small>Previous</small>{{ p.title }}</a>
+        } @else { <span></span> }
+        @if (neighbours().next; as n) {
+          <a [routerLink]="['/a', n.slug]" class="next"><small>Next</small>{{ n.title }}</a>
+        }
+      </nav>
+    </article>
+
+    @if (headings().length > 1) {
+      <aside class="toc" aria-label="On this page">
+        <p>On this page</p>
+        <ul>
+          @for (h of headings(); track h.id) {
+            <li [class.sub]="h.depth === 3">
+              <a [href]="'#' + h.id" [class.active]="activeHeading() === h.id" (click)="scrollTo(h.id, $event)">{{ h.text }}</a>
+            </li>
+          }
+        </ul>
+      </aside>
+    }
+  </div>
+} @else {
+  <div class="missing">
+    <h1>Entry not found</h1>
+    <p>There’s no codex entry at <code>{{ slug() }}</code>. It may have moved or been renamed.</p>
+    <a class="btn" routerLink="/search">Explore the codex</a>
+  </div>
+}

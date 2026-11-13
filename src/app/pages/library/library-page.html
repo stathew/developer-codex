@@ -1,0 +1,50 @@
+<h1>My library</h1>
+<p class="intro">Your progress lives in this browser. Export it to back it up or move it to another machine.</p>
+
+<section class="overview">
+  <div class="stat"><strong>{{ user.studiedCount() }}</strong><span>studied</span></div>
+  <div class="stat"><strong>{{ user.deck().length }}</strong><span>cards in deck</span></div>
+  <div class="stat"><strong>{{ mastered() }}</strong><span>cards well-retained</span></div>
+  <div class="stat"><strong>{{ user.dueCards().length }}</strong><span>due now</span></div>
+</section>
+
+<section>
+  <h2>Coverage</h2>
+  <ul class="coverage">
+    @for (c of byCategory(); track c.id) {
+      <li>
+        <a [routerLink]="['/c', c.id]"><app-icon [name]="c.icon" [size]="16" /> {{ c.title }}</a>
+        <div class="bar"><div [style.width.%]="c.pct"></div></div>
+        <span>{{ c.studied }}/{{ c.count }}</span>
+      </li>
+    }
+  </ul>
+</section>
+
+<section>
+  <h2><app-icon name="bookmark" [size]="18" /> Bookmarks</h2>
+  <app-article-list [articles]="bookmarks()" [compact]="true" emptyText="Bookmark entries to keep them close at hand." />
+</section>
+
+<section>
+  <h2><app-icon name="check-circle" [size]="18" /> Studied</h2>
+  <app-article-list [articles]="studied()" [compact]="true" emptyText="Mark entries as studied to add their recall cards to your review deck." />
+</section>
+
+<section>
+  <h2><app-icon name="clock" [size]="18" /> Recently viewed</h2>
+  <app-article-list [articles]="history()" [compact]="true" emptyText="Nothing viewed yet." />
+</section>
+
+<section>
+  <h2>Data</h2>
+  <div class="data">
+    <button type="button" class="btn" (click)="exportData()"><app-icon name="download" [size]="16" /> Export progress</button>
+    <label class="btn">
+      <app-icon name="upload" [size]="16" /> Import progress
+      <input #file type="file" accept="application/json,.json" (change)="importData(file)" hidden />
+    </label>
+    <button type="button" class="btn danger" (click)="reset()">Reset</button>
+    @if (message()) { <span class="message" role="status">{{ message() }}</span> }
+  </div>
+</section>

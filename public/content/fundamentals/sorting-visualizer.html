@@ -1,0 +1,183 @@
+<!doctype html>
+<!--
+---
+title: Sorting Algorithm Visualizer
+summary: Watch bubble, insertion, merge and quick sort work step by step, and compare how many comparisons and writes each needs.
+difficulty: beginner
+tags: [algorithms, sorting, complexity, interactive]
+order: 10
+related: [fundamentals/big-o-notation, fundamentals/complexity-explorer]
+---
+-->
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sorting Algorithm Visualizer</title>
+  <link rel="stylesheet" href="../_shared/codex-embed.css">
+  <style>
+    canvas { display: block; width: 100%; height: 300px; border-radius: 10px; background: var(--surface); border: 1px solid var(--border); }
+    .legend { display: flex; gap: 16px; font-size: .8rem; color: var(--muted); margin-top: 8px; }
+    .legend i { display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-right: 6px; vertical-align: -1px; }
+    #info { margin-top: 16px; }
+  </style>
+</head>
+<body>
+  <h2>Sorting algorithm visualizer</h2>
+  <p class="muted">Pick an algorithm and press play. Highlighted bars are being compared (amber) or written (red). Try the same input size with different algorithms and compare the counters.</p>
+
+  <div class="controls">
+    <select id="algo" aria-label="Algorithm">
+      <option value="bubble">Bubble sort — O(n²)</option>
+      <option value="insertion">Insertion sort — O(n²)</option>
+      <option value="merge" selected>Merge sort — O(n log n)</option>
+      <option value="quick">Quick sort — O(n log n) avg</option>
+    </select>
+    <label>Size <input id="size" type="range" min="8" max="200" value="60"></label>
+    <label>Speed <input id="speed" type="range" min="1" max="100" value="60"></label>
+    <select id="input" aria-label="Input order">
+      <option value="random">Random</option>
+      <option value="nearly">Nearly sorted</option>
+      <option value="reversed">Reversed</option>
+    </select>
+    <button id="shuffle">New data</button>
+    <button id="play" class="primary">Play</button>
+  </div>
+
+  <canvas id="canvas" aria-label="Bar chart of values being sorted"></canvas>
+  <div class="legend"><span><i style="background:var(--accent)"></i>value</span><span><i style="background:var(--warning)"></i>compare</span><span><i style="background:var(--danger)"></i>write</span><span><i style="background:var(--success)"></i>sorted</span></div>
+
+  <div class="stats" style="margin-top:12px">
+    <span>Comparisons: <strong id="cmp">0</strong></span>
+    <span>Writes: <strong id="wr">0</strong></span>
+    <span>n log₂ n ≈ <strong id="nlogn">0</strong></span>
+    <span>n² ≈ <strong id="n2">0</strong></span>
+  </div>
+
+  <div id="info" class="panel"></div>
+
+  <script type="text/x-recall">
+Q: Why does insertion sort perform well on nearly-sorted data?
+A: Each element only moves a short distance, so the work approaches O(n) rather than O(n²).
+
+Q: What causes quicksort's O(n²) worst case?
+A: Consistently poor pivots (e.g. always the smallest element), which happens with naive pivot choice on already-sorted input.
+  </script>
+  <script src="../_shared/codex-embed.js"></script>
+  <script>
+    const INFO = {
+      bubble: '<strong>Bubble sort</strong> repeatedly swaps adjacent out-of-order pairs. Simple, but O(n²) comparisons even in good cases (without an early-exit check). Rarely used outside teaching.',
+      insertion: '<strong>Insertion sort</strong> grows a sorted prefix, inserting each new element into place. O(n²) worst case, but close to O(n) on nearly-sorted data — which is why hybrid sorts like Timsort use it for small runs.',
+      merge: '<strong>Merge sort</strong> splits the array in half, sorts each half, then merges. Always O(n log n) and stable, at the cost of O(n) extra memory.',
+      quick: '<strong>Quick sort</strong> partitions around a pivot, then recurses. O(n log n) on average and very cache-friendly, but O(n²) with consistently bad pivots — try "Reversed" input (this demo uses the last element as pivot).',
+    };
+    const $ = (id) => document.getElementById(id);
+    const canvas = $('canvas'), ctx = canvas.getContext('2d');
+    let data = [], marks = {}, sorted = new Set(), gen = null, running = false, stats = { cmp: 0, wr: 0 };
+
+    function makeData() {
+      const n = +$('size').value;
+      data = Array.from({ length: n }, (_, i) => (i + 1) / n);
+      const mode = $('input').value;
+      if (mode === 'reversed') data.reverse();
+      else {
+        const swaps = mode === 'nearly' ? Math.max(1, n / 20) : n * 2;
+        for (let k = 0; k < swaps; k++) {
+          const i = Math.floor(Math.random() * n), j = mode === 'nearly' ? Math.min(n - 1, i + 1) : Math.floor(Math.random() * n);
+          [data[i], data[j]] = [data[j], data[i]];
+        }
+      }
+      reset();
+    }
+    function reset() {
+      running = false; gen = null; marks = {}; sorted = new Set(); stats = { cmp: 0, wr: 0 };
+      $('play').textContent = 'Play';
+      const n = data.length;
+      $('nlogn').textContent = Math.round(n * Math.log2(n)); $('n2').textContent = n * n;
+      $('info').innerHTML = INFO[$('algo').value];
+      draw();
+    }
+
+    // Each algorithm is a generator that yields after every comparison/write so we can animate it.
+    function* cmp(i, j) { stats.cmp++; marks = { [i]: 'c', [j]: 'c' }; yield; return data[i] > data[j]; }
+    function* write(i, v) { stats.wr++; data[i] = v; marks = { [i]: 'w' }; yield; }
+    function* swap(i, j) { const t = data[i]; yield* write(i, data[j]); yield* write(j, t); }
+
+    const ALGOS = {
+      *bubble() {
+        for (let end = data.length - 1; end > 0; end--) {
+          let swapped = false;
+          for (let i = 0; i < end; i++) if (yield* cmp(i, i + 1)) { yield* swap(i, i + 1); swapped = true; }
+          sorted.add(end);
+          if (!swapped) break;
+        }
+      },
+      *insertion() {
+        for (let i = 1; i < data.length; i++)
+          for (let j = i; j > 0 && (yield* cmp(j - 1, j)); j--) yield* swap(j - 1, j);
+      },
+      *merge(lo = 0, hi = data.length - 1) {
+        if (lo >= hi) return;
+        const mid = (lo + hi) >> 1;
+        yield* ALGOS.merge(lo, mid); yield* ALGOS.merge(mid + 1, hi);
+        const left = data.slice(lo, mid + 1), right = data.slice(mid + 1, hi + 1);
+        let i = 0, j = 0, k = lo;
+        while (i < left.length && j < right.length) {
+          stats.cmp++; marks = { [lo + i]: 'c', [mid + 1 + j]: 'c' }; yield;
+          yield* write(k++, left[i] <= right[j] ? left[i++] : right[j++]);
+        }
+        while (i < left.length) yield* write(k++, left[i++]);
+        while (j < right.length) yield* write(k++, right[j++]);
+      },
+      *quick(lo = 0, hi = data.length - 1) {
+        if (lo >= hi) { if (lo === hi) sorted.add(lo); return; }
+        let p = lo;
+        for (let i = lo; i < hi; i++) if (!(yield* cmp(i, hi))) { yield* swap(i, p); p++; }
+        yield* swap(p, hi); sorted.add(p);
+        yield* ALGOS.quick(lo, p - 1); yield* ALGOS.quick(p + 1, hi);
+      },
+    };
+
+    function draw() {
+      const dpr = window.devicePixelRatio || 1, w = canvas.clientWidth, h = canvas.clientHeight;
+      canvas.width = w * dpr; canvas.height = h * dpr; ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      ctx.clearRect(0, 0, w, h);
+      const bw = w / data.length, colors = { c: codexColor('--warning'), w: codexColor('--danger') };
+      const done = codexColor('--success'), base = codexColor('--accent');
+      data.forEach((v, i) => {
+        ctx.fillStyle = colors[marks[i]] || (sorted.has(i) ? done : base);
+        ctx.fillRect(i * bw + (bw > 4 ? 1 : 0), h - v * (h - 8), Math.max(1, bw - (bw > 4 ? 2 : 0)), v * (h - 8));
+      });
+      $('cmp').textContent = stats.cmp; $('wr').textContent = stats.wr;
+    }
+
+    function tick() {
+      if (!running) return;
+      const steps = Math.ceil(Math.pow(+$('speed').value / 100, 3) * 40);
+      for (let s = 0; s < steps; s++) {
+        if (gen.next().done) {
+          running = false; marks = {}; data.forEach((_, i) => sorted.add(i));
+          $('play').textContent = 'Replay'; draw(); return;
+        }
+      }
+      draw();
+      setTimeout(() => requestAnimationFrame(tick), Math.max(0, 60 - +$('speed').value));
+    }
+
+    $('play').onclick = () => {
+      if ($('play').textContent === 'Replay') { makeData(); }
+      if (!gen) gen = ALGOS[$('algo').value]();
+      running = !running;
+      $('play').textContent = running ? 'Pause' : 'Play';
+      if (running) tick();
+    };
+    $('shuffle').onclick = makeData;
+    $('size').oninput = makeData;
+    $('input').onchange = makeData;
+    $('algo').onchange = makeData;
+    window.addEventListener('resize', draw);
+    window.addEventListener('codex:theme', draw);
+    makeData();
+  </script>
+</body>
+</html>

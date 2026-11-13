@@ -1,0 +1,88 @@
+<h1>Review</h1>
+<p class="intro">
+  Spaced repetition turns reading into lasting knowledge. Try to answer <em>before</em> revealing — the effort of
+  retrieval is what makes it stick.
+</p>
+
+@if (!running()) {
+  <div class="modes">
+    <section class="mode-card primary">
+      <app-icon name="brain" [size]="24" />
+      <h2>Scheduled review</h2>
+      <p>
+        <strong>{{ user.dueCards().length }}</strong> due of {{ user.deck().length }} cards from
+        {{ user.studiedCount() }} studied {{ user.studiedCount() === 1 ? 'entry' : 'entries' }}.
+      </p>
+      <button type="button" class="btn btn-primary" [disabled]="!user.dueCards().length" (click)="start('due')">
+        {{ user.dueCards().length ? 'Start review' : 'All caught up' }}
+      </button>
+    </section>
+    <section class="mode-card">
+      <app-icon name="refresh" [size]="24" />
+      <h2>Practice</h2>
+      <p>Drill any category without affecting your schedule.</p>
+      <div class="row">
+        <select [value]="practiceCategory()" (change)="practiceCategory.set($any($event.target).value)" aria-label="Practice category">
+          <option value="">All categories</option>
+          @for (c of content.categories(); track c.id) { <option [value]="c.id">{{ c.title }}</option> }
+        </select>
+        <button type="button" class="btn" [disabled]="!practicePool().length" (click)="start('practice')">
+          Practice {{ practicePool().length }}
+        </button>
+      </div>
+    </section>
+  </div>
+
+  @if (unstudiedWithCards().length) {
+    <h2 class="sub">Grow your deck</h2>
+    <p class="muted">Study one of these and mark it as studied to add its recall cards:</p>
+    <ul class="suggest">
+      @for (a of unstudiedWithCards(); track a.slug) {
+        <li><a [routerLink]="['/a', a.slug]">{{ a.title }}</a> <span>{{ a.cards.length }} cards</span></li>
+      }
+    </ul>
+  }
+} @else if (finished()) {
+  <section class="done">
+    <app-icon name="check-circle" [size]="40" />
+    <h2>Session complete</h2>
+    <p>
+      {{ reviewed() }} reviews · {{ tally().good + tally().easy }} recalled · {{ tally().hard }} hard · {{ tally().again }} again
+    </p>
+    <div class="row center">
+      <button type="button" class="btn btn-primary" (click)="stop()">Done</button>
+      @if (mode() === 'practice') { <button type="button" class="btn" (click)="start('practice')">Practice again</button> }
+    </div>
+  </section>
+} @else if (current(); as card) {
+  <div class="session">
+    <div class="progress">
+      <span>{{ mode() === 'due' ? 'Scheduled review' : 'Practice' }} · {{ index() + 1 }} / {{ queue().length }}</span>
+      <div class="bar"><div [style.width.%]="(index() / queue().length) * 100"></div></div>
+      <button type="button" class="link" (click)="stop()">End session</button>
+    </div>
+
+    <div class="card" [class.revealed]="revealed()">
+      <div class="card-meta">
+        @if (source(); as s) { <a [routerLink]="['/a', s.slug]">{{ s.title }}</a> }
+        @if (mode() === 'due') { <span>Box {{ box(card) || 'new' }}</span> }
+      </div>
+      <div class="question" [innerHTML]="front()"></div>
+      @if (revealed()) {
+        <div class="answer prose" [innerHTML]="back()"></div>
+      }
+    </div>
+
+    @if (!revealed()) {
+      <button type="button" class="btn btn-primary reveal" (click)="reveal()">Show answer <kbd>Space</kbd></button>
+    } @else {
+      <div class="grades">
+        @for (g of grades; track g.grade; let i = $index) {
+          <button type="button" class="grade" [attr.data-grade]="g.grade" (click)="grade(g.grade)" [title]="g.hint">
+            <strong>{{ g.label }}</strong><kbd>{{ i + 1 }}</kbd>
+          </button>
+        }
+      </div>
+    }
+  </div>
+}

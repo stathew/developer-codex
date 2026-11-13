@@ -1,0 +1,33 @@
+<a class="skip-link" href="#main">Skip to content</a>
+
+<header class="topbar">
+  <button type="button" class="icon-btn menu" (click)="ui.sidebarOpen.set(!ui.sidebarOpen())" aria-label="Toggle navigation">
+    <app-icon [name]="ui.sidebarOpen() ? 'x' : 'menu'" [size]="20" />
+  </button>
+
+  <a routerLink="/" class="brand" aria-label="Developer Codex home">
+    <span class="logo" aria-hidden="true">{{ '{' }}<b>dc</b>{{ '}' }}</span>
+    <span class="brand-name">Developer <strong>Codex</strong></span>
+  </a>
+
+  <button type="button" class="search-trigger" (click)="ui.openPalette()">
+    <app-icon name="search" [size]="16" />
+    <span class="placeholder">Search the codex…</span>
+    <kbd>{{ isMac ? '⌘' : 'Ctrl' }} K</kbd>
+  </button>
+
+  <button type="button" class="icon-btn" (click)="theme.toggle()"
+    [attr.aria-label]="theme.theme() === 'dark' ? 'Switch to light theme' : 'Switch to dark theme'">
+    <app-icon [name]="theme.theme() === 'dark' ? 'sun' : 'moon'" [size]="18" />
+  </button>
+</header>
+
+<div class="shell">
+  <app-sidebar />
+  @if (ui.sidebarOpen()) { <div class="scrim" (click)="ui.sidebarOpen.set(false)"></div> }
+  <main id="main" tabindex="-1">
+    <router-outlet />
+  </main>
+</div>
+
+<app-search-palette />

@@ -1,0 +1,137 @@
+<!doctype html>
+<!--
+---
+title: Complexity Explorer
+summary: Plot O(1) through O(2ⁿ) side by side and see how quickly each grows — with real-world time estimates.
+difficulty: beginner
+tags: [algorithms, complexity, performance, interactive]
+order: 11
+related: [fundamentals/big-o-notation, fundamentals/sorting-visualizer]
+---
+-->
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Complexity Explorer</title>
+  <link rel="stylesheet" href="../_shared/codex-embed.css">
+  <style>
+    canvas { display: block; width: 100%; height: 320px; border-radius: 10px; background: var(--surface); border: 1px solid var(--border); }
+    table { width: 100%; border-collapse: collapse; margin-top: 16px; font-size: .88rem; }
+    th, td { padding: 8px 10px; text-align: left; border-bottom: 1px solid var(--border); }
+    th { color: var(--text-strong); }
+    td.num { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+    .swatch { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 8px; }
+    tr.off { opacity: .35; }
+    tr { cursor: pointer; }
+  </style>
+</head>
+<body>
+  <h2>Complexity explorer</h2>
+  <p class="muted">Drag the input size and watch the curves diverge. Click a row to toggle a curve. Time estimates assume 100 million simple operations per second.</p>
+
+  <div class="controls">
+    <label>n = <strong id="nval"></strong> <input id="n" type="range" min="1" max="100" value="40" style="width:220px"></label>
+    <label><input id="log" type="checkbox"> Logarithmic y-axis</label>
+  </div>
+
+  <canvas id="canvas" aria-label="Growth curves for common complexity classes"></canvas>
+
+  <table>
+    <thead><tr><th>Class</th><th>Operations at n</th><th>Estimated time</th></tr></thead>
+    <tbody id="rows"></tbody>
+  </table>
+
+  <script type="text/x-recall">
+Q: If an O(n²) algorithm takes 1 second for n = 10,000, roughly how long for n = 100,000?
+A: About 100 seconds — 10× the input means 10² = 100× the work.
+  </script>
+  <script src="../_shared/codex-embed.js"></script>
+  <script>
+    const CLASSES = [
+      { name: 'O(1)', f: () => 1, color: '#64748b' },
+      { name: 'O(log n)', f: (n) => Math.max(1, Math.log2(n)), color: '#0ea5e9' },
+      { name: 'O(n)', f: (n) => n, color: '#22c55e' },
+      { name: 'O(n log n)', f: (n) => n * Math.max(1, Math.log2(n)), color: '#eab308' },
+      { name: 'O(n²)', f: (n) => n * n, color: '#f97316' },
+      { name: 'O(2ⁿ)', f: (n) => Math.pow(2, n), color: '#ef4444' },
+    ];
+    const enabled = new Set(CLASSES.map((c) => c.name));
+    const $ = (id) => document.getElementById(id);
+    const canvas = $('canvas'), ctx = canvas.getContext('2d');
+
+    // Slider maps exponentially to n so both tiny and huge inputs are reachable.
+    const sliderToN = (v) => Math.max(1, Math.round(Math.pow(10, (v / 100) * 6)));
+
+    function fmtOps(x) {
+      if (!isFinite(x) || x > 1e300) return '∞ (overflow)';
+      if (x < 1e6) return Math.round(x).toLocaleString();
+      return x.toExponential(2).replace('e+', ' × 10^');
+    }
+    function fmtTime(ops) {
+      const s = ops / 1e8;
+      if (!isFinite(s)) return 'longer than the universe';
+      if (s < 1e-6) return '< 1 µs';
+      if (s < 1e-3) return (s * 1e6).toFixed(1) + ' µs';
+      if (s < 1) return (s * 1e3).toFixed(1) + ' ms';
+      if (s < 120) return s.toFixed(1) + ' s';
+      if (s < 7200) return (s / 60).toFixed(1) + ' min';
+      if (s < 172800) return (s / 3600).toFixed(1) + ' hours';
+      if (s < 3.15e7 * 2) return (s / 86400).toFixed(1) + ' days';
+      const years = s / 3.15e7;
+      return years > 1.4e10 ? 'longer than the age of the universe' : years.toExponential(1).replace('e+', ' × 10^') + ' years';
+    }
+
+    function render() {
+      const n = sliderToN(+$('n').value), log = $('log').checked;
+      $('nval').textContent = n.toLocaleString();
+      $('rows').innerHTML = CLASSES.map((c) => {
+        const ops = c.f(n);
+        return `<tr data-name="${c.name}" class="${enabled.has(c.name) ? '' : 'off'}"><td><span class="swatch" style="background:${c.color}"></span>${c.name}</td><td class="num">${fmtOps(ops)}</td><td>${fmtTime(ops)}</td></tr>`;
+      }).join('');
+
+      const dpr = devicePixelRatio || 1, w = canvas.clientWidth, h = canvas.clientHeight, pad = 36;
+      canvas.width = w * dpr; canvas.height = h * dpr; ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      ctx.clearRect(0, 0, w, h);
+      const active = CLASSES.filter((c) => enabled.has(c.name));
+      const yMaxLinear = Math.max(n * 1.1, 10);
+      const yMaxLog = Math.log10(Math.max(10, ...active.map((c) => Math.min(c.f(n), 1e300))));
+      const y = (v) => {
+        const t = log ? Math.log10(Math.max(1, v)) / yMaxLog : v / yMaxLinear;
+        return h - pad - Math.min(1.05, t) * (h - pad * 1.6);
+      };
+      const x = (i) => pad + (i / n) * (w - pad * 1.5);
+
+      ctx.strokeStyle = codexColor('--border'); ctx.lineWidth = 1;
+      ctx.beginPath(); ctx.moveTo(pad, pad / 2); ctx.lineTo(pad, h - pad); ctx.lineTo(w - pad / 2, h - pad); ctx.stroke();
+      ctx.fillStyle = codexColor('--muted'); ctx.font = '12px ' + codexColor('--font-sans');
+      ctx.fillText('input size n →', w - 120, h - 12);
+      ctx.save(); ctx.translate(14, h / 2 + 30); ctx.rotate(-Math.PI / 2); ctx.fillText(log ? 'operations (log)' : 'operations', 0, 0); ctx.restore();
+
+      ctx.save(); ctx.beginPath(); ctx.rect(pad, 0, w, h - pad); ctx.clip();
+      for (const c of active) {
+        ctx.strokeStyle = c.color; ctx.lineWidth = 2.5; ctx.beginPath();
+        const steps = 200;
+        for (let s = 0; s <= steps; s++) {
+          const i = Math.max(1, (s / steps) * n);
+          const px = x(i), py = y(c.f(i));
+          s ? ctx.lineTo(px, py) : ctx.moveTo(px, py);
+        }
+        ctx.stroke();
+      }
+      ctx.restore();
+    }
+
+    $('rows').addEventListener('click', (e) => {
+      const row = e.target.closest('tr'); if (!row) return;
+      const name = row.dataset.name;
+      enabled.has(name) ? enabled.delete(name) : enabled.add(name);
+      render();
+    });
+    $('n').oninput = render; $('log').onchange = render;
+    window.addEventListener('resize', render);
+    window.addEventListener('codex:theme', render);
+    render();
+  </script>
+</body>
+</html>

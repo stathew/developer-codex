@@ -1,0 +1,66 @@
+<h1>Explore the codex</h1>
+
+<div class="field">
+  <app-icon name="search" [size]="20" />
+  <input #box type="search" placeholder="Search everything…" [value]="q() ?? ''" (input)="onQuery(box.value)"
+    aria-label="Search query" autocomplete="off" />
+</div>
+
+<div class="filters">
+  <select [value]="category() ?? ''" (change)="update({ category: $any($event.target).value || null })" aria-label="Category">
+    <option value="">All categories</option>
+    @for (c of content.categories(); track c.id) { <option [value]="c.id">{{ c.title }}</option> }
+  </select>
+  <select [value]="type() ?? ''" (change)="update({ type: $any($event.target).value || null })" aria-label="Content type">
+    <option value="">All formats</option>
+    <option value="markdown">Articles</option>
+    <option value="html">Interactive</option>
+  </select>
+  <select [value]="difficulty() ?? ''" (change)="update({ difficulty: $any($event.target).value || null })" aria-label="Difficulty">
+    <option value="">Any level</option>
+    <option value="beginner">Beginner</option>
+    <option value="intermediate">Intermediate</option>
+    <option value="advanced">Advanced</option>
+  </select>
+  @if (tag()) {
+    <button type="button" class="chip on" (click)="update({ tag: null })">#{{ tag() }} ✕</button>
+  }
+  @if (hasFilters()) { <button type="button" class="link" (click)="clearFilters()">Clear filters</button> }
+</div>
+
+@if (failed()) {
+  <p class="muted">The search index couldn’t be loaded. Run <code>npm run content</code> and reload.</p>
+}
+
+@if (searching()) {
+  <p class="count">{{ groups().length }} {{ groups().length === 1 ? 'entry' : 'entries' }} match “{{ q() }}”</p>
+  <ul class="results">
+    @for (g of groups(); track g.article.slug) {
+      <li>
+        <a class="title" [routerLink]="['/a', g.article.slug]" [fragment]="g.sections[0].anchor || undefined">
+          @if (g.article.type === 'html') { <app-icon name="play" [size]="14" /> }
+          {{ g.article.title }}
+        </a>
+        <div class="meta">{{ categoryTitle(g.article.category) }} @if (g.article.difficulty) { · {{ g.article.difficulty }} }</div>
+        @for (s of g.sections.slice(0, 3); track s.anchor) {
+          <a class="section" [routerLink]="['/a', g.article.slug]" [fragment]="s.anchor || undefined">
+            @if (s.heading) { <strong>§ {{ s.heading }}</strong> }
+            <span [innerHTML]="s.snippet"></span>
+          </a>
+        }
+      </li>
+    } @empty {
+      <li class="muted">No matches. Try a broader term, or clear the filters.</li>
+    }
+  </ul>
+} @else {
+  <p class="count">{{ browse().length }} {{ browse().length === 1 ? 'entry' : 'entries' }}</p>
+  <app-article-list [articles]="browse()" />
+
+  <h2>Tags</h2>
+  <div class="tags">
+    @for (t of content.tags(); track t.tag) {
+      <a class="tag" routerLink="/search" [queryParams]="{ tag: t.tag }" [class.on]="t.tag === tag()">#{{ t.tag }} <small>{{ t.count }}</small></a>
+    }
+  </div>
+}
