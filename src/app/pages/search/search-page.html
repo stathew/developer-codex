@@ -22,6 +22,10 @@
     <option value="intermediate">Intermediate</option>
     <option value="advanced">Advanced</option>
   </select>
+  <select [value]="status() ?? ''" (change)="update({ status: $any($event.target).value || null })" aria-label="Review status">
+    <option value="">Any status</option>
+    <option value="needs-review">Needs review</option>
+  </select>
   @if (tag()) {
     <button type="button" class="chip on" (click)="update({ tag: null })">#{{ tag() }} ✕</button>
   }

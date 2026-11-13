@@ -1,5 +1,6 @@
 export type ContentType = 'markdown' | 'html';
 export type Difficulty = 'beginner' | 'intermediate' | 'advanced';
+export type ReviewStatus = 'needs-review';
 
 export interface Flashcard {
   id: string;
@@ -15,6 +16,9 @@ export interface ArticleMeta {
   category: string;
   tags: string[];
   difficulty?: Difficulty;
+  /** Set on entries awaiting a human accuracy review (e.g. imported legacy notes). */
+  status?: ReviewStatus;
+  reviewNotes?: string;
   updated: string;
   readingMinutes: number;
   order: number;

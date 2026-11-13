@@ -22,6 +22,7 @@ const SEARCH_FILE = path.join(CONTENT_DIR, 'search-index.json');
 const CATEGORIES_FILE = path.join(CONTENT_DIR, 'categories.json');
 const GENERATED = new Set(['manifest.json', 'search-index.json']);
 const DIFFICULTIES = new Set(['beginner', 'intermediate', 'advanced']);
+const STATUSES = new Set(['needs-review']);
 const WORDS_PER_MINUTE = 220;
 
 // ---------------------------------------------------------------------------
@@ -254,6 +255,8 @@ async function build() {
     const mtime = (await stat(file.abs)).mtime;
     const difficulty = DIFFICULTIES.has(data.difficulty) ? data.difficulty : undefined;
     if (data.difficulty && !difficulty) warnings.push(`${file.rel}: unknown difficulty "${data.difficulty}"`);
+    const status = STATUSES.has(data.status) ? data.status : undefined;
+    if (data.status && !status) warnings.push(`${file.rel}: unknown status "${data.status}"`);
 
     const article = {
       slug,
@@ -263,6 +266,8 @@ async function build() {
       category: String(data.category ?? (folder || 'general')),
       tags: Array.isArray(data.tags) ? data.tags.map(String) : [],
       difficulty,
+      status,
+      reviewNotes: data.reviewNotes ? String(data.reviewNotes) : undefined,
       updated: String(data.updated ?? mtime.toISOString().slice(0, 10)),
       readingMinutes: Math.max(1, Math.round(words / WORDS_PER_MINUTE)),
       order: typeof data.order === 'number' ? data.order : 100,

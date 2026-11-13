@@ -25,6 +25,7 @@ export interface SearchFilters {
   type?: ContentType;
   tag?: string;
   difficulty?: string;
+  status?: string;
 }
 
 const SNIPPET_RADIUS = 80;
@@ -77,6 +78,7 @@ export class SearchService {
       if (filters.type && meta.type !== filters.type) return false;
       if (filters.tag && !meta.tags.includes(filters.tag)) return false;
       if (filters.difficulty && meta.difficulty !== filters.difficulty) return false;
+      if (filters.status && meta.status !== filters.status) return false;
       return true;
     };
 

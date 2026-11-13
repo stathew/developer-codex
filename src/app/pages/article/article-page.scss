@@ -35,6 +35,20 @@
 
 .actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 18px; }
 
+.review-banner {
+  margin: -8px 0 28px;
+  padding: 14px 16px;
+  border: 1px solid color-mix(in srgb, var(--warning) 40%, transparent);
+  border-left: 4px solid var(--warning);
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--warning) 8%, var(--surface));
+  font-size: 0.9rem;
+  line-height: 1.55;
+  strong { color: var(--warning); }
+  p { margin: 8px 0 0; span { font-weight: 600; color: var(--text-strong); } }
+  small { display: block; margin-top: 8px; color: var(--text-faint); }
+}
+
 .frame {
   display: block;
   width: 100%;

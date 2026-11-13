@@ -17,6 +17,7 @@ import { Icon } from './icon';
             <div class="title-row">
               <span class="title">{{ a.title }}</span>
               @if (a.type === 'html') { <span class="badge badge-accent"><app-icon name="play" [size]="11" /> Interactive</span> }
+              @if (a.status === 'needs-review') { <span class="badge badge-review">Needs review</span> }
               @if (user.isStudied(a.slug)) { <span class="studied" title="Studied"><app-icon name="check-circle" [size]="15" /></span> }
             </div>
             @if (!compact()) { <p class="summary">{{ a.summary }}</p> }

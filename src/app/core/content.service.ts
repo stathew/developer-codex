@@ -32,6 +32,7 @@ export class ContentService {
   );
 
   readonly interactive = computed(() => this.articles().filter((a) => a.type === 'html'));
+  readonly needsReview = computed(() => this.articles().filter((a) => a.status === 'needs-review'));
 
   async load(): Promise<void> {
     const manifest = await firstValueFrom(this.http.get<Manifest>(`content/manifest.json?t=${Date.now()}`));

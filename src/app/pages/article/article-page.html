@@ -12,6 +12,7 @@
         @if (m.summary) { <p class="lead">{{ m.summary }}</p> }
         <div class="meta">
           @if (m.type === 'html') { <span class="badge badge-accent"><app-icon name="play" [size]="11" /> Interactive</span> }
+          @if (m.status === 'needs-review') { <span class="badge badge-review">Needs review</span> }
           @if (m.difficulty) { <span class="difficulty" [attr.data-level]="m.difficulty">{{ m.difficulty }}</span> }
           <span><app-icon name="clock" [size]="14" /> {{ m.readingMinutes }} min</span>
           <span>Updated {{ formatDate(m.updated) }}</span>
@@ -34,6 +35,15 @@
           }
         </div>
       </header>
+
+      @if (m.status === 'needs-review') {
+        <aside class="review-banner" role="note">
+          <strong>Awaiting review.</strong>
+          This entry was imported from older notes and updated, but hasn’t been checked by a human yet — verify before relying on it.
+          @if (m.reviewNotes) { <p><span>What changed:</span> {{ m.reviewNotes }}</p> }
+          <small>Remove <code>status: needs-review</code> from the front matter once reviewed.</small>
+        </aside>
+      }
 
       @if (m.type === 'html') {
         <iframe #frame class="frame" [src]="frameUrl()" [title]="m.title" [style.height.px]="frameHeight()"

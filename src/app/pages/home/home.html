@@ -38,6 +38,13 @@
   </a>
 </section>
 
+@if (content.needsReview().length) {
+  <a class="review-notice" routerLink="/search" [queryParams]="{ status: 'needs-review' }">
+    <strong>{{ content.needsReview().length }} imported {{ content.needsReview().length === 1 ? 'entry needs' : 'entries need' }} review</strong>
+    <span>Check them for accuracy, then clear their review status →</span>
+  </a>
+}
+
 @if (recent().length) {
   <section class="block">
     <div class="block-head"><h2>Continue learning</h2><a routerLink="/library">History →</a></div>

@@ -165,6 +165,7 @@ kbd {
   color: var(--text-muted);
 }
 .badge-accent { background: var(--accent-soft); color: var(--accent-strong); }
+.badge-review { background: color-mix(in srgb, var(--warning) 15%, transparent); color: var(--warning); }
 
 .difficulty {
   text-transform: capitalize;

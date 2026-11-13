@@ -77,6 +77,22 @@ h1 {
 a.stat:hover { border-color: var(--accent); }
 .bar { height: 4px; margin-top: 8px; border-radius: 4px; background: var(--surface-hover); overflow: hidden; div { height: 100%; background: var(--success); } }
 
+.review-notice {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 12px;
+  margin-top: 16px;
+  padding: 12px 16px;
+  border: 1px solid color-mix(in srgb, var(--warning) 40%, transparent);
+  border-radius: var(--radius);
+  background: color-mix(in srgb, var(--warning) 8%, var(--surface));
+  text-decoration: none;
+  font-size: 0.88rem;
+  strong { color: var(--warning); }
+  span { color: var(--text-muted); }
+  &:hover { border-color: var(--warning); }
+}
+
 .block { margin-top: 44px; }
 .block-head {
   display: flex;

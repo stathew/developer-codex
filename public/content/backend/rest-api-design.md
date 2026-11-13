@@ -4,10 +4,27 @@ summary: Resource modelling, HTTP methods and status codes, idempotency, paginat
 difficulty: intermediate
 tags: [api, http, rest, backend]
 order: 1
-related: [backend/authentication-sessions-vs-tokens, databases/indexes]
+related: [backend/authentication-sessions-vs-tokens, databases/indexes, backend/openapi-and-swagger, backend/webhooks]
+status: needs-review
+reviewNotes: Merged in the 2023 RESTful note as the new "What makes an API RESTful" section. Corrected it — REST is an architectural style rather than a subset of HTTP, RFC 2616 is obsolete (HTTP semantics are now RFC 9110), PUT vs POST is about idempotency and URL ownership rather than update vs create, and the application/x-wbe+xml typo was dropped.
 ---
 
 A good API is **predictable**: once a consumer has used one endpoint, they can guess how the rest behave. REST gets you most of the way there by leaning on HTTP's existing semantics instead of inventing new ones.
+
+## What makes an API RESTful
+
+**REST** (Representational State Transfer) is an *architectural style* described by Roy Fielding in 2000, not a protocol. It's usually implemented over HTTP, whose semantics are now defined in **RFC 9110** (the old RFC 2616 is obsolete). Its key constraints:
+
+- **Client–server** — UI and data storage evolve independently.
+- **Stateless** — each request carries everything needed to process it; the server keeps no client session between requests. (Application *data* is stored, of course; it's conversational state that isn't.)
+- **Cacheable** — responses say whether and for how long they can be cached.
+- **Uniform interface** — resources identified by URLs, manipulated through **representations** (JSON, XML, …) using standard methods.
+- **Layered system** — clients can't tell whether they're talking to the origin or a proxy, gateway or cache.
+
+A *representation* is the state of a resource at a point in time, in a particular format, chosen by content negotiation (`Accept: application/json`). Common formats include `application/json`, `application/xml`, `application/x-www-form-urlencoded` and `multipart/form-data` for uploads.
+
+> [!NOTE]
+> "PUT updates, POST creates" is an oversimplification. **PUT** replaces the resource at a URL the client knows, creating it if needed, and is idempotent. **POST** asks the server to process the payload, often creating a resource at a URL the server chooses, and isn't idempotent.
 
 ## Model resources, not actions
 

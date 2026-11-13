@@ -20,6 +20,7 @@ export class SearchPage {
   readonly type = input<ContentType>();
   readonly tag = input<string>();
   readonly difficulty = input<string>();
+  readonly status = input<string>();
 
   protected readonly content = inject(ContentService);
   private readonly search = inject(SearchService);
@@ -31,6 +32,7 @@ export class SearchPage {
     type: this.type(),
     tag: this.tag(),
     difficulty: this.difficulty(),
+    status: this.status(),
   }));
 
   protected readonly hasFilters = computed(() => Object.values(this.filters()).some(Boolean));
@@ -51,7 +53,8 @@ export class SearchPage {
           (!f.category || a.category === f.category) &&
           (!f.type || a.type === f.type) &&
           (!f.tag || a.tags.includes(f.tag)) &&
-          (!f.difficulty || a.difficulty === f.difficulty),
+          (!f.difficulty || a.difficulty === f.difficulty) &&
+          (!f.status || a.status === f.status),
       );
   });
 
@@ -70,7 +73,7 @@ export class SearchPage {
   }
 
   protected clearFilters(): void {
-    this.update({ category: null, type: null, tag: null, difficulty: null });
+    this.update({ category: null, type: null, tag: null, difficulty: null, status: null });
   }
 
   protected categoryTitle(id: string): string {

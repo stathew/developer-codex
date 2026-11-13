@@ -4,7 +4,9 @@ summary: How B-tree indexes turn full table scans into fast lookups, how composi
 difficulty: intermediate
 tags: [sql, databases, performance, indexes]
 order: 1
-related: [fundamentals/data-structures, fundamentals/big-o-notation, backend/rest-api-design]
+related: [fundamentals/data-structures, fundamentals/big-o-notation, backend/rest-api-design, databases/entity-framework-core]
+status: needs-review
+reviewNotes: Merged in the clustered vs non-clustered answer from the 2023 Common Questions note as a new section. Qualified it — a primary key is clustered by default in SQL Server but can be declared non-clustered, and clustered order is logical (B-tree) rather than strictly physical on disk.
 ---
 
 Without an index, finding rows means reading every row — a **full table scan**, `O(n)`. An index is a separate, sorted data structure that lets the database jump straight to matching rows in roughly `O(log n)`.
@@ -19,6 +21,18 @@ Because keys are sorted, the same index serves:
 - ranges: `WHERE created_at >= '2026-01-01'`
 - sorting: `ORDER BY created_at` (no separate sort step)
 - prefix matches: `WHERE name LIKE 'Ada%'` — but **not** `LIKE '%ada'`
+
+## Clustered vs non-clustered indexes
+
+These terms come from SQL Server (MySQL InnoDB behaves similarly; PostgreSQL tables are heaps with no persistent clustered index).
+
+- **Clustered index** — the table's rows *are* the leaf level of the index, stored in key order. Because the data can only be ordered one way, there's **at most one per table**. In SQL Server the primary key creates a clustered index **by default**, though you can declare it `NONCLUSTERED` and cluster on something else.
+- **Non-clustered index** — a separate B-tree whose leaves hold the indexed keys plus a pointer to the row (the clustered key, or a row ID for heaps). A table can have **many**.
+
+> [!NOTE]
+> "Clustered means physically sorted on disk" is a simplification. The ordering is maintained logically through the B-tree; pages can be fragmented across the file.
+
+**Choosing a clustered key:** narrow, unique, static and ever-increasing (e.g. an identity column) keeps inserts cheap and non-clustered indexes small. Random GUIDs as clustered keys cause page splits and fragmentation.
 
 ## Composite indexes and column order
 
@@ -87,6 +101,12 @@ A: An index that contains all the columns a query needs, so the database can ans
 
 Q: What's the main cost of adding indexes?
 A: Slower writes (every index must be maintained on insert/update/delete) and extra storage.
+
+Q: How many clustered indexes can a table have, and why?
+A: One — a clustered index defines the order the rows themselves are stored in, and data can only be ordered one way.
+
+Q: What makes a good clustered index key?
+A: Narrow, unique, static and ever-increasing (like an identity column), which keeps inserts cheap and non-clustered indexes small.
 
 Q: Why does `WHERE LOWER(email) = ...` skip a normal index on email?
 A: The index stores raw email values; applying a function to the column means the sorted keys can't be used. Use an expression index instead.
