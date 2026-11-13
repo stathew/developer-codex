@@ -4,7 +4,7 @@ summary: Classic interview coding problems — FizzBuzz, reversing a linked list
 difficulty: intermediate
 tags: [interviews, algorithms, data-structures, javascript]
 order: 4
-related: [fundamentals/big-o-notation, fundamentals/data-structures, career/technical-interview-questions]
+related: [career/algorithm-questions, fundamentals/big-o-notation, career/technical-interview-questions]
 status: needs-review
 reviewNotes: Built from the 2023 FizzBuzz.js and Technical Tests notes. Fixed FizzBuzz (the original looped 0–99 instead of 1–100 and used undeclared globals); wrote solutions for the listed "Reverse Linked List" and "Reverse (invert) Binary Tree" problems. The Algorithm Questions note was empty.
 ---

@@ -4,7 +4,7 @@ summary: A collection-like abstraction over data storage that keeps persistence 
 difficulty: intermediate
 tags: [design-patterns, architecture, data-access, ddd, ef-core]
 order: 19
-related: [databases/entity-framework-core, design/dependency-injection, design/solid-principles]
+related: [databases/entity-framework-core, design/domain-driven-design, design/dependency-injection]
 status: needs-review
 reviewNotes: New entry drafted from the empty 2023 Repository stub (title only). Includes the "repository over EF Core?" debate, since EF's DbContext already implements Repository and Unit of Work.
 ---

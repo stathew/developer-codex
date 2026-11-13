@@ -3,7 +3,7 @@ title: Database Indexes
 summary: How B-tree indexes turn full table scans into fast lookups, how composite indexes are ordered, and what indexes cost you on writes.
 difficulty: intermediate
 tags: [sql, databases, performance, indexes]
-order: 1
+order: 2
 related: [fundamentals/data-structures, fundamentals/big-o-notation, backend/rest-api-design, databases/entity-framework-core]
 status: needs-review
 reviewNotes: Merged in the clustered vs non-clustered answer from the 2023 Common Questions note as a new section. Qualified it — a primary key is clustered by default in SQL Server but can be declared non-clustered, and clustered order is logical (B-tree) rather than strictly physical on disk.

@@ -4,7 +4,7 @@ summary: Git's data model — commits, trees, branches as pointers — and the e
 difficulty: beginner
 tags: [git, version-control, workflow]
 order: 1
-related: [ai-era/reviewing-ai-generated-code]
+related: [devops/conventional-commits, devops/svn, devops/developer-tools-overview]
 ---
 
 Most Git confusion disappears once you see its data model. Git is a **content-addressed store of snapshots** plus a few movable pointers.

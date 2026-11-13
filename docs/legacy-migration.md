@@ -51,15 +51,19 @@ Every entry created or changed from legacy notes has `status: needs-review` in i
 - **Testing** (2026-11-13): Automated Testing, Unit Testing, Test Cases and Test-Driven Development → new `testing/` category (Testing & Quality). TDD moved here from Development Lifecycle. Flagged `needs-review`.
 - **Protocols** (2026-11-13): SOAP, gRPC and GraphQL (GraphQL was filed under Misc) → `backend/`, plus a `backend/api-styles-compared` hub. Flagged `needs-review`.
 - **Frameworks** (2026-11-13): Angular, React, Blazor → `frontend/` (plus a `frontend/choosing-a-frontend-framework` hub); Spring → `backend/spring`. Written to favour concepts over version details; version claims called out in each entry's review notes. Flagged `needs-review`.
+- **Final batch** (2026-11-13), all flagged `needs-review`:
+  - Agile, Waterfall → new `process/` category (Process & Delivery): `process/agile` (Agile, Scrum & Kanban), `process/waterfall` (Waterfall & the V-Model)
+  - Event-Driven Development → `backend/event-driven-architecture`
+  - Application Containerisation → `devops/containers-and-docker`
+  - Web Assembly → `frontend/webassembly`
+  - Domain Driven Design → `design/domain-driven-design`
+  - Generics → `fundamentals/generics`
+  - Databases Overview → `databases/choosing-a-database`; Relational Databases → `databases/relational-databases`
+  - Tools Overview → `devops/developer-tools-overview`; SVN → `devops/svn`
+  - Algorithm Questions → `career/algorithm-questions`
 
-### Not imported — empty or heading-only (content backlog)
+### Not imported — empty or heading-only
 
-These existed only as titles or empty templates. They're good candidates for new entries:
-
-- **Databases:** Databases Overview, Relational Databases
-- **Development lifecycle:** Agile, Waterfall, Event-Driven Development
-- **Misc:** Application Containerisation, WebAssembly, Domain-Driven Design, Generics
-- **Tools:** Tools Overview, SVN
-- **Interview practice:** Algorithm Questions
+Every empty or heading-only legacy file has now been written as a new entry (see *Backlog filled since migration* above). There's no remaining legacy backlog.
 
 The Docusaurus scaffolding (blog, `src/`, config, starter images) wasn't migrated.

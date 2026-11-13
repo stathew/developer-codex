@@ -3,7 +3,7 @@ title: ORMs & Entity Framework Core
 summary: What an object-relational mapper does, how EF Core maps classes to tables, migrations, tracking, and the performance traps to avoid.
 difficulty: intermediate
 tags: [orm, ef-core, dotnet, sql, databases]
-order: 2
+order: 3
 related: [databases/indexes, design/repository-pattern, backend/aspnet-core]
 status: needs-review
 reviewNotes: Built from the 2023 Entity Framework note (one line) plus the empty EF Core and ORM stubs. Updated to EF Core — EF6 is legacy .NET Framework tech — and added mapping, migrations, tracking and N+1 guidance.

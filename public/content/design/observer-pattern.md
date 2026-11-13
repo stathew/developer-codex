@@ -4,7 +4,7 @@ summary: Let objects subscribe to changes in another object and be notified auto
 difficulty: intermediate
 tags: [design-patterns, behavioral, events, rxjs, reactive]
 order: 17
-related: [frontend/angular-signals, backend/webhooks, design/strategy-pattern]
+related: [backend/event-driven-architecture, frontend/angular-signals, backend/webhooks]
 status: needs-review
 reviewNotes: New entry drafted from the empty 2023 Observer/Observable stub (title only). Covers both the classic pattern and the Observable (RxJS) form the original title referred to.
 ---

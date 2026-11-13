@@ -46,6 +46,8 @@ These operate at a larger scale than the GoF patterns:
 - [Repository](repository-pattern.md): a collection-like abstraction over data storage.
 - [Dependency Injection](dependency-injection.md): supply dependencies from outside.
 - [API Gateway](../backend/api-gateway.md): a single entry point in front of many services.
+- [Domain-Driven Design](domain-driven-design.md): modelling around the business domain with bounded contexts and aggregates.
+- [Event-Driven Architecture](../backend/event-driven-architecture.md): services that communicate by publishing and reacting to events.
 
 ## Using patterns well
 
