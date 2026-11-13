@@ -4,7 +4,7 @@ summary: Server-side sessions versus self-contained tokens like JWTs — how eac
 difficulty: intermediate
 tags: [security, auth, jwt, http, backend]
 order: 2
-related: [backend/rest-api-design, ai-era/reviewing-ai-generated-code]
+related: [security/owasp-top-10, backend/json-web-tokens, backend/oauth-and-openid-connect]
 ---
 
 **Authentication** answers *who are you?* **Authorisation** answers *what may you do?* This entry is about the first — specifically, how a server remembers who you are between requests.

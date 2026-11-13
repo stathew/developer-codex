@@ -318,3 +318,53 @@ When an item is wrong, fix the entry (or note it and ask Claude to fix it). The 
 **Algorithm Questions** — `career/algorithm-questions`
 - [ ] Pattern cheat-sheet signals
 - ✅ Code samples were executed and pass tests
+
+---
+
+## Topic-gaps batch (added after the checklist was first written)
+
+11 new entries, all flagged `needs-review`. The ✅ items were checked against primary sources when the entries were written.
+
+**OWASP Top 10** — `security/owasp-top-10`
+- [x] Category names and order match OWASP Top 10:2025 — ✅ verified at top10.owasp.org/2025
+- [ ] Code examples (IDOR ownership check, fail-closed authorisation)
+- [ ] Password hashing recommendations (Argon2id, bcrypt, scrypt, PBKDF2)
+
+**Secrets Management** — `security/secrets-management`
+- [ ] Tooling examples (User Secrets, Key Vault, OIDC for CI, gitleaks)
+- [ ] Leak-response steps
+
+**Caching** — `backend/caching`
+- [ ] ⚠ .NET `HybridCache` described as combining in-memory and distributed caching with stampede protection
+- [ ] HTTP caching header examples
+
+**Observability** — `devops/observability`
+- [ ] OpenTelemetry .NET setup snippet; .NET Aspire dashboard mention
+- [ ] RED/USE methods; SLI/SLO definitions
+
+**CI/CD Pipelines** — `devops/ci-cd`
+- [ ] Workflow example (mirrors this repo's deploy workflow plus `npm test`)
+- [ ] Deployment strategies table; expand-and-contract migrations
+
+**System Design Fundamentals** — `design/system-design-fundamentals`
+- [ ] Latency figures (memory ~100 ns, SSD ~100 µs, datacentre round trip ~0.5 ms, cross-continent ~100+ ms)
+- [ ] Interview approach steps match how you'd want to answer
+
+**Web Accessibility** — `frontend/web-accessibility`
+- [x] WCAG 2.2 is the current Recommendation; WCAG 3 still a draft — ✅ verified (W3C)
+- [x] European Accessibility Act applies from 28 June 2025 — ✅ verified (multiple legal sources)
+- [ ] Contrast ratios (4.5:1 / 3:1) and the "first rule of ARIA"
+- [ ] "One in six people" disability figure (WHO estimate)
+
+**The TypeScript Type System** — `fundamentals/typescript-type-system`
+- [ ] ⚠ `satisfies` + `as const` example compiles on your TypeScript version (5.0+)
+- [ ] Discriminated union exhaustiveness example
+
+**Retrieval-Augmented Generation** — `ai-era/retrieval-augmented-generation`
+- [ ] Pipeline description, RAG vs fine-tuning table, failure modes
+
+**Evaluating AI Features** — `ai-era/evaluating-ai-features`
+- [ ] Check types table; your view on LLM-as-judge
+
+**Working with Coding Agents** — `ai-era/working-with-coding-agents`
+- [ ] Deliberately tool-agnostic; add specifics for the tools you use

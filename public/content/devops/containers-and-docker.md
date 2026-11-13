@@ -3,7 +3,7 @@ title: Containers & Docker
 summary: Packaging an app with everything it needs to run — images, containers, Dockerfiles, multi-stage builds, Compose, security basics and where Kubernetes fits.
 difficulty: intermediate
 tags: [docker, containers, devops, deployment, kubernetes]
-order: 3
+order: 4
 related: [devops/git-essentials, backend/aspnet-core, devops/developer-tools-overview]
 status: needs-review
 reviewNotes: New entry drafted from the empty 2023 Application Containerisation stub (no content).

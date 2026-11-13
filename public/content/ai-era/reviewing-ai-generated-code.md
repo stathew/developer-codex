@@ -46,7 +46,7 @@ const rows = await db.query(`SELECT * FROM users WHERE email = '${email}'`);
 const rows = await db.query('SELECT * FROM users WHERE email = $1', [email]);
 ```
 
-Also: secrets in code, missing authorisation checks (authentication ≠ authorisation), permissive CORS, `innerHTML` with user data, and disabled certificate validation "to make it work".
+See the [OWASP Top 10](../security/owasp-top-10.md) for the full list of common risks. Also watch for secrets in code, missing authorisation checks (authentication ≠ authorisation), permissive CORS, `innerHTML` with user data, and disabled certificate validation "to make it work".
 
 ### Quietly expensive
 

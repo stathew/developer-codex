@@ -3,7 +3,7 @@ title: Subversion (SVN)
 summary: The centralised version control system that preceded Git's dominance — its model, everyday commands, how it differs from Git, and migrating away.
 difficulty: beginner
 tags: [svn, version-control, git, legacy]
-order: 4
+order: 6
 related: [devops/git-essentials, devops/developer-tools-overview]
 status: needs-review
 reviewNotes: New entry drafted from the empty 2023 SVN stub (no content).
