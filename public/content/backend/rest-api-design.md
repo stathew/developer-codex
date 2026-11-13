@@ -4,7 +4,7 @@ summary: Resource modelling, HTTP methods and status codes, idempotency, paginat
 difficulty: intermediate
 tags: [api, http, rest, backend]
 order: 1
-related: [backend/authentication-sessions-vs-tokens, databases/indexes, backend/openapi-and-swagger, backend/webhooks]
+related: [backend/api-styles-compared, backend/openapi-and-swagger, backend/webhooks, backend/authentication-sessions-vs-tokens]
 status: needs-review
 reviewNotes: Merged in the 2023 RESTful note as the new "What makes an API RESTful" section. Corrected it — REST is an architectural style rather than a subset of HTTP, RFC 2616 is obsolete (HTTP semantics are now RFC 9110), PUT vs POST is about idempotency and URL ownership rather than update vs create, and the application/x-wbe+xml typo was dropped.
 ---

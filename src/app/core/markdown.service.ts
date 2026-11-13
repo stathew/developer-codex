@@ -5,11 +5,13 @@ import csharp from 'highlight.js/lib/languages/csharp';
 import css from 'highlight.js/lib/languages/css';
 import dockerfile from 'highlight.js/lib/languages/dockerfile';
 import go from 'highlight.js/lib/languages/go';
+import graphql from 'highlight.js/lib/languages/graphql';
 import java from 'highlight.js/lib/languages/java';
 import javascript from 'highlight.js/lib/languages/javascript';
 import json from 'highlight.js/lib/languages/json';
 import markdown from 'highlight.js/lib/languages/markdown';
 import plaintext from 'highlight.js/lib/languages/plaintext';
+import protobuf from 'highlight.js/lib/languages/protobuf';
 import python from 'highlight.js/lib/languages/python';
 import rust from 'highlight.js/lib/languages/rust';
 import scss from 'highlight.js/lib/languages/scss';
@@ -22,11 +24,13 @@ import { RenderedDoc, TocHeading } from './models';
 import { createSlugger, dirOf, escapeHtml, parseRecall, resolvePath, stripInlineMarkdown } from './text';
 
 const LANGUAGES = {
-  bash, csharp, css, dockerfile, go, java, javascript, json, markdown, plaintext, python, rust, scss, sql, typescript, xml, yaml,
+  bash, csharp, css, dockerfile, go, graphql, java, javascript, json, markdown, plaintext, protobuf, python, rust, scss, sql, typescript, xml, yaml,
 };
 for (const [name, lang] of Object.entries(LANGUAGES)) hljs.registerLanguage(name, lang);
 hljs.registerAliases(['html', 'angular'], { languageName: 'xml' });
 hljs.registerAliases(['ts'], { languageName: 'typescript' });
+hljs.registerAliases(['proto'], { languageName: 'protobuf' });
+hljs.registerAliases(['gql'], { languageName: 'graphql' });
 hljs.registerAliases(['js'], { languageName: 'javascript' });
 hljs.registerAliases(['sh', 'shell', 'powershell', 'console'], { languageName: 'bash' });
 hljs.registerAliases(['text', 'txt'], { languageName: 'plaintext' });

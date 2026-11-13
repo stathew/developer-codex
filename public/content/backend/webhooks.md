@@ -4,7 +4,7 @@ summary: Event-driven HTTP callbacks between applications — how they compare t
 difficulty: intermediate
 tags: [webhooks, http, integration, events, backend]
 order: 6
-related: [backend/rest-api-design, backend/json-web-tokens]
+related: [backend/api-styles-compared, backend/rest-api-design, backend/json-web-tokens]
 status: needs-review
 reviewNotes: Imported from the 2023 Web Hooks note. Kept the polling comparison; added signature verification, retries, idempotency and receiver best practices.
 ---
