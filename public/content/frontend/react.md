@@ -76,7 +76,7 @@ Re-rendering is usually cheap. When it isn't, memoisation helps: `memo`, `useMem
 
 ## The ecosystem
 
-- **Frameworks:** Next.js and React Router (framework mode) provide routing, server-side rendering and data loading. They're the recommended way to start a new app. Create React App is deprecated; Vite is the usual choice for a plain client-side setup.
+- **Frameworks:** Next.js and React Router (framework mode) provide routing, server-side rendering and data loading; Expo does the same for native apps. They're the recommended way to start a new app, and they can still produce a client-only SPA for static hosting. Create React App was deprecated in February 2025. If you'd rather not use a framework, react.dev points to build tools such as Vite, Parcel or Rsbuild.
 - **Server Components:** components that run only on the server and send rendered output to the client, which reduces the JavaScript shipped. They're available through frameworks.
 - **Data fetching:** TanStack Query, SWR or framework loaders.
 - **State:** built-in state and context first; Zustand, Redux Toolkit or Jotai for shared client state.

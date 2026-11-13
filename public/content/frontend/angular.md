@@ -6,7 +6,7 @@ tags: [angular, typescript, frontend, spa]
 order: 4
 related: [frontend/angular-signals, frontend/choosing-a-frontend-framework, design/dependency-injection, frontend/react]
 status: needs-review
-reviewNotes: New entry drafted from the empty 2023 Angular stub (no content). Version-specific claims (standalone default, built-in control flow, zoneless default, Vitest) describe recent Angular; check them against the current release notes.
+reviewNotes: New entry drafted from the empty 2023 Angular stub (no content). Version-specific claims (standalone default, built-in control flow, zoneless default, Vitest) describe recent Angular; check them against the current release notes. Release cadence verified against angular.dev on 2026-11-13 and corrected (12-month majors from v22).
 ---
 
 **Angular** is a TypeScript framework for building web applications, maintained by Google. Where React is a UI library you assemble a stack around, Angular is **batteries-included**: routing, forms, HTTP, dependency injection, testing and a CLI all come in the box, with strong conventions. That makes it popular for large enterprise applications with many teams.
@@ -81,7 +81,7 @@ Angular's reactivity is now built on **[signals](angular-signals.md)**: `signal`
 
 ## Release cadence
 
-A major version ships roughly **every six months**, each supported for 18 months. `ng update` runs code migrations automatically, which makes staying current much easier than with most frameworks.
+From **v22** (June 2026), a major version ships roughly **every 12 months**, each supported for **24 months**: 12 months of active support, then 12 months of long-term support with critical and security fixes only. Before v22, majors came every six months. Check [angular.dev/reference/releases](https://angular.dev/reference/releases) for current dates. `ng update` runs code migrations automatically, which makes staying current much easier than with most frameworks.
 
 ## Strengths and trade-offs
 

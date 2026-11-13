@@ -2,6 +2,21 @@
 
 57 entries are flagged `status: needs-review`. This checklist lists the **specific claims to verify** in each one, so a review means checking facts rather than re-reading everything cold.
 
+## Pre-check results (2026-11-13)
+
+Claude checked every ⚠ claim that can be verified against a source. Ticked items are annotated:
+
+- ✅ **verified**: checked against an official or primary source today. **confirmed**: an established fact, not re-fetched.
+- 🔧 **fixed**: the claim was wrong or imprecise and the entry has been corrected.
+
+**Corrections made:**
+- **Angular:** the release cadence was wrong. From v22, majors ship every 12 months with 24 months of support.
+- **OAuth 2.1:** now noted as still an IETF draft.
+- **React:** Create React App deprecation wording aligned with react.dev; Expo added.
+- **Spring Boot 4:** now states the Java 17 baseline is kept.
+
+**Still for you:** the unticked items need your judgement (agreeing with corrections to your notes, your own interview answers, the Rules-pattern interpretation, tool lists, framework comparisons) or are lower-risk checks. Three ⚠ items remain open for that reason: the **Rules pattern** interpretation, the **Developer Tools** lists and the **frontend framework comparison** table (its facts are standard, but the hiring and fit judgements are yours).
+
 ## How to review an entry
 
 For every entry, on top of its specific items below:
@@ -30,16 +45,16 @@ When an item is wrong, fix the entry (or note it and ask Claude to fix it). The 
 - [ ] Square/Rectangle as the Liskov example
 
 ### OAuth 2.0 & OpenID Connect — `backend/oauth-and-openid-connect`
-- [ ] ⚠ Roles: **resource owner = the user** (your original said the provider, e.g. Amazon)
+- [x] ⚠ Roles: **resource owner = the user** (your original said the provider, e.g. Amazon) — ✅ confirmed: RFC 6749 §1.1 defines the resource owner as the entity granting access (the end-user)
 - [ ] OAuth is authorisation; sign-in is **OpenID Connect**
-- [ ] ⚠ Implicit and Resource Owner Password flows deprecated; OAuth 2.1 requires PKCE for all authorization-code clients — check status at [oauth.net/2.1](https://oauth.net/2.1/)
+- [x] ⚠ Implicit and Resource Owner Password flows deprecated; OAuth 2.1 requires PKCE for all authorization-code clients — check status at [oauth.net/2.1](https://oauth.net/2.1/) — 🔧 verified at oauth.net/2.1: omits Implicit and Password, requires PKCE and exact redirect matching. **Fixed:** entry now says OAuth 2.1 is still an IETF draft
 - [ ] OAuth 1.0 described as legacy
 - [ ] The five PKCE steps are in the right order
 
 ### Object-Oriented Programming — `design/object-oriented-programming`
 - [ ] Encapsulation and abstraction rewritten (your originals said objects "communicate automatically"); you agree with the new definitions
 - [ ] Your Animal / Pig / Cat `Speak()` example kept for polymorphism
-- [ ] ⚠ Abstract class vs interface table: interfaces can have **default method bodies since C# 8 / Java 8**
+- [x] ⚠ Abstract class vs interface table: interfaces can have **default method bodies since C# 8 / Java 8** — ✅ confirmed: Java 8 default methods (2014), C# 8 default interface members (2019)
 - [ ] Overloading described as compile-time ("ad-hoc") polymorphism
 
 ### Technical Interview Questions — `career/technical-interview-questions`
@@ -55,7 +70,7 @@ When an item is wrong, fix the entry (or note it and ask Claude to fix it). The 
 - ✅ Code samples were executed and pass tests
 
 ### REST API Design — `backend/rest-api-design` (merged your RESTful note)
-- [ ] ⚠ HTTP semantics now in **RFC 9110**; RFC 2616 obsolete
+- [x] ⚠ HTTP semantics now in **RFC 9110**; RFC 2616 obsolete — ✅ confirmed: RFC 9110 (2022) defines HTTP semantics; RFC 2616 was obsoleted in 2014
 - [ ] REST described as an architectural style (Fielding, 2000), not "a subset of HTTP"
 - [ ] PUT vs POST explained by idempotency and who chooses the URL, not "update vs create"
 - [ ] Your `application/x-wbe+xml` was dropped as a typo
@@ -64,7 +79,7 @@ When an item is wrong, fix the entry (or note it and ask Claude to fix it). The 
 ### Database Indexes — `databases/indexes` (merged your clustered-index answer)
 - [ ] Clustered vs non-clustered section: "at most one clustered per table", PK clustered by default only
 - [ ] "Physically sorted on disk" qualified as a simplification
-- [ ] ⚠ PostgreSQL described as having no persistent clustered index (heap tables; `CLUSTER` is one-off)
+- [x] ⚠ PostgreSQL described as having no persistent clustered index (heap tables; `CLUSTER` is one-off) — ✅ verified: PostgreSQL docs say CLUSTER "is a one-time operation"
 - [ ] Clustered key advice: narrow, unique, static, ever-increasing; random GUIDs cause fragmentation
 
 ### JSON Web Tokens — `backend/json-web-tokens` (rewritten from jwt.io text)
@@ -78,53 +93,53 @@ When an item is wrong, fix the entry (or note it and ask Claude to fix it). The 
 ## Tier 2: version-sensitive
 
 ### Angular — `frontend/angular`
-- [ ] ⚠ Standalone components are the default; NgModules not needed
-- [ ] ⚠ Built-in control flow (`@if`, `@for`, `@switch`, `@defer`)
-- [ ] ⚠ New apps run **zoneless** by default
-- [ ] ⚠ Major release every ~6 months, **18 months support** — check [angular.dev/reference/releases](https://angular.dev/reference/releases)
+- [x] ⚠ Standalone components are the default; NgModules not needed — ✅ confirmed: standalone is the default since v19
+- [x] ⚠ Built-in control flow (`@if`, `@for`, `@switch`, `@defer`) — ✅ confirmed: introduced in v17, stable since v18
+- [x] ⚠ New apps run **zoneless** by default — ✅ verified: zoneless is the default for new apps since v21 (Nov 2025)
+- [x] ⚠ Major release every ~6 months, **18 months support** — check [angular.dev/reference/releases](https://angular.dev/reference/releases) — 🔧 **was wrong.** angular.dev: from v22, majors every **12 months** with **24 months** support (12 active + 12 LTS). Entry corrected
 - [ ] AngularJS (1.x) end-of-life; Angular (2+, 2016) a rewrite
 
 ### React — `frontend/react`
-- [ ] ⚠ **Create React App deprecated**; frameworks (Next.js, React Router) recommended; Vite for client-only — check [react.dev](https://react.dev/learn/creating-a-react-app)
-- [ ] ⚠ React Compiler described as adding memoisation automatically at build time
+- [x] ⚠ **Create React App deprecated**; frameworks (Next.js, React Router) recommended; Vite for client-only — check [react.dev](https://react.dev/learn/creating-a-react-app) — 🔧 verified: react.dev deprecated CRA in Feb 2025 and recommends Next.js, React Router or Expo. **Fixed:** wording now says react.dev points to build tools (Vite, Parcel, Rsbuild) for no-framework setups, and adds Expo
+- [x] ⚠ React Compiler described as adding memoisation automatically at build time — ✅ verified: React Compiler 1.0 stable (Oct 2025), build-time automatic memoisation
 - [ ] Server Components "available through frameworks"
 - [ ] Open-sourced 2013; hooks table; rules of hooks
 
 ### Blazor — `frontend/blazor`
-- [ ] ⚠ Four render modes as introduced in **.NET 8**: Static SSR, Interactive Server, Interactive WebAssembly, Interactive Auto
-- [ ] ⚠ `@rendermode InteractiveServer` syntax
+- [x] ⚠ Four render modes as introduced in **.NET 8**: Static SSR, Interactive Server, Interactive WebAssembly, Interactive Auto — ✅ verified: Microsoft Learn render-modes docs (applies from ASP.NET Core 8.0)
+- [x] ⚠ `@rendermode InteractiveServer` syntax — ✅ verified: Microsoft Learn
 - [ ] Interactive Server scaling advice (sticky sessions / Azure SignalR Service)
 - [ ] Blazor Hybrid via .NET MAUI, WPF, WinForms
 
 ### Spring & Spring Boot — `backend/spring`
-- [ ] ⚠ Spring Boot 3: Java 17 baseline, `javax.*` → `jakarta.*`
-- [ ] ⚠ Spring Boot 4 built on Spring Framework 7 — check [spring.io/projects/spring-boot](https://spring.io/projects/spring-boot)
+- [x] ⚠ Spring Boot 3: Java 17 baseline, `javax.*` → `jakarta.*` — ✅ confirmed
+- [x] ⚠ Spring Boot 4 built on Spring Framework 7 — check [spring.io/projects/spring-boot](https://spring.io/projects/spring-boot) — 🔧 verified (InfoQ, Baeldung; spring.io not fetched): both GA in Nov 2025, Java 17 baseline kept. **Fixed:** entry now states the Java 17 baseline
 - [ ] `@Transactional` self-invocation pitfall (proxy bypass)
 - [ ] Virtual threads supported (Java 21+)
 
 ### ASP.NET Core — `backend/aspnet-core`
-- [ ] ⚠ Minimal APIs "now the default in templates"
-- [ ] ⚠ "Even-numbered .NET releases are LTS" — check [dotnet.microsoft.com support policy](https://dotnet.microsoft.com/platform/support/policy/dotnet-core)
+- [x] ⚠ Minimal APIs "now the default in templates" — ✅ verified: `dotnet new webapi` creates minimal APIs unless `--use-controllers`
+- [x] ⚠ "Even-numbered .NET releases are LTS" — check [dotnet.microsoft.com support policy](https://dotnet.microsoft.com/platform/support/policy/dotnet-core) — ✅ verified: Microsoft lifecycle page (.NET 8 and 10 are LTS). Note: .NET 8 reached end of support on 10 Nov 2026, and .NET 10 (LTS, to Nov 2028) is current
 - [ ] Middleware order example (exception handler first, authn before authz)
 - [ ] IIS hosting via the ASP.NET Core Module (in-process or out-of-process)
 
 ### OpenAPI & Swagger — `backend/openapi-and-swagger`
 - [ ] Spec renamed from Swagger to OpenAPI in 2016; current line 3.x (example uses 3.1.0)
-- [ ] ⚠ **.NET 9+ templates use `Microsoft.AspNetCore.OpenApi`** instead of Swashbuckle
+- [x] ⚠ **.NET 9+ templates use `Microsoft.AspNetCore.OpenApi`** instead of Swashbuckle — ✅ verified: Swashbuckle was removed from the template in .NET 9 (still available on NuGet)
 
 ### ORMs & Entity Framework Core — `databases/entity-framework-core`
 - [ ] EF6 described as maintenance-mode, EF Core for new work
 - [ ] `dotnet ef` migration commands
-- [ ] ⚠ `LogTo(Console.WriteLine)` for SQL logging
+- [x] ⚠ `LogTo(Console.WriteLine)` for SQL logging — ✅ confirmed: simple logging API since EF Core 5
 
 ### Unit Testing — `testing/unit-testing`
-- [ ] ⚠ "Vitest is Angular's default test runner **since v21**"
+- [x] ⚠ "Vitest is Angular's default test runner **since v21**" — ✅ verified: Vitest is the default for new projects in v21; Karma still available
 - [ ] Test-double taxonomy (dummy / stub / fake / spy / mock)
 - [ ] NSubstitute example syntax
 
 ### Containers & Docker — `devops/containers-and-docker`
-- [ ] ⚠ Dockerfile uses `mcr.microsoft.com/dotnet/sdk:10.0` / `aspnet:10.0` and `USER app`; check current tags
-- [ ] ⚠ `dotnet publish /t:PublishContainer` builds images without a Dockerfile
+- [x] ⚠ Dockerfile uses `mcr.microsoft.com/dotnet/sdk:10.0` / `aspnet:10.0` and `USER app`; check current tags — ✅ verified: .NET 10 is the current LTS; .NET 8+ images include a non-root `app` user and default to port 8080
+- [x] ⚠ `dotnet publish /t:PublishContainer` builds images without a Dockerfile — ✅ confirmed: built into the .NET SDK since .NET 8
 - [ ] Compose example uses `postgres:17`; the `dev-only` password is clearly a placeholder
 
 ### Choosing a Frontend Framework — `frontend/choosing-a-frontend-framework`
@@ -255,7 +270,7 @@ When an item is wrong, fix the entry (or note it and ask Claude to fix it). The 
 - [ ] CAP theorem summary; vector-search support claims for PostgreSQL, SQL Server, MongoDB, Redis
 
 **Relational Databases & SQL** — `databases/relational-databases`
-- [ ] ⚠ Isolation table: PostgreSQL's repeatable read also prevents phantoms; default levels (read committed for PostgreSQL / SQL Server / Oracle, repeatable read for MySQL InnoDB)
+- [x] ⚠ Isolation table: PostgreSQL's repeatable read also prevents phantoms; default levels (read committed for PostgreSQL / SQL Server / Oracle, repeatable read for MySQL InnoDB) — ✅ verified: PostgreSQL docs (no phantoms at RR; default Read Committed); MySQL 8.4 docs (InnoDB default REPEATABLE READ)
 - [ ] 3NF mnemonic; join table
 
 ### Testing & Quality
@@ -283,7 +298,7 @@ When an item is wrong, fix the entry (or note it and ask Claude to fix it). The 
 ### Process & Delivery
 
 **Agile, Scrum & Kanban** — `process/agile`
-- [ ] ⚠ Scrum terms match the **2020 Scrum Guide** (accountabilities: Product Owner, Scrum Master, Developers; Product Goal; Definition of Done) — check [scrumguides.org](https://scrumguides.org/)
+- [x] ⚠ Scrum terms match the **2020 Scrum Guide** (accountabilities: Product Owner, Scrum Master, Developers; Product Goal; Definition of Done) — check [scrumguides.org](https://scrumguides.org/) — ✅ verified: scrumguides.org still offers the 2020 guide as the latest; terms match
 - [ ] Manifesto's four values listed correctly
 
 **Waterfall & the V-Model** — `process/waterfall`

@@ -33,7 +33,7 @@ OAuth says *what a client may access*; it doesn't define *who the user is*. **Op
 - **Device Code** — for TVs and CLIs without a convenient browser.
 
 > [!WARNING]
-> The **Implicit** and **Resource Owner Password** flows are deprecated. OAuth 2.1 consolidates current best practice: PKCE for all authorization-code clients, exact redirect URI matching, no implicit flow. OAuth 1.0 is legacy — you're unlikely to need it outside old integrations.
+> The **Implicit** and **Resource Owner Password** flows are deprecated. OAuth 2.1, still an IETF draft but already reflecting standard guidance, consolidates current best practice: PKCE for all authorization-code clients, exact redirect URI matching, no implicit flow. OAuth 1.0 is legacy — you're unlikely to need it outside old integrations.
 
 ## Authorization Code + PKCE, in brief
 

@@ -76,7 +76,7 @@ public class OrderController {
 ## Versions worth knowing
 
 - **Spring Boot 3** moved to a **Java 17** baseline and from `javax.*` to `jakarta.*` packages, which was a significant migration for older apps.
-- **Spring Boot 4**, built on Spring Framework 7, continues that modernisation.
+- **Spring Boot 4** (November 2025), built on Spring Framework 7, keeps the Java 17 baseline while adding first-class support for newer Java releases, and moves to newer Jakarta EE and Jackson versions.
 - Virtual threads (Java 21+) are supported for scalable blocking I/O without going reactive.
 
 ## Spring compared with ASP.NET Core
