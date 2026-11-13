@@ -50,6 +50,7 @@ Every entry created or changed from legacy notes has `status: needs-review` in i
 - **Design patterns** (2026-11-13): Adapter, Builder, Observer, Proxy, Repository, Rules, Template Method → `design/*-pattern`, plus a `design/design-patterns-overview` hub. Drafted fresh (the legacy files were empty templates) and flagged `needs-review`.
 - **Testing** (2026-11-13): Automated Testing, Unit Testing, Test Cases and Test-Driven Development → new `testing/` category (Testing & Quality). TDD moved here from Development Lifecycle. Flagged `needs-review`.
 - **Protocols** (2026-11-13): SOAP, gRPC and GraphQL (GraphQL was filed under Misc) → `backend/`, plus a `backend/api-styles-compared` hub. Flagged `needs-review`.
+- **Frameworks** (2026-11-13): Angular, React, Blazor → `frontend/` (plus a `frontend/choosing-a-frontend-framework` hub); Spring → `backend/spring`. Written to favour concepts over version details; version claims called out in each entry's review notes. Flagged `needs-review`.
 
 ### Not imported — empty or heading-only (content backlog)
 
@@ -57,7 +58,6 @@ These existed only as titles or empty templates. They're good candidates for new
 
 - **Databases:** Databases Overview, Relational Databases
 - **Development lifecycle:** Agile, Waterfall, Event-Driven Development
-- **Frameworks:** Angular, React, Blazor, Spring
 - **Misc:** Application Containerisation, WebAssembly, Domain-Driven Design, Generics
 - **Tools:** Tools Overview, SVN
 - **Interview practice:** Algorithm Questions

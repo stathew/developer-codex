@@ -27,7 +27,8 @@ const LANGUAGES = {
   bash, csharp, css, dockerfile, go, graphql, java, javascript, json, markdown, plaintext, protobuf, python, rust, scss, sql, typescript, xml, yaml,
 };
 for (const [name, lang] of Object.entries(LANGUAGES)) hljs.registerLanguage(name, lang);
-hljs.registerAliases(['html', 'angular'], { languageName: 'xml' });
+// No core highlight.js grammar for Razor; highlighting it as HTML colours the markup and leaves C# plain.
+hljs.registerAliases(['html', 'angular', 'razor', 'cshtml'], { languageName: 'xml' });
 hljs.registerAliases(['ts'], { languageName: 'typescript' });
 hljs.registerAliases(['proto'], { languageName: 'protobuf' });
 hljs.registerAliases(['gql'], { languageName: 'graphql' });

@@ -4,7 +4,7 @@ summary: Angular's fine-grained reactivity primitive — signal, computed, effec
 difficulty: intermediate
 tags: [angular, reactivity, typescript, signals]
 order: 2
-related: [frontend/browser-rendering-pipeline]
+related: [frontend/angular, frontend/browser-rendering-pipeline, frontend/choosing-a-frontend-framework]
 ---
 
 A **signal** is a wrapper around a value that notifies interested consumers when it changes. Because Angular knows exactly which templates and computations read which signals, it can update precisely what changed — no zone.js, no dirty-checking the whole tree.
