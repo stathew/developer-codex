@@ -1,0 +1,58 @@
+[
+  {
+    "input": "Hello World",
+    "expected": "hello-world"
+  },
+  {
+    "input": "What is O(n²)?",
+    "expected": "what-is-on2"
+  },
+  {
+    "input": "S — Single Responsibility Principle",
+    "expected": "s-single-responsibility-principle"
+  },
+  {
+    "input": "`code` and **bold** text",
+    "expected": "code-and-bold-text"
+  },
+  {
+    "input": "[Link text](../x.md) here",
+    "expected": "link-text-here"
+  },
+  {
+    "input": "Café & Crème",
+    "expected": "cafe-creme"
+  },
+  {
+    "input": "  Leading   and trailing  ",
+    "expected": "leading-and-trailing"
+  },
+  {
+    "input": "C# / .NET 10",
+    "expected": "c-net-10"
+  },
+  {
+    "input": "Clustered vs non-clustered indexes",
+    "expected": "clustered-vs-non-clustered-indexes"
+  },
+  {
+    "input": "Backend for Frontend (BFF)",
+    "expected": "backend-for-frontend-bff"
+  },
+  {
+    "input": "Model–View–Controller",
+    "expected": "modelviewcontroller"
+  },
+  {
+    "input": "100% coverage",
+    "expected": "100-coverage"
+  },
+  {
+    "input": "A_b_c",
+    "expected": "abc"
+  },
+  {
+    "input": "!!!",
+    "expected": ""
+  }
+]

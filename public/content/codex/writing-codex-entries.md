@@ -62,6 +62,8 @@ Link to other entries by relative file path — the codex turns them into app ro
 See [Big-O Notation](../fundamentals/big-o-notation.md#hidden-loops).
 ```
 
+Links are checked when the codex is indexed. A link to a missing entry, heading, category or file fails the build, with the file and line number in the error. While `npm start` is running, problems are reported in the terminal as you save.
+
 ### Recall cards
 
 Recall cards are the heart of retention. Write them in a `recall` fenced block — they render inline as self-test cards *and* feed the spaced-repetition deck:

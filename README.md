@@ -18,7 +18,20 @@ Requires Node `^22.22.3 || ^24.15.0 || >=26`.
 npm install
 npm start          # indexes content, watches for content changes, runs ng serve on http://localhost:4200
 npm run build      # indexes content and builds to dist/developer-codex
+npm test           # content indexer tests (node:test) + app unit tests (Vitest)
 ```
+
+The content indexer also **checks every link and image** in Markdown entries (target entry, `#heading`, category, app route and file) plus `related` front matter. A broken link fails `npm run content` and `npm run build`, so it also stops a GitHub Pages deploy. In `npm start` (watch mode) it's reported in the terminal instead.
+
+## Tests
+
+| Command | What it runs |
+| --- | --- |
+| `npm run test:content` | `scripts/*.test.mjs`: front matter, recall parsing, section/anchor extraction, link resolution and validation |
+| `npm run test:app` | `src/**/*.spec.ts`: text helpers, Markdown rendering, search, and the spaced-repetition scheduler |
+| `npm test` | Both |
+
+`scripts/fixtures/slug-cases.json` is shared by both suites, so the indexer and the app can't disagree about heading anchors (which search results link to).
 
 ## Deployment
 

@@ -6,6 +6,10 @@
  *   - public/content/manifest.json      article metadata, categories and recall cards (loaded at startup)
  *   - public/content/search-index.json  section-level documents for the global search (loaded lazily)
  *
+ * It also validates every link and image in Markdown entries (target entry exists, #anchor exists,
+ * referenced file exists) plus `related` front matter. Broken links fail the build; in --watch mode
+ * they're reported but the indexer keeps running.
+ *
  * Usage:  node scripts/build-content.mjs [--watch]
  *
  * Files and folders starting with "_" or "." are ignored (e.g. _shared/ assets).
@@ -13,15 +17,18 @@
 import { readdir, readFile, writeFile, stat } from 'node:fs/promises';
 import { watch, existsSync } from 'node:fs';
 import path from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { fileURLToPath, pathToFileURL } from 'node:url';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
+const PUBLIC_DIR = path.join(ROOT, 'public');
 const CONTENT_DIR = path.join(ROOT, 'public', 'content');
 const MANIFEST_FILE = path.join(CONTENT_DIR, 'manifest.json');
 const SEARCH_FILE = path.join(CONTENT_DIR, 'search-index.json');
 const CATEGORIES_FILE = path.join(CONTENT_DIR, 'categories.json');
 const GENERATED = new Set(['manifest.json', 'search-index.json']);
 const DIFFICULTIES = new Set(['beginner', 'intermediate', 'advanced']);
+/** App routes that entries may link to directly (besides /a/<slug> and /c/<category>). */
+const APP_ROUTES = new Set(['/', '/search', '/review', '/library']);
 const STATUSES = new Set(['needs-review']);
 const WORDS_PER_MINUTE = 220;
 
@@ -107,7 +114,7 @@ function unquote(value) {
 }
 
 /** A deliberately tiny YAML subset: `key: value` and `key: [a, b]` per line. */
-function parseFrontMatterBlock(text) {
+export function parseFrontMatterBlock(text) {
   const data = {};
   for (const raw of text.split(/\r?\n/)) {
     const line = raw.trim();
@@ -119,13 +126,13 @@ function parseFrontMatterBlock(text) {
   return data;
 }
 
-function splitMarkdownFrontMatter(source) {
+export function splitMarkdownFrontMatter(source) {
   const m = /^﻿?---\r?\n([\s\S]*?)\r?\n---\r?\n?/.exec(source);
   if (!m) return { data: {}, body: source };
   return { data: parseFrontMatterBlock(m[1]), body: source.slice(m[0].length) };
 }
 
-function toPlainText(markdown) {
+export function toPlainText(markdown) {
   return markdown
     .replace(/<[^>]+>/g, ' ')
     .replace(/!\[([^\]]*)\]\([^)]*\)/g, '$1')
@@ -138,13 +145,15 @@ function toPlainText(markdown) {
     .trim();
 }
 
-function analyzeMarkdown(body) {
+export function analyzeMarkdown(body) {
   const slug = createSlugger();
   const sections = [{ heading: '', anchor: '', lines: [] }];
   const cards = [];
+  const anchors = new Set();
+  const links = [];
   let fence = null;
 
-  for (const line of body.split(/\r?\n/)) {
+  body.split(/\r?\n/).forEach((line, index) => {
     if (fence) {
       const trimmed = line.trim();
       const closes =
@@ -161,27 +170,32 @@ function analyzeMarkdown(body) {
       } else {
         fence.lines.push(line);
       }
-      continue;
+      return;
     }
 
     const open = /^\s*(```+|~~~+)\s*([\w+#-]*)/.exec(line);
     if (open) {
       fence = { marker: open[1], lang: open[2].toLowerCase(), lines: [] };
-      continue;
+      return;
     }
+
+    links.push(...extractLinks(line, index + 1));
 
     const heading = /^(#{1,6})\s+(.+?)\s*#*\s*$/.exec(line);
     if (heading) {
       const anchor = slug(heading[2]);
+      anchors.add(anchor);
       if (heading[1].length <= 3) {
         sections.push({ heading: stripInlineMarkdown(heading[2]), anchor, lines: [] });
-        continue;
+        return;
       }
     }
     sections.at(-1).lines.push(line);
-  }
+  });
 
   return {
+    anchors,
+    links,
     sections: sections
       .map((s) => ({ heading: s.heading, anchor: s.anchor, text: toPlainText(s.lines.join('\n')) }))
       .filter((s) => s.heading || s.text),
@@ -189,7 +203,7 @@ function analyzeMarkdown(body) {
   };
 }
 
-function analyzeHtml(source) {
+export function analyzeHtml(source) {
   const fm = /<!--\s*---\r?\n([\s\S]*?)\r?\n---\s*-->/.exec(source);
   const data = fm ? parseFrontMatterBlock(fm[1]) : {};
   if (!data.title) {
@@ -210,6 +224,68 @@ function analyzeHtml(source) {
   return { data, sections: [{ heading: '', anchor: '', text }], cards };
 }
 
+/** Finds Markdown links and images on one line, ignoring inline code spans. */
+export function extractLinks(line, lineNumber = 0) {
+  const text = line.replace(/`[^`]*`/g, (m) => ' '.repeat(m.length));
+  const found = [];
+  for (const m of text.matchAll(/(!?)\[(?:[^\]\\]|\\.)*\]\(\s*<?([^)\s>]+)>?(?:\s+["'][^"']*["'])?\s*\)/g)) {
+    found.push({ href: m[2], image: m[1] === '!', line: lineNumber });
+  }
+  return found;
+}
+
+/**
+ * Resolves a link in entry `fromSlug` the way the app renders it (see MarkdownService).
+ * Returns null for links that aren't checked (external URLs, mailto:, …).
+ */
+export function resolveLink(fromSlug, href, { image = false } = {}) {
+  if (/^([a-z][a-z0-9+.-]*:|\/\/)/i.test(href)) return null;
+  const [target, anchor = ''] = href.split('#');
+  if (!target) return { kind: 'entry', slug: fromSlug, anchor };
+  if (target.startsWith('/')) {
+    if (image) return { kind: 'file', file: target.slice(1), root: 'public' };
+    if (target.startsWith('/a/')) return { kind: 'entry', slug: target.slice(3), anchor };
+    if (target.startsWith('/c/')) return { kind: 'category', id: target.slice(3) };
+    return { kind: 'route', route: target };
+  }
+  const dir = fromSlug.includes('/') ? fromSlug.slice(0, fromSlug.lastIndexOf('/')) : '';
+  const resolved = path.posix.normalize(path.posix.join(dir, target));
+  if (!image && /\.(md|html)$/i.test(resolved)) {
+    return { kind: 'entry', slug: resolved.replace(/\.(md|html)$/i, ''), anchor };
+  }
+  return { kind: 'file', file: resolved, root: 'content' };
+}
+
+/**
+ * Checks one entry's links against the known entries.
+ * `entries` maps slug → { type, anchors: Set }, `categories` is a Set of ids,
+ * `fileExists(root, relPath)` checks files under public/ ('public') or public/content/ ('content').
+ */
+export function validateLinks(fromSlug, links, { entries, categories, fileExists }) {
+  const errors = [];
+  for (const link of links) {
+    const target = resolveLink(fromSlug, link.href, link);
+    if (!target) continue;
+    const where = `${fromSlug}${link.line ? ':' + link.line : ''}`;
+    if (target.kind === 'entry') {
+      const entry = entries.get(target.slug);
+      if (!entry) errors.push(`${where}: link to missing entry "${link.href}"`);
+      else if (target.anchor && entry.type !== 'markdown') {
+        errors.push(`${where}: "${link.href}" links to a heading in an interactive entry, which has no headings`);
+      } else if (target.anchor && !entry.anchors.has(target.anchor)) {
+        errors.push(`${where}: link to missing heading "#${target.anchor}" in "${target.slug}"`);
+      }
+    } else if (target.kind === 'category' && !categories.has(target.id)) {
+      errors.push(`${where}: link to missing category "${link.href}"`);
+    } else if (target.kind === 'route' && !APP_ROUTES.has(target.route)) {
+      errors.push(`${where}: link to unknown app route "${link.href}"`);
+    } else if (target.kind === 'file' && !fileExists(target.root, target.file)) {
+      errors.push(`${where}: ${link.image ? 'image' : 'link'} to missing file "${link.href}"`);
+    }
+  }
+  return errors;
+}
+
 function titleCase(id) {
   return id.replace(/[-_]+/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase());
 }
@@ -226,9 +302,11 @@ async function walk(dir, rel = '') {
   return out;
 }
 
-async function build() {
+export async function build() {
   const started = performance.now();
   const warnings = [];
+  const errors = [];
+  const linkInfo = new Map();
   const files = await walk(CONTENT_DIR);
   const articles = [];
   const searchDocs = [];
@@ -240,13 +318,19 @@ async function build() {
     const folder = slug.includes('/') ? slug.split('/')[0] : '';
 
     let data, sections, cards;
+    let anchors = new Set();
+    let links = [];
     if (isHtml) {
       ({ data, sections, cards } = analyzeHtml(source));
     } else {
       const fm = splitMarkdownFrontMatter(source);
       data = fm.data;
-      ({ sections, cards } = analyzeMarkdown(fm.body));
+      ({ sections, cards, anchors, links } = analyzeMarkdown(fm.body));
+      // Report line numbers relative to the file, not the body.
+      const offset = source.slice(0, source.length - fm.body.length).split(/\r?\n/).length - 1;
+      links = links.map((l) => ({ ...l, line: l.line + offset }));
     }
+    linkInfo.set(slug, { type: isHtml ? 'html' : 'markdown', anchors, links });
 
     if (!data.title) warnings.push(`${file.rel}: missing "title" (derived from file name)`);
     if (data.draft === true) continue;
@@ -295,7 +379,7 @@ async function build() {
 
   const known = new Set(articles.map((a) => a.slug));
   for (const a of articles) {
-    for (const r of a.related) if (!known.has(r)) warnings.push(`${a.slug}: related entry "${r}" not found`);
+    for (const r of a.related) if (!known.has(r)) errors.push(`${a.slug}: related entry "${r}" not found`);
     a.related = a.related.filter((r) => known.has(r));
   }
 
@@ -311,6 +395,15 @@ async function build() {
     .filter((c) => c.count > 0)
     .sort((a, b) => a.order - b.order || a.title.localeCompare(b.title));
 
+  const categoryIds = new Set(categoryList.map((c) => c.id));
+  const fileExists = (root, rel) => existsSync(path.join(root === 'public' ? PUBLIC_DIR : CONTENT_DIR, rel));
+  let linkCount = 0;
+  for (const [slug, info] of linkInfo) {
+    if (!known.has(slug)) continue; // drafts
+    linkCount += info.links.length;
+    errors.push(...validateLinks(slug, info.links, { entries: linkInfo, categories: categoryIds, fileExists }));
+  }
+
   articles.sort((a, b) => a.category.localeCompare(b.category) || a.order - b.order || a.title.localeCompare(b.title));
 
   const body = { categories: categoryList, articles };
@@ -319,12 +412,16 @@ async function build() {
   const wroteSearch = await writeIfChanged(SEARCH_FILE, JSON.stringify({ version, docs: searchDocs }));
 
   for (const w of warnings) console.warn(`  ⚠ ${w}`);
+  for (const e of errors) console.error(`  ✖ ${e}`);
   const ms = Math.round(performance.now() - started);
   const status = wroteManifest || wroteSearch ? 'updated' : 'unchanged';
   console.log(
     `[codex] ${articles.length} entries, ${categoryList.length} categories, ` +
-      `${articles.reduce((n, a) => n + a.cards.length, 0)} recall cards, ${searchDocs.length} search sections — ${status} (${ms}ms)`,
+      `${articles.reduce((n, a) => n + a.cards.length, 0)} recall cards, ${searchDocs.length} search sections, ` +
+      `${linkCount} links checked — ${status} (${ms}ms)`,
   );
+  if (errors.length) console.error(`[codex] ${errors.length} broken link${errors.length === 1 ? '' : 's'}`);
+  return { errors, warnings };
 }
 
 async function writeIfChanged(file, content) {
@@ -333,9 +430,15 @@ async function writeIfChanged(file, content) {
   return true;
 }
 
-await build();
+const isMain = process.argv[1] && import.meta.url === pathToFileURL(path.resolve(process.argv[1])).href;
+const watchMode = process.argv.includes('--watch');
 
-if (process.argv.includes('--watch')) {
+if (isMain) {
+  const { errors } = await build();
+  if (errors.length && !watchMode) process.exitCode = 1;
+}
+
+if (isMain && watchMode) {
   let timer;
   console.log(`[codex] watching ${path.relative(ROOT, CONTENT_DIR)} for changes…`);
   watch(CONTENT_DIR, { recursive: true }, (_event, file) => {
