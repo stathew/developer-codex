@@ -45,11 +45,14 @@ Every entry created or changed from legacy notes has `status: needs-review` in i
 - Misc/BigONotation.md → `fundamentals/big-o-notation`
 - Tools/Version Control/Git.md → `devops/git-essentials`
 
+### Backlog filled since migration
+
+- **Design patterns** (2026-11-13): Adapter, Builder, Observer, Proxy, Repository, Rules, Template Method → `design/*-pattern`, plus a `design/design-patterns-overview` hub. Drafted fresh (the legacy files were empty templates) and flagged `needs-review`.
+
 ### Not imported — empty or heading-only (content backlog)
 
 These existed only as titles or empty templates. They're good candidates for new entries:
 
-- **Design patterns:** Adapter, Builder, Observer, Proxy, Repository, Rules, Template Method
 - **Databases:** Databases Overview, Relational Databases
 - **Development lifecycle:** Agile, Waterfall, Event-Driven Development, Test-Driven Development
 - **Frameworks:** Angular, React, Blazor, Spring

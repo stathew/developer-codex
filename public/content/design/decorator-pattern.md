@@ -4,7 +4,7 @@ summary: Add responsibilities to an object by wrapping it in another object with
 difficulty: intermediate
 tags: [design-patterns, structural, oop]
 order: 14
-related: [design/strategy-pattern, design/dependency-injection]
+related: [design/proxy-pattern, design/adapter-pattern, design/dependency-injection]
 status: needs-review
 reviewNotes: Imported from the 2023 Decorator note. Kept the intent description; filled the empty motivation section with an example, real-world uses and a note distinguishing it from TypeScript/Python decorator syntax.
 ---

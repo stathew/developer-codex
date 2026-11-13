@@ -4,7 +4,7 @@ summary: Encapsulate interchangeable algorithms behind a common interface so the
 difficulty: beginner
 tags: [design-patterns, behavioral, oop]
 order: 13
-related: [design/solid-principles, design/factory-pattern, design/decorator-pattern]
+related: [design/solid-principles, design/template-method-pattern, design/rules-pattern, design/factory-pattern]
 status: needs-review
 reviewNotes: Imported from the 2023 Strategy note (original intent text closely matched Wikipedia, so it was rewritten). Added example code and when-to-use guidance.
 ---

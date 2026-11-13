@@ -4,7 +4,7 @@ summary: Supplying a class's dependencies from outside instead of creating them 
 difficulty: intermediate
 tags: [design-patterns, dependency-injection, ioc, csharp, angular]
 order: 10
-related: [design/solid-principles, design/singleton-pattern, frontend/angular-signals]
+related: [design/solid-principles, design/singleton-pattern, design/repository-pattern]
 status: needs-review
 reviewNotes: Imported from the 2023 DI note (original text closely matched a published tutorial, so it was rewritten). Added constructor injection, IoC containers, .NET/Angular examples and service lifetimes.
 ---

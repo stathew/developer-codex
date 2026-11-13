@@ -39,8 +39,8 @@
       @if (m.status === 'needs-review') {
         <aside class="review-banner" role="note">
           <strong>Awaiting review.</strong>
-          This entry was imported from older notes and updated, but hasn’t been checked by a human yet — verify before relying on it.
-          @if (m.reviewNotes) { <p><span>What changed:</span> {{ m.reviewNotes }}</p> }
+          This entry hasn’t been checked by a human yet — verify it before relying on it.
+          @if (m.reviewNotes) { <p><span>Notes:</span> {{ m.reviewNotes }}</p> }
           <small>Remove <code>status: needs-review</code> from the front matter once reviewed.</small>
         </aside>
       }

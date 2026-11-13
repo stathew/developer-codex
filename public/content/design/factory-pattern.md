@@ -4,7 +4,7 @@ summary: Centralise object creation so callers ask for "a shape" rather than cal
 difficulty: beginner
 tags: [design-patterns, creational, oop]
 order: 11
-related: [design/dependency-injection, design/strategy-pattern]
+related: [design/builder-pattern, design/dependency-injection, design/strategy-pattern]
 status: needs-review
 reviewNotes: Imported from the 2023 Factory note. Kept the intent and the ShapeFactory example idea; added code, the Simple Factory / Factory Method / Abstract Factory distinction and trade-offs.
 ---

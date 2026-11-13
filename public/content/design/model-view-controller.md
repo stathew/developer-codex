@@ -3,7 +3,7 @@ title: Model–View–Controller (MVC)
 summary: Separating data, presentation and input handling — how MVC works in server-side web frameworks, routing, and how it relates to MVVM and component frameworks.
 difficulty: beginner
 tags: [architecture, design-patterns, aspnet-core, web]
-order: 20
+order: 30
 related: [backend/aspnet-core, design/solid-principles]
 status: needs-review
 reviewNotes: Imported from the 2023 MVC note. Kept the Model/View/Controller/Routes definitions; corrected "web development pattern" (MVC originated in Smalltalk desktop GUIs in the late 1970s) and added an ASP.NET Core example plus MVVM comparison.
