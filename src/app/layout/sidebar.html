@@ -8,6 +8,7 @@
       <app-icon name="brain" /> Review
       @if (user.dueCards().length) { <span class="count due">{{ user.dueCards().length }}</span> }
     </a>
+    <a routerLink="/interview" routerLinkActive="active" (click)="close()"><app-icon name="target" /> Interview prep</a>
     <a routerLink="/library" routerLinkActive="active" (click)="close()"><app-icon name="library" /> My library</a>
   </div>
 

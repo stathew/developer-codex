@@ -68,6 +68,36 @@ Rough numbers decide architectures:
 > [!TIP]
 > Interviewers care far more about **reasoning and trade-offs** than about naming specific products. "I'd use a queue here so spikes don't overload the payment service" beats a diagram with ten logos.
 
+## Interview questions
+
+Open-ended questions you might be asked about this topic. Try answering out loud before revealing the model answer — they also appear in **Interview prep**.
+
+```interview
+Q: Design a URL shortener (like bit.ly).
+A: **Clarify**: create short links and redirect; custom aliases? analytics? expiry? Scale — e.g. 100M new links/month, reads ~100× writes.
+- **API**: `POST /links` → short code; `GET /{code}` → 301/302 redirect.
+- **Codes**: base62 of a unique ID (from a sequence or ID generator) — 7 characters give ~3.5 trillion combinations; or hash + collision check.
+- **Storage**: key-value or relational table `code → url, created, owner`; reads dominate.
+- **Scale reads**: cache hot codes (Redis), CDN/edge redirects, read replicas.
+- **Analytics**: publish click events to a queue and process asynchronously so redirects stay fast.
+- Discuss trade-offs: 301 (cacheable, loses analytics) vs 302; abuse prevention and rate limiting.
+
+Q: A read-heavy API is getting slow as traffic grows. How would you scale it?
+A: **Measure** where time goes first (traces, slow-query logs, cache hit rates).
+- Fix the obvious: missing indexes, N+1 queries, over-fetching.
+- **Cache**: HTTP caching/CDN for public data, Redis for computed or hot data, with deliberate TTLs and invalidation.
+- **Scale out** stateless app instances behind a load balancer; add **read replicas** for the database.
+- Precompute expensive views (materialised views, denormalised read models).
+- Paginate, compress, and only return what clients need.
+
+Q: How would you design a rate limiter for a public API?
+A: **Clarify**: limits per API key or user, per endpoint? Hard reject or queue? Distributed across many instances?
+- **Algorithms**: token bucket (allows bursts, smooth refill), sliding window log/counter (more accurate), fixed window (simple but bursty at boundaries).
+- **Where**: at the API gateway or as middleware; store counters in Redis with atomic increments/Lua scripts so all instances share them.
+- **Responses**: `429 Too Many Requests` with `Retry-After` and rate-limit headers.
+- Consider failure mode: if Redis is down, fail open or closed? (Usually open for availability, with local fallback limits.)
+```
+
 ```recall
 Q: Why must services be stateless to scale horizontally?
 A: So any instance can handle any request; state lives in shared stores (databases, caches) or tokens rather than instance memory.

@@ -12,6 +12,7 @@ export class ContentService {
   readonly manifest = signal<Manifest>({ version: '', categories: [], articles: [] });
   readonly articles = computed(() => this.manifest().articles);
   readonly categories = computed(() => this.manifest().categories);
+  readonly stacks = computed(() => this.manifest().stacks ?? []);
   readonly totalCards = computed(() => this.articles().reduce((n, a) => n + a.cards.length, 0));
 
   private readonly bySlug = computed(() => new Map(this.articles().map((a) => [a.slug, a])));
@@ -32,6 +33,19 @@ export class ContentService {
   );
 
   readonly interactive = computed(() => this.articles().filter((a) => a.type === 'html'));
+  /** Every recall card by id, with the entry it belongs to. */
+  readonly cardIndex = computed(
+    () =>
+      new Map(
+        this.articles().flatMap((article) =>
+          [...article.cards, ...(article.interviewCards ?? [])].map((card) => [card.id, { card, article }] as const),
+        ),
+      ),
+  );
+  readonly totalInterviewQuestions = computed(() =>
+    this.articles().reduce((n, a) => n + (a.interviewCards?.length ?? 0), 0),
+  );
+
   readonly needsReview = computed(() => this.articles().filter((a) => a.status === 'needs-review'));
 
   async load(): Promise<void> {

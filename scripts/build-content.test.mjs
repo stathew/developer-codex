@@ -7,12 +7,15 @@ import {
   analyzeMarkdown,
   createSlugger,
   extractLinks,
+  findUnescapedTags,
   parseRecall,
   resolveLink,
   slugify,
   splitMarkdownFrontMatter,
+  stackMatches,
   toPlainText,
   validateLinks,
+  validateStacks,
 } from './build-content.mjs';
 
 // Shared with src/app/core/text.spec.ts so the indexer and the app always produce the same heading anchors.
@@ -210,5 +213,87 @@ describe('validateLinks', () => {
     assert.match(check('/c/nope')[0], /missing category/);
     assert.match(check('/settings')[0], /unknown app route/);
     assert.match(check('gone.png', true)[0], /image to missing file/);
+  });
+});
+
+describe('interview stacks', () => {
+  const articles = [
+    { slug: 'frontend/angular', category: 'frontend', tags: ['angular'], cards: [{}, {}] },
+    { slug: 'career/stories', category: 'career', tags: [], cards: [{}] },
+    { slug: 'devops/empty', category: 'devops', tags: ['git'], cards: [] },
+  ];
+  const categories = new Set(['frontend', 'career', 'devops']);
+
+  test('stackMatches by category, tag or slug', () => {
+    assert.equal(stackMatches({ tags: ['angular'] }, articles[0]), true);
+    assert.equal(stackMatches({ categories: ['career'] }, articles[1]), true);
+    assert.equal(stackMatches({ slugs: ['career/stories'] }, articles[1]), true);
+    assert.equal(stackMatches({ tags: ['react'] }, articles[0]), false);
+  });
+
+  test('accepts valid stacks; unused tags are only warnings', () => {
+    const { errors, warnings } = validateStacks(
+      [{ id: 'ng', title: 'Angular', tags: ['angular', 'rxjs'] }, { id: 'b', title: 'Behavioural', slugs: ['career/stories'] }],
+      articles,
+      categories,
+    );
+    assert.deepEqual(errors, []);
+    assert.deepEqual(warnings, ['interview stack "ng": no entry uses tag "rxjs" yet']);
+  });
+
+  test('reports unknown categories and entries, empty stacks, duplicates and missing titles', () => {
+    const { errors } = validateStacks(
+      [
+        { id: 'x', title: 'X', categories: ['nope'], slugs: ['career/missing'] },
+        { id: 'git', title: 'Git', tags: ['git'] },
+        { id: 'git', title: 'Again', tags: ['angular'] },
+        { id: 'untitled', tags: ['angular'] },
+      ],
+      articles,
+      categories,
+    );
+    assert.deepEqual(errors, [
+      'interview stack "x": unknown category "nope"',
+      'interview stack "x": unknown entry "career/missing"',
+      'interview stack "x": matches no questions',
+      'interview stack "git": matches no questions',
+      'interview stack "git": duplicate id',
+      'interview stack "untitled": needs an "id" and a "title"',
+    ]);
+  });
+});
+
+describe('findUnescapedTags', () => {
+  test('flags generics and tags outside backticks only', () => {
+    assert.deepEqual(findUnescapedTags('Why is List<Cat> not a List<Animal>?'), ['<Cat>', '<Animal>']);
+    assert.deepEqual(findUnescapedTags('Why is `List<Cat>` not a `List<Animal>`?'), []);
+    assert.deepEqual(findUnescapedTags('Use a <button> element'), ['<button>']);
+    assert.deepEqual(findUnescapedTags('x < y and a > b'), []);
+  });
+});
+
+describe('interview blocks', () => {
+  test('are collected separately from recall cards and indexed for search', () => {
+    const result = analyzeMarkdown(
+      ['## Topic', '', '```interview', 'Q: Design X?', 'A: Like so.', '```', '', '```recall', 'Q: Fact?', 'A: Yes', '```'].join('\n'),
+    );
+    assert.deepEqual(result.interviewCards, [{ q: 'Design X?', a: 'Like so.' }]);
+    assert.deepEqual(result.cards, [{ q: 'Fact?', a: 'Yes' }]);
+    assert.match(result.sections[0].text, /Design X\? Like so\./);
+    assert.deepEqual(result.problems, []);
+  });
+
+  test('a longer outer fence allows code blocks inside answers', () => {
+    const result = analyzeMarkdown(['````interview', 'Q: Write SQL', 'A: Like this:', '```sql', 'SELECT 1;', '```', '````'].join('\n'));
+    assert.equal(result.interviewCards.length, 1);
+    assert.match(result.interviewCards[0].a, /```sql\nSELECT 1;\n```/);
+    assert.deepEqual(result.problems, []);
+  });
+
+  test('reports a code block nested inside an equally long fence', () => {
+    const result = analyzeMarkdown(['```recall', 'Q: Write SQL', 'A: Like this:', '```sql', 'SELECT 1;', '```', '```'].join('\n'));
+    assert.equal(result.problems.length, 1);
+    assert.equal(result.problems[0].line, 4);
+    assert.match(result.problems[0].message, /use ````recall/);
   });
 });

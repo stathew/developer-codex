@@ -57,6 +57,21 @@ JavaScript, style, layout and paint mostly share **one main thread**. A 200 ms t
 
 On first load, CSS is **render-blocking** and synchronous `<script>` is **parser-blocking**. Use `defer`/`type="module"` for scripts, inline critical CSS for above-the-fold content, and lazy-load what isn't needed immediately.
 
+## Interview questions
+
+Open-ended questions you might be asked about this topic. Try answering out loud before revealing the model answer — they also appear in **Interview prep**.
+
+```interview
+Q: What happens when you type a URL into the browser and press Enter?
+A: A classic — go as deep as the role needs:
+- **URL parsing** and checking caches (HSTS, service worker, HTTP cache).
+- **DNS** resolution to an IP address.
+- **Connection**: TCP (or QUIC for HTTP/3) and a **TLS** handshake for HTTPS.
+- **HTTP request** sent; the server (often via CDN, load balancer, app server) returns a response.
+- **Parsing**: HTML into the DOM; CSS into the CSSOM; scripts fetched and executed (blocking unless `defer`/`async`/modules).
+- **Rendering**: style, layout, paint, composite — then the page becomes interactive as JavaScript runs.
+```
+
 ```recall
 Q: List the five stages of the rendering pipeline.
 A: Parse (DOM/CSSOM), Style, Layout, Paint, Composite.

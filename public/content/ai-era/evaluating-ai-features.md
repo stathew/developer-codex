@@ -62,6 +62,18 @@ Prefer **code-based checks wherever possible**: they're cheap, fast and determin
 > [!AI]
 > Evals are the AI-era version of a test suite: they turn "it seemed to work when I tried it" into evidence. The same principle as [reviewing AI-generated code](reviewing-ai-generated-code.md) applies — trust, but verify systematically.
 
+## Interview questions
+
+Open-ended questions you might be asked about this topic. Try answering out loud before revealing the model answer — they also appear in **Interview prep**.
+
+```interview
+Q: How would you test a feature built on a large language model before shipping it?
+A: Build an **evaluation set**: realistic inputs, edge cases and adversarial ones (prompt injection), each with expected outputs or criteria.
+- Automate checks: exact/structural for structured outputs, heuristics, and an LLM judge with a specific rubric for open-ended quality — validated against human ratings.
+- Run evals on every prompt/model/retrieval change and track scores over time; run important cases several times due to non-determinism.
+- In production: log (with privacy controls), collect user feedback, sample for review, and feed failures back into the eval set.
+```
+
 ```recall
 Q: Why aren't traditional assertions enough for LLM features?
 A: Outputs are non-deterministic and open-ended, so one passing example proves little; you need datasets and scored evaluations.

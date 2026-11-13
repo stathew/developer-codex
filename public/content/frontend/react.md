@@ -91,6 +91,40 @@ Re-rendering is usually cheap. When it isn't, memoisation helps: `memo`, `useMem
 | JSX is "just JavaScript": composable and type-safe with TypeScript | Effects and re-render behaviour have subtle pitfalls |
 | React Native for mobile | Needs a framework for SSR, routing and data loading |
 
+## Interview questions
+
+Open-ended questions you might be asked about this topic. Try answering out loud before revealing the model answer — they also appear in **Interview prep**.
+
+```interview
+Q: What's the difference between props and state in React?
+A: **Props** are inputs passed from a parent; they're read-only inside the component. **State** is data the component owns and changes over time with a setter (`useState`), which triggers a re-render.
+- Data flows down through props; changes flow up through callback props.
+- If a value can be computed from props or other state, it shouldn't be state at all — derive it during render.
+
+Q: What actually happens when you call a state setter like `setCount(count + 1)`?
+A: It doesn't change the value immediately — it **schedules a re-render**.
+- React batches multiple updates in the same event into one render.
+- During the current render `count` is a snapshot, so calling `setCount(count + 1)` twice only adds one. Use the updater form `setCount(c => c + 1)` when the new value depends on the old.
+- On re-render React calls the component again, diffs the result and applies minimal DOM changes.
+
+Q: A React page feels sluggish because components re-render too often. How would you diagnose and fix it?
+A: **Measure first** with the React DevTools Profiler ("why did this render?") rather than guessing.
+- Common causes: state held too high in the tree, new object/array/function props created every render, context values that change on every render, large lists.
+- Fixes: move state down closer to where it's used; split contexts; memoise expensive children (`memo`, `useMemo`, `useCallback`) or let the React Compiler do it; virtualise long lists; avoid deriving state through effects.
+- Re-renders are often cheap — only optimise what the profiler shows is slow.
+
+Q: How do you decide between React context and a state-management library?
+A: Start with **local state**, then lift it up, then **context** for values many components read that change rarely (theme, current user, locale).
+- Context re-renders every consumer when its value changes, so frequently changing shared state can get slow.
+- Reach for a store (Zustand, Redux Toolkit, Jotai) when lots of components update shared client state often or you need selectors, devtools or middleware.
+- **Server data** (API responses) usually belongs in a data-fetching cache like TanStack Query or framework loaders, not a global store.
+
+Q: When would you choose a framework like Next.js over a plain client-side React app?
+A: Choose a framework when you need **routing, data loading and server rendering** handled for you — especially for SEO, fast first paint, or a public site.
+- A plain client-side app (Vite) can suit internal tools or highly interactive apps behind a login where SEO doesn't matter.
+- react.dev now recommends starting with a framework for most new apps; frameworks can still produce a static client-only SPA.
+```
+
 ```recall
 Q: What is React's core idea?
 A: UI is a function of state: describe what the UI should look like for the current state and React updates the DOM to match.

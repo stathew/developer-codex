@@ -12,6 +12,7 @@ export const routes: Routes = [
   { matcher: articleMatcher, loadComponent: () => import('./pages/article/article-page').then((m) => m.ArticlePage) },
   { path: 'c/:id', loadComponent: () => import('./pages/category/category-page').then((m) => m.CategoryPage) },
   { path: 'search', title: 'Explore · Developer Codex', loadComponent: () => import('./pages/search/search-page').then((m) => m.SearchPage) },
+  { path: 'interview', title: 'Interview prep · Developer Codex', loadComponent: () => import('./pages/interview/interview-page').then((m) => m.InterviewPage) },
   { path: 'review', title: 'Review · Developer Codex', loadComponent: () => import('./pages/review/review-page').then((m) => m.ReviewPage) },
   { path: 'library', title: 'My library · Developer Codex', loadComponent: () => import('./pages/library/library-page').then((m) => m.LibraryPage) },
   { path: '**', title: 'Not found · Developer Codex', loadComponent: () => import('./pages/not-found').then((m) => m.NotFound) },

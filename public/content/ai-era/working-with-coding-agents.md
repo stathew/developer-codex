@@ -61,6 +61,23 @@ The output is code you're responsible for. Use the [AI code review checklist](re
 
 Delegating everything erodes the skills you need to judge the output (see [Developing in the Age of AI](developing-in-the-age-of-ai.md)). Use the time agents save to understand the system more deeply: read the diffs closely, ask *why*, and turn surprises into codex entries and recall cards.
 
+## Interview questions
+
+Open-ended questions you might be asked about this topic. Try answering out loud before revealing the model answer — they also appear in **Interview prep**.
+
+```interview
+Q: How do you use AI coding tools day to day, and how do you keep quality high?
+A: Be specific about **where** they help and **how** you verify.
+- Good uses: scaffolding, tests for well-specified behaviour, refactors with test coverage, exploring unfamiliar code, writing docs.
+- Process: small, scoped tasks; give context and examples; write or check tests first; review every line of the diff; run the app.
+- Watch for: hallucinated APIs and packages, insecure defaults, missed edge cases, unnecessary changes.
+- Keep fundamentals sharp — the value you add is judgement.
+
+Q: What new risks does AI-generated code introduce for a team, and how would you manage them?
+A: **Risks**: plausible-but-wrong code, security issues, licence/provenance questions, hallucinated dependencies, bloated or inconsistent code, and "comprehension debt" when nobody understands what was merged.
+- **Mitigations**: the same review bar as human code (or higher), required tests, dependency allow-lists and scanning, secret scanning, clear guidelines on what can be shared with AI tools, small PRs, and making the author accountable for understanding their changes.
+```
+
 ```recall
 Q: What makes a task well suited to a coding agent?
 A: It's clearly bounded, verifiable by a command (tests/build/lint) and small enough to review properly.

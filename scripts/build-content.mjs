@@ -25,10 +25,11 @@ const CONTENT_DIR = path.join(ROOT, 'public', 'content');
 const MANIFEST_FILE = path.join(CONTENT_DIR, 'manifest.json');
 const SEARCH_FILE = path.join(CONTENT_DIR, 'search-index.json');
 const CATEGORIES_FILE = path.join(CONTENT_DIR, 'categories.json');
+const STACKS_FILE = path.join(CONTENT_DIR, 'interview-stacks.json');
 const GENERATED = new Set(['manifest.json', 'search-index.json']);
 const DIFFICULTIES = new Set(['beginner', 'intermediate', 'advanced']);
 /** App routes that entries may link to directly (besides /a/<slug> and /c/<category>). */
-const APP_ROUTES = new Set(['/', '/search', '/review', '/library']);
+const APP_ROUTES = new Set(['/', '/search', '/review', '/interview', '/library']);
 const STATUSES = new Set(['needs-review']);
 const WORDS_PER_MINUTE = 220;
 
@@ -149,8 +150,11 @@ export function analyzeMarkdown(body) {
   const slug = createSlugger();
   const sections = [{ heading: '', anchor: '', lines: [] }];
   const cards = [];
+  const interviewCards = [];
   const anchors = new Set();
   const links = [];
+  /** Authoring mistakes found while parsing, reported as build errors. */
+  const problems = [];
   let fence = null;
 
   body.split(/\r?\n/).forEach((line, index) => {
@@ -159,15 +163,28 @@ export function analyzeMarkdown(body) {
       const closes =
         /^(```+|~~~+)$/.test(trimmed) && trimmed[0] === fence.marker[0] && trimmed.length >= fence.marker.length;
       if (closes) {
-        if (fence.lang === 'recall') {
+        if (fence.lang === 'recall' || fence.lang === 'interview') {
           const parsed = parseRecall(fence.lines.join('\n'));
-          cards.push(...parsed);
+          (fence.lang === 'recall' ? cards : interviewCards).push(...parsed);
           sections.at(-1).lines.push(...parsed.flatMap((c) => [c.q, c.a]));
         } else {
           sections.at(-1).lines.push(...fence.lines);
         }
         fence = null;
       } else {
+        // A code block opened inside a Q/A block with an equally long fence would close it early.
+        const nested = /^\s*(```+|~~~+)\s*\S/.exec(line);
+        if (
+          nested &&
+          (fence.lang === 'recall' || fence.lang === 'interview') &&
+          nested[1][0] === fence.marker[0] &&
+          nested[1].length >= fence.marker.length
+        ) {
+          problems.push({
+            line: index + 1,
+            message: `code block inside ${fence.lang === 'interview' ? 'an' : 'a'} ${fence.lang} block needs a longer outer fence — use ${fence.marker[0].repeat(nested[1].length + 1)}${fence.lang}`,
+          });
+        }
         fence.lines.push(line);
       }
       return;
@@ -196,6 +213,8 @@ export function analyzeMarkdown(body) {
   return {
     anchors,
     links,
+    interviewCards,
+    problems,
     sections: sections
       .map((s) => ({ heading: s.heading, anchor: s.anchor, text: toPlainText(s.lines.join('\n')) }))
       .filter((s) => s.heading || s.text),
@@ -286,6 +305,46 @@ export function validateLinks(fromSlug, links, { entries, categories, fileExists
   return errors;
 }
 
+/** True when an entry belongs to an interview stack (by category, tag or slug). Mirrors src/app/core/interview.ts. */
+export function stackMatches(stack, article) {
+  return (
+    (stack.categories ?? []).includes(article.category) ||
+    (stack.tags ?? []).some((t) => article.tags.includes(t)) ||
+    (stack.slugs ?? []).includes(article.slug)
+  );
+}
+
+/**
+ * Validates interview stacks (public/content/interview-stacks.json) against the indexed content.
+ * Unknown categories/slugs and empty stacks are errors; tags no entry uses yet are warnings.
+ */
+export function validateStacks(stacks, articles, categoryIds) {
+  const errors = [];
+  const warnings = [];
+  const tags = new Set(articles.flatMap((a) => a.tags));
+  const slugs = new Set(articles.map((a) => a.slug));
+  const seen = new Set();
+  for (const stack of stacks) {
+    const label = `interview stack "${stack.id}"`;
+    if (!stack.id || !stack.title) errors.push(`${label}: needs an "id" and a "title"`);
+    if (seen.has(stack.id)) errors.push(`${label}: duplicate id`);
+    seen.add(stack.id);
+    for (const c of stack.categories ?? []) if (!categoryIds.has(c)) errors.push(`${label}: unknown category "${c}"`);
+    for (const slug of stack.slugs ?? []) if (!slugs.has(slug)) errors.push(`${label}: unknown entry "${slug}"`);
+    for (const t of stack.tags ?? []) if (!tags.has(t)) warnings.push(`${label}: no entry uses tag "${t}" yet`);
+    const cards = articles
+      .filter((a) => stackMatches(stack, a))
+      .reduce((n, a) => n + a.cards.length + (a.interviewCards?.length ?? 0), 0);
+    if (!cards) errors.push(`${label}: matches no questions`);
+  }
+  return { errors, warnings };
+}
+
+/** Text in recall cards that Markdown would swallow as an HTML tag (e.g. List<T> outside backticks). */
+export function findUnescapedTags(text) {
+  return text.replace(/`[^`]*`/g, '').match(/<\/?[A-Za-z][^>]*>/g) ?? [];
+}
+
 function titleCase(id) {
   return id.replace(/[-_]+/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase());
 }
@@ -318,6 +377,7 @@ export async function build() {
     const folder = slug.includes('/') ? slug.split('/')[0] : '';
 
     let data, sections, cards;
+    let interviewCards = [];
     let anchors = new Set();
     let links = [];
     if (isHtml) {
@@ -325,10 +385,18 @@ export async function build() {
     } else {
       const fm = splitMarkdownFrontMatter(source);
       data = fm.data;
-      ({ sections, cards, anchors, links } = analyzeMarkdown(fm.body));
+      let problems;
+      ({ sections, cards, interviewCards, anchors, links, problems } = analyzeMarkdown(fm.body));
       // Report line numbers relative to the file, not the body.
       const offset = source.slice(0, source.length - fm.body.length).split(/\r?\n/).length - 1;
       links = links.map((l) => ({ ...l, line: l.line + offset }));
+      for (const problem of problems) errors.push(`${file.rel}:${problem.line + offset}: ${problem.message}`);
+    }
+    for (const card of [...cards, ...interviewCards]) {
+      const tags = [...findUnescapedTags(card.q), ...findUnescapedTags(card.a)];
+      if (tags.length) {
+        errors.push(`${file.rel}: question "${card.q.slice(0, 50)}" contains ${tags.join(' ')} — wrap code in backticks or it renders as HTML`);
+      }
     }
     linkInfo.set(slug, { type: isHtml ? 'html' : 'markdown', anchors, links });
 
@@ -358,6 +426,7 @@ export async function build() {
       path: `content/${file.rel}`,
       related: Array.isArray(data.related) ? data.related.map(String) : [],
       cards: cards.map((c) => ({ id: `${slug}::${hash(c.q)}`, ...c })),
+      interviewCards: interviewCards.map((c) => ({ id: `${slug}::iq-${hash(c.q)}`, ...c })),
     };
     articles.push(article);
 
@@ -404,9 +473,14 @@ export async function build() {
     errors.push(...validateLinks(slug, info.links, { entries: linkInfo, categories: categoryIds, fileExists }));
   }
 
+  const stacks = existsSync(STACKS_FILE) ? JSON.parse(await readFile(STACKS_FILE, 'utf8')) : [];
+  const stackCheck = validateStacks(stacks, articles, categoryIds);
+  errors.push(...stackCheck.errors);
+  warnings.push(...stackCheck.warnings);
+
   articles.sort((a, b) => a.category.localeCompare(b.category) || a.order - b.order || a.title.localeCompare(b.title));
 
-  const body = { categories: categoryList, articles };
+  const body = { categories: categoryList, stacks, articles };
   const version = hash(JSON.stringify(body) + JSON.stringify(searchDocs));
   const wroteManifest = await writeIfChanged(MANIFEST_FILE, JSON.stringify({ version, ...body }, null, 2));
   const wroteSearch = await writeIfChanged(SEARCH_FILE, JSON.stringify({ version, docs: searchDocs }));
@@ -417,7 +491,8 @@ export async function build() {
   const status = wroteManifest || wroteSearch ? 'updated' : 'unchanged';
   console.log(
     `[codex] ${articles.length} entries, ${categoryList.length} categories, ` +
-      `${articles.reduce((n, a) => n + a.cards.length, 0)} recall cards, ${searchDocs.length} search sections, ` +
+      `${articles.reduce((n, a) => n + a.cards.length, 0)} recall cards, ` +
+      `${articles.reduce((n, a) => n + a.interviewCards.length, 0)} interview questions, ${searchDocs.length} search sections, ` +
       `${linkCount} links checked — ${status} (${ms}ms)`,
   );
   if (errors.length) console.error(`[codex] ${errors.length} broken link${errors.length === 1 ? '' : 's'}`);

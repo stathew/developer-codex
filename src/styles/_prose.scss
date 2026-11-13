@@ -147,6 +147,11 @@
     letter-spacing: 0.05em;
     text-transform: uppercase;
   }
+  .recall.interview .recall-tag {
+    background: color-mix(in srgb, var(--warning) 16%, transparent);
+    color: var(--warning);
+  }
+  .recall.interview[open] { border-color: var(--warning); }
   .recall-a {
     padding: 0 14px 4px;
     border-top: 1px dashed var(--border);

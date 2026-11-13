@@ -114,6 +114,48 @@ Most databases default to **read committed** (PostgreSQL, SQL Server, Oracle); M
 > [!WARNING]
 > The classic concurrency bug is **read-modify-write**: two requests read stock = 1, both sell it, and stock ends at −1. Use an atomic update (`UPDATE … SET stock = stock - 1 WHERE stock > 0`), a row lock (`SELECT … FOR UPDATE`), optimistic concurrency (a version column), or serializable isolation.
 
+## Interview questions
+
+Open-ended questions you might be asked about this topic. Try answering out loud before revealing the model answer — they also appear in **Interview prep**.
+
+````interview
+Q: A query that used to be fast is now slow. How do you investigate?
+A: Look at **what the database is actually doing**.
+- Run `EXPLAIN` / `EXPLAIN ANALYZE` (or the actual execution plan) and look for full scans, poor row estimates, expensive sorts.
+- Check indexes match the filters, joins and ordering; check for functions on indexed columns or implicit conversions.
+- Consider data growth, stale statistics, parameter sniffing (SQL Server) and lock contention.
+- From the application side: N+1 queries, fetching too many rows/columns, missing pagination.
+- Fix, then measure again.
+
+Q: Write a query to find customers who have never placed an order.
+A: Use a **LEFT JOIN** and keep rows with no match, or `NOT EXISTS`:
+```sql
+SELECT c.id, c.name
+FROM customers c
+LEFT JOIN orders o ON o.customer_id = c.id
+WHERE o.id IS NULL;
+
+-- equivalent, often clearer
+SELECT c.id, c.name
+FROM customers c
+WHERE NOT EXISTS (SELECT 1 FROM orders o WHERE o.customer_id = c.id);
+```
+Avoid `NOT IN` with a subquery that can return NULLs — it returns no rows.
+
+Q: Two users try to buy the last item in stock at the same time. How do you prevent overselling?
+A: Make the check and the update **atomic**.
+- A conditional update: `UPDATE stock SET qty = qty - 1 WHERE product_id = @id AND qty > 0` and check rows affected.
+- Or lock the row (`SELECT … FOR UPDATE` / `UPDLOCK`) inside a transaction, or use optimistic concurrency with a version column and retry on conflict.
+- A `CHECK (qty >= 0)` constraint as a last line of defence.
+- Never read, check in application code, then write in separate steps without one of these.
+
+Q: When would you denormalise a database design?
+A: When **read performance** matters more than write simplicity and you've measured a real problem.
+- Examples: storing an order total, a precomputed count, a reporting table or materialised view, a read model for a busy page.
+- Cost: duplicated data must be kept consistent (triggers, application logic, events) and writes become more complex.
+- Normalise by default; denormalise deliberately, in specific places, with a plan for consistency.
+````
+
 ```recall
 Q: What do primary and foreign keys do?
 A: A primary key uniquely identifies each row; a foreign key references another table's row, and the database enforces referential integrity.

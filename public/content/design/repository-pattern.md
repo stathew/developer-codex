@@ -70,6 +70,6 @@ A: An abstraction that presents stored domain objects like an in-memory collecti
 Q: What is a Unit of Work, and how does it relate to repositories?
 A: It tracks changes across repositories and commits them atomically in one transaction; in EF Core, DbContext plays this role.
 
-Q: Why are generic repositories (IRepository<T>) often discouraged?
+Q: Why are generic repositories (`IRepository<T>`) often discouraged?
 A: They add little over the ORM's own DbSet, leak query logic to callers, encourage inefficient queries like GetAll, and don't express domain intent.
 ```

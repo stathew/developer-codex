@@ -55,6 +55,7 @@ export class SearchPalette {
       return [
         ...recent,
         { key: 'go:review', icon: 'brain', title: 'Review due recall cards', badge: String(this.user.dueCards().length), commands: ['/review'] },
+        { key: 'go:interview', icon: 'target', title: 'Interview prep — practice questions by stack', commands: ['/interview'] },
         { key: 'go:explore', icon: 'compass', title: 'Explore all entries and tags', commands: ['/search'] },
         { key: 'go:library', icon: 'library', title: 'My library — bookmarks & progress', commands: ['/library'] },
       ];

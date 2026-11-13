@@ -69,6 +69,30 @@ public class SqlOrderRepository : IOrderRepository { /* EF Core, SQL, … */ }
 > [!NOTE]
 > Dependency *inversion* (a design principle) is often confused with dependency *injection* (a technique for supplying dependencies). DI is the usual way to *achieve* DIP. See [Dependency Injection](dependency-injection.md).
 
+## Interview questions
+
+Open-ended questions you might be asked about this topic. Try answering out loud before revealing the model answer — they also appear in **Interview prep**.
+
+```interview
+Q: Give an example of a SOLID principle you've applied — or a violation you fixed.
+A: Use a **concrete story**. Strong examples:
+- **SRP**: splitting a class that calculated, formatted and emailed invoices, because changes from different teams kept colliding.
+- **OCP / Strategy**: replacing a growing `switch` on payment type with a strategy per provider, so new providers didn't touch tested code.
+- **DIP**: introducing an interface for a repository or external client so business logic could be unit-tested without a database.
+- Explain the problem it caused, what you changed, and the result — and be ready to discuss trade-offs.
+
+Q: When is applying SOLID principles overkill?
+A: When the abstraction costs more than the change it protects against.
+- Small scripts, prototypes and code unlikely to change don't need interfaces for every class.
+- One implementation behind an interface "just in case" adds indirection without benefit (YAGNI).
+- Apply the principles where change is **likely or already happening**; refactor toward them when duplication or pain appears.
+
+Q: Composition or inheritance — how do you choose?
+A: **Default to composition**: build behaviour from small objects with clear interfaces, injected and swappable.
+- Use inheritance for genuine "is-a" relationships with shared behaviour and a stable base — or when a framework expects it (base controllers, Template Method lifecycles).
+- Deep hierarchies are brittle: base-class changes ripple everywhere and subclasses depend on internals.
+```
+
 ```recall
 Q: What does "reason to change" mean in the Single Responsibility Principle?
 A: A distinct source of change — typically a separate concern or stakeholder. A class should be affected by only one.

@@ -1,0 +1,245 @@
+@switch (phase()) {
+  @case ('setup') {
+    <h1>Interview prep</h1>
+    <p class="intro">
+      Pick the stacks you're interviewing for and run through questions drawn from the codex's recall cards.
+      Answer out loud or in the notes box <em>before</em> revealing — then be honest with yourself.
+    </p>
+
+    <section class="block">
+      <div class="block-head">
+        <h2>Stacks</h2>
+        <div class="links">
+          <button type="button" class="link" (click)="selectAll()">Select all</button>
+          <button type="button" class="link" (click)="update({ stacks: [] })">Clear</button>
+        </div>
+      </div>
+      <div class="stacks">
+        @for (s of content.stacks(); track s.id) {
+          @let n = stackCounts().get(s.id) ?? 0;
+          <button type="button" class="stack" [class.on]="setup().stacks.includes(s.id)" [disabled]="!n"
+            [attr.aria-pressed]="setup().stacks.includes(s.id)" (click)="toggleStack(s.id)">
+            <app-icon [name]="s.icon ?? 'book'" [size]="18" />
+            <span class="name">{{ s.title }}</span>
+            <span class="count">{{ n }}</span>
+          </button>
+        }
+      </div>
+    </section>
+
+    <section class="block options">
+      <label>
+        <span>Level</span>
+        <select [value]="setup().difficulty ?? ''" (change)="update({ difficulty: $any($event.target).value || null })">
+          <option value="">Any</option>
+          @for (l of levels; track l) { <option [value]="l">{{ l }}</option> }
+        </select>
+      </label>
+      <div class="field">
+        <span>Questions</span>
+        <div class="segmented">
+          @for (c of counts; track c) {
+            <button type="button" [class.on]="setup().count === c" (click)="update({ count: c })">{{ c || 'All' }}</button>
+          }
+        </div>
+      </div>
+      <div class="field">
+        <span>Question types</span>
+        <div class="segmented">
+          <button type="button" [class.on]="setup().types === 'both'" (click)="update({ types: 'both' })">Both</button>
+          <button type="button" [class.on]="setup().types === 'interview'" (click)="update({ types: 'interview' })">Interview</button>
+          <button type="button" [class.on]="setup().types === 'recall'" (click)="update({ types: 'recall' })">Recall</button>
+        </div>
+      </div>
+      <div class="field">
+        <span>Mode</span>
+        <div class="segmented">
+          <button type="button" [class.on]="setup().mode === 'practice'" (click)="update({ mode: 'practice' })">Practice</button>
+          <button type="button" [class.on]="setup().mode === 'mock'" (click)="update({ mode: 'mock' })">Mock interview</button>
+        </div>
+      </div>
+      @if (setup().mode === 'mock') {
+        <div class="field">
+          <span>Time per question</span>
+          <div class="segmented">
+            @for (t of timers; track t) {
+              <button type="button" [class.on]="setup().seconds === t" (click)="update({ seconds: t })">{{ t / 60 }} min</button>
+            }
+          </div>
+        </div>
+      }
+    </section>
+
+    <p class="mode-help">
+      <strong>Interview questions</strong> are open-ended, the kind an interviewer asks;
+      <strong>recall</strong> questions are the shorter fact checks from each entry.
+      <br />
+      @if (setup().mode === 'practice') {
+        <strong>Practice:</strong> reveal each answer straight away and grade yourself as you go.
+      } @else {
+        <strong>Mock interview:</strong> a timer per question and no answers until the end — then you grade each one.
+      }
+      Questions you've missed before come up more often.
+    </p>
+
+    <div class="start">
+      <button type="button" class="btn btn-primary" [disabled]="!pool().length" (click)="start()">
+        <app-icon name="play" [size]="16" />
+        Start {{ sessionSize() }} {{ sessionSize() === 1 ? 'question' : 'questions' }}
+      </button>
+      <span class="muted">
+        @if (setup().stacks.length) { {{ pool().length }} available from {{ setup().stacks.length }} {{ setup().stacks.length === 1 ? 'stack' : 'stacks' }} }
+        @else { Choose at least one stack }
+      </span>
+    </div>
+
+    @if (user.interviews().length) {
+      <section class="block">
+        <h2>Recent sessions</h2>
+        <ul class="history">
+          @for (r of user.interviews().slice(0, 8); track r.id) {
+            <li>
+              <span class="score" [attr.data-band]="r.score >= 75 ? 'good' : r.score >= 50 ? 'ok' : 'low'">{{ r.score }}%</span>
+              <span class="what">{{ r.mode === 'mock' ? 'Mock' : 'Practice' }} · {{ r.asked }} questions</span>
+              <span class="stacks-list">{{ stackTitles(r.stacks) }}</span>
+              <span class="date">{{ formatDate(r.date) }}</span>
+            </li>
+          }
+        </ul>
+      </section>
+    }
+  }
+
+  @case ('session') {
+    @if (current(); as q) {
+      <div class="progress">
+        <span>Question {{ index() + 1 }} of {{ questions().length }} · {{ stackTitle(q.stackId) }}</span>
+        <div class="bar"><div [style.width.%]="(index() / questions().length) * 100"></div></div>
+        @if (setup().mode === 'mock') {
+          <span class="timer" [class.low]="remaining() <= 15" role="timer">{{ formatTime(remaining()) }}</span>
+        }
+        <button type="button" class="link" (click)="endSession()">End</button>
+      </div>
+
+      <div class="card">
+        <span class="kind" [attr.data-kind]="q.kind">{{ q.kind === 'interview' ? 'Interview question' : 'Recall' }}</span>
+        <div class="question" [innerHTML]="front()"></div>
+        <textarea [value]="notes()" (input)="notes.set($any($event.target).value)" rows="5"
+          placeholder="Outline your answer here, or say it out loud…" aria-label="Your answer"></textarea>
+
+        @if (revealed()) {
+          <div class="answer">
+            <p class="label">Model answer</p>
+            <div class="prose" [innerHTML]="back()"></div>
+            <a class="source" [routerLink]="['/a', q.article.slug]" target="_blank">From: {{ q.article.title }} ↗</a>
+          </div>
+        }
+      </div>
+
+      @if (setup().mode === 'mock') {
+        <button type="button" class="btn btn-primary wide" (click)="nextMock()">
+          {{ index() + 1 < questions().length ? 'Next question' : 'Finish and review' }} <kbd>Ctrl</kbd><kbd>Enter</kbd>
+        </button>
+      } @else if (!revealed()) {
+        <button type="button" class="btn btn-primary wide" (click)="reveal()">Reveal answer <kbd>Space</kbd></button>
+      } @else {
+        <div class="grades">
+          @for (g of grades; track g.grade) {
+            <button type="button" class="grade" [attr.data-grade]="g.grade" (click)="grade(g.grade)">
+              <strong>{{ g.label }}</strong><kbd>{{ g.key }}</kbd>
+            </button>
+          }
+        </div>
+      }
+    }
+  }
+
+  @case ('review') {
+    @if (reviewing(); as a) {
+      <div class="progress">
+        <span>Reviewing {{ index() + 1 }} of {{ answers().length }} · {{ stackTitle(a.question.stackId) }}</span>
+        <div class="bar"><div [style.width.%]="(index() / answers().length) * 100"></div></div>
+      </div>
+      <div class="card">
+        <span class="kind" [attr.data-kind]="a.question.kind">{{ a.question.kind === 'interview' ? 'Interview question' : 'Recall' }}</span>
+        <div class="question" [innerHTML]="front()"></div>
+        <p class="label">Your answer</p>
+        <div class="notes">
+          @if (a.notes.trim()) { {{ a.notes }} }
+          @else if (a.timedOut) { <em>Time ran out with no notes.</em> }
+          @else { <em>No notes — grade what you said out loud.</em> }
+        </div>
+        <div class="answer">
+          <p class="label">Model answer</p>
+          <div class="prose" [innerHTML]="back()"></div>
+          <a class="source" [routerLink]="['/a', a.question.article.slug]" target="_blank">From: {{ a.question.article.title }} ↗</a>
+        </div>
+      </div>
+      <div class="grades">
+        @for (g of grades; track g.grade) {
+          <button type="button" class="grade" [attr.data-grade]="g.grade" (click)="gradeReview(g.grade)">
+            <strong>{{ g.label }}</strong><kbd>{{ g.key }}</kbd>
+          </button>
+        }
+      </div>
+    }
+  }
+
+  @case ('results') {
+    @if (result(); as r) {
+      <section class="summary">
+        <div class="big" [attr.data-band]="r.score >= 75 ? 'good' : r.score >= 50 ? 'ok' : 'low'">{{ r.score }}%</div>
+        <div>
+          <h1>Session complete</h1>
+          <p class="muted">
+            {{ r.asked }} questions · {{ answers().length - toImprove().length }} nailed ·
+            {{ toImprove().length }} to work on
+          </p>
+        </div>
+      </section>
+
+      <section class="block">
+        <h2>By stack</h2>
+        <ul class="by-stack">
+          @for (s of r.stacks; track s) {
+            @let st = r.perStack[s];
+            <li>
+              <span>{{ stackTitle(s) }}</span>
+              <div class="bar"><div [style.width.%]="percent(st)"></div></div>
+              <span class="pct">{{ percent(st) }}%</span>
+              <span class="muted">{{ st.nailed }}/{{ st.asked }}</span>
+            </li>
+          }
+        </ul>
+      </section>
+
+      @if (toImprove().length) {
+        <section class="block">
+          <div class="block-head">
+            <h2>To work on</h2>
+          </div>
+          <ul class="improve">
+            @for (a of toImprove(); track a.question.card.id) {
+              <li>
+                <span class="tag-grade" [attr.data-grade]="a.grade ?? 'missed'">{{ a.grade === 'partial' ? 'Partly' : 'Missed' }}</span>
+                <span class="q" [innerHTML]="inline(a.question.card.q)"></span>
+                <a [routerLink]="['/a', a.question.article.slug]">{{ a.question.article.title }}</a>
+              </li>
+            }
+          </ul>
+        </section>
+      }
+
+      <div class="actions">
+        @if (toImprove().length) {
+          <button type="button" class="btn btn-primary" (click)="retryToImprove()">Retry these {{ toImprove().length }}</button>
+          <button type="button" class="btn" [disabled]="addedToDeck()" (click)="addToDeck()">
+            <app-icon [name]="addedToDeck() ? 'check' : 'brain'" [size]="16" />
+            {{ addedToDeck() ? 'Added to review deck' : 'Add to review deck' }}
+          </button>
+        }
+        <button type="button" class="btn" (click)="newSession()">New session</button>
+      </div>
+    }
+  }
+}

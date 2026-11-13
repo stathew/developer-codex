@@ -97,7 +97,7 @@ A: A restriction on a type parameter (e.g. `where T : IComparable<T>` or `T exte
 Q: What's the difference between C# and Java generics at runtime?
 A: C# generics are reified (type information exists at runtime); Java uses type erasure, so generic type arguments aren't available at runtime.
 
-Q: Why isn't List<Cat> assignable to List<Animal>?
+Q: Why isn't `List<Cat>` assignable to `List<Animal>`?
 A: List is read-write (invariant); if it were allowed, you could add a Dog to a list that must only contain cats.
 
 Q: What does PECS stand for?

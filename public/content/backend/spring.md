@@ -83,6 +83,31 @@ public class OrderController {
 
 The concepts map closely: IoC container ↔ DI container, `@RestController` ↔ controllers or minimal APIs, Spring Data JPA ↔ EF Core, Spring Security ↔ ASP.NET Core Identity and auth middleware, `application.yml` ↔ `appsettings.json`. If you know one, the other is mostly new syntax. See [ASP.NET Core](aspnet-core.md).
 
+## Interview questions
+
+Open-ended questions you might be asked about this topic. Try answering out loud before revealing the model answer — they also appear in **Interview prep**.
+
+```interview
+Q: How does Spring Boot auto-configuration work?
+A: Spring Boot ships auto-configuration classes that are **conditionally applied** based on the classpath, existing beans and properties.
+- Annotations like `@ConditionalOnClass`, `@ConditionalOnMissingBean` and `@ConditionalOnProperty` decide whether each applies.
+- Add a starter (e.g. JPA) and its classes appear on the classpath, so the matching configuration creates beans such as a `DataSource`.
+- Your own beans take precedence ("back off"), and properties customise behaviour. The condition evaluation report (`--debug`) or Actuator shows what was applied and why.
+
+Q: What are common pitfalls with `@Transactional`?
+A: It works through a **proxy**, which causes several surprises:
+- **Self-invocation**: calling a transactional method from the same class bypasses the proxy, so no transaction starts.
+- It only applies to public methods called through the bean.
+- By default it rolls back only on **unchecked** exceptions; checked exceptions commit unless `rollbackFor` is set.
+- Long transactions holding locks while calling remote services cause contention — keep them short.
+- Propagation settings (`REQUIRES_NEW`, etc.) change behaviour in ways worth knowing.
+
+Q: When would you choose Spring WebFlux over Spring MVC?
+A: **Spring MVC** (blocking, thread per request) is simpler and fits most applications — and with **virtual threads** (Java 21+) it handles high concurrency of blocking I/O well.
+- **WebFlux** (reactive, non-blocking) fits streaming, very high concurrency with reactive drivers end to end, or when integrating with reactive libraries.
+- Mixing blocking calls into WebFlux defeats its purpose; the reactive programming model also adds complexity, so choose it deliberately.
+```
+
 ```recall
 Q: What is the difference between Spring Framework and Spring Boot?
 A: Spring Framework provides the IoC container and core modules; Spring Boot builds on it with auto-configuration, starters and an embedded server for quick, production-ready setup.

@@ -1,5 +1,6 @@
 import { computed, effect, inject, Injectable, signal } from '@angular/core';
 import { ContentService } from './content.service';
+import { InterviewResult } from './interview';
 import { Flashcard } from './models';
 
 export type Grade = 'again' | 'hard' | 'good' | 'easy';
@@ -16,13 +17,18 @@ export interface UserState {
   studied: Record<string, string>;
   bookmarks: string[];
   cards: Record<string, CardState>;
+  /** Individual cards added to the review deck (e.g. missed interview questions) without studying the whole entry. */
+  extraCards: string[];
+  /** Interview prep sessions, newest first. */
+  interviews: InterviewResult[];
 }
 
 const STORAGE_KEY = 'developer-codex.user.v1';
 /** Leitner intervals in days, indexed by box (1-6). */
 const INTERVALS = [0, 1, 3, 7, 16, 35, 90];
 const MAX_BOX = INTERVALS.length - 1;
-const EMPTY: UserState = { visits: {}, studied: {}, bookmarks: [], cards: {} };
+const MAX_INTERVIEWS = 50;
+const EMPTY: UserState = { visits: {}, studied: {}, bookmarks: [], cards: {}, extraCards: [], interviews: [] };
 
 function load(): UserState {
   try {
@@ -59,10 +65,20 @@ export class UserDataService {
       .filter((a) => !!a),
   );
 
-  /** Cards belonging to studied entries — the scheduled review deck. */
-  readonly deck = computed<Flashcard[]>(() =>
-    Object.keys(this.state().studied).flatMap((slug) => this.content.article(slug)?.cards ?? []),
-  );
+  /** Cards belonging to studied entries, plus individually added cards — the scheduled review deck. */
+  readonly deck = computed<Flashcard[]>(() => {
+    const { studied, extraCards } = this.state();
+    const cards = Object.keys(studied).flatMap((slug) => this.content.article(slug)?.cards ?? []);
+    const ids = new Set(cards.map((c) => c.id));
+    const index = this.content.cardIndex();
+    for (const id of extraCards) {
+      const extra = index.get(id);
+      if (extra && !ids.has(id)) cards.push(extra.card);
+    }
+    return cards;
+  });
+
+  readonly interviews = computed(() => this.state().interviews);
 
   readonly dueCards = computed(() => {
     const now = new Date().toISOString();
@@ -130,6 +146,21 @@ export class UserDataService {
       const due = grade === 'again' ? new Date().toISOString() : addDays(days);
       return { ...s, cards: { ...s.cards, [card.id]: { box, due, reviews: prev.reviews + 1, lapses } } };
     });
+  }
+
+  /** Adds individual cards to the review deck, due immediately. */
+  addToDeck(cardIds: string[]): void {
+    this.state.update((s) => {
+      const extraCards = [...new Set([...s.extraCards, ...cardIds])];
+      const cards = { ...s.cards };
+      const now = new Date().toISOString();
+      for (const id of cardIds) if (cards[id]) cards[id] = { ...cards[id], due: now };
+      return { ...s, extraCards, cards };
+    });
+  }
+
+  recordInterview(result: InterviewResult): void {
+    this.state.update((s) => ({ ...s, interviews: [result, ...s.interviews].slice(0, MAX_INTERVIEWS) }));
   }
 
   export(): string {

@@ -95,7 +95,9 @@ export class MarkdownService {
         return `<h${token.depth} id="${id}"><a class="anchor" href="#${id}" aria-label="Link to this section">#</a>${inner}</h${token.depth}>\n`;
       },
       code(token: Tokens.Code) {
-        if (token.lang?.trim().toLowerCase() === 'recall') return self.recallBlock(token.text);
+        const lang = token.lang?.trim().toLowerCase();
+        if (lang === 'recall') return self.recallBlock(token.text);
+        if (lang === 'interview') return self.recallBlock(token.text, 'interview');
         return self.codeBlock(token, true);
       },
       link(token: Tokens.Link) {
@@ -151,11 +153,12 @@ export class MarkdownService {
     );
   }
 
-  private recallBlock(source: string): string {
+  private recallBlock(source: string, kind: 'recall' | 'interview' = 'recall'): string {
+    const label = kind === 'interview' ? 'Interview' : 'Recall';
     const cards = parseRecall(source)
       .map(
         (c) =>
-          `<details class="recall"><summary><span class="recall-tag">Recall</span><span class="recall-q">${this.renderInline(c.q)}</span></summary>` +
+          `<details class="recall ${kind}"><summary><span class="recall-tag">${label}</span><span class="recall-q">${this.renderInline(c.q)}</span></summary>` +
           `<div class="recall-a">${this.renderFragment(c.a)}</div></details>`,
       )
       .join('');

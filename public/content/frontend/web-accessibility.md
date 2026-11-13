@@ -79,6 +79,19 @@ ARIA adds semantics (`role`, `aria-expanded`, `aria-live`); it does **not** add 
 > [!AI]
 > AI-generated UI code frequently uses clickable `<div>`s, missing labels and placeholder-as-label inputs. Review generated components with the keyboard and with axe before merging.
 
+## Interview questions
+
+Open-ended questions you might be asked about this topic. Try answering out loud before revealing the model answer — they also appear in **Interview prep**.
+
+```interview
+Q: How would you make sure a new feature is accessible?
+A: Build it in from the start rather than auditing at the end.
+- Use **semantic HTML** first (buttons, links, labels, headings, landmarks); ARIA only for patterns HTML lacks.
+- Ensure full **keyboard** support and visible focus; manage focus for dialogs and route changes.
+- Check **contrast**, text alternatives, captions, zoom/reflow and reduced motion.
+- Test with **axe/Lighthouse**, then keyboard-only and a screen reader (NVDA/VoiceOver); include accessibility in the definition of done.
+```
+
 ```recall
 Q: What does POUR stand for in WCAG?
 A: Perceivable, Operable, Understandable, Robust.

@@ -120,6 +120,38 @@ describe('UserDataService', () => {
     });
   });
 
+  describe('interview prep integration', () => {
+    it('adds individual cards to the deck without studying the whole entry', () => {
+      user.addToDeck(['design/solid::0', 'design/solid::0', 'unknown::9']);
+      expect(user.deck().map((c) => c.id)).toEqual(['design/solid::0']);
+      expect(user.isStudied('design/solid')).toBe(false);
+      expect(user.dueCards().map((c) => c.id)).toEqual(['design/solid::0']);
+    });
+
+    it('does not duplicate cards that are already in the deck, and makes them due now', () => {
+      user.toggleStudied('backend/rest');
+      user.grade(user.deck()[0], 'good');
+      user.addToDeck(['backend/rest::0']);
+      expect(user.deck().length).toBe(2);
+      expect(user.dueCards().map((c) => c.id)).toContain('backend/rest::0');
+    });
+
+    it('records interview results newest first, keeping the last 50', () => {
+      for (let i = 0; i < 55; i++) {
+        user.recordInterview({ id: String(i), date: '', mode: 'practice', stacks: [], asked: 1, score: i, perStack: {}, missed: [] });
+      }
+      expect(user.interviews().length).toBe(50);
+      expect(user.interviews()[0].id).toBe('54');
+    });
+
+    it('loads older saved state that has no interview fields', () => {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify({ visits: {}, studied: {}, bookmarks: ['x'], cards: {} }));
+      user.import(localStorage.getItem(STORAGE_KEY)!.replace('{', '{"app":"developer-codex","state":{').concat('}'));
+      expect(user.interviews()).toEqual([]);
+      expect(user.deck()).toEqual([]);
+    });
+  });
+
   describe('bookmarks and history', () => {
     it('toggles bookmarks, newest first', () => {
       user.toggleBookmark('backend/rest');

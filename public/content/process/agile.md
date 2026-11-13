@@ -63,6 +63,37 @@ Kanban suits continuous streams of work such as support, operations and platform
 > [!AI]
 > AI assistants shrink the build step, which makes the *feedback* parts of Agile (talking to users, reviewing increments, refining the backlog) a larger share of the work, and more valuable.
 
+## Interview questions
+
+Open-ended questions you might be asked about this topic. Try answering out loud before revealing the model answer — they also appear in **Interview prep**.
+
+```interview
+Q: A stakeholder wants to add a "small" feature in the middle of a sprint. How do you handle it?
+A: Protect the **Sprint Goal** while staying helpful.
+- Understand the request and its urgency — is it genuinely critical?
+- Make the trade-off visible: adding it means something else comes out, or it goes to the top of the Product Backlog for the next sprint.
+- The **Product Owner** decides priority; the Developers decide what they can take on. If it truly invalidates the Sprint Goal, the PO can cancel the sprint (rare).
+- Avoid silently absorbing extra work — it hides the real cost and erodes trust in commitments.
+
+Q: Your team's retrospectives never seem to change anything. What would you do?
+A: Make retros **lead to action**.
+- Pick one or two improvements, not ten; make each specific, owned and small enough to try next sprint.
+- Start the next retro by reviewing whether the actions happened and helped.
+- Vary the format and check psychological safety — people may not be raising the real issues.
+- Use data (cycle time, escaped bugs, interruptions) to ground the discussion.
+
+Q: When would you choose Kanban over Scrum?
+A: **Kanban** suits continuous, unpredictable flows of work — support, operations, platform teams — where fixed sprints and planning add little.
+- **Scrum** suits product teams delivering toward goals, benefiting from a regular cadence of planning, review and retrospective.
+- Many teams blend them: Scrum events with WIP limits and flow metrics.
+
+Q: What makes a good user story?
+A: The **INVEST** checklist: Independent, Negotiable, Valuable, Estimable, Small, Testable.
+- Written from the user's perspective, with the *why*: "As a … I want … so that …".
+- Clear **acceptance criteria** (often Given/When/Then) define done and drive tests.
+- Small enough to finish within a sprint; split by user value (thin vertical slices), not by technical layer.
+```
+
 ```recall
 Q: What are the four values of the Agile Manifesto?
 A: Individuals and interactions over processes and tools; working software over comprehensive documentation; customer collaboration over contract negotiation; responding to change over following a plan.

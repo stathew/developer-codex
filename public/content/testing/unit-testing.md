@@ -104,6 +104,30 @@ Good unit tests are **F**ast, **I**ndependent (no ordering or shared state), **R
 
 Skip trivial getters, framework code and third-party libraries.
 
+## Interview questions
+
+Open-ended questions you might be asked about this topic. Try answering out loud before revealing the model answer — they also appear in **Interview prep**.
+
+```interview
+Q: How do you decide what to cover with unit tests versus integration tests?
+A: Unit-test **logic** — calculations, rules, branching, edge cases — where fast, isolated tests pinpoint failures.
+- Integration-test the **seams**: database queries, HTTP endpoints, serialisation, configuration, framework behaviour — things mocks would only pretend to verify.
+- Avoid testing the same behaviour at every level; aim for the cheapest test that gives real confidence.
+- Bugs that escaped are a signal: write the test at the level that would have caught it.
+
+Q: When do mocks help, and when do they hurt?
+A: **Help**: replacing slow, non-deterministic or external things — network, time, randomness, third-party APIs — and testing hard-to-trigger failures.
+- **Hurt**: mocking everything between your own classes, so tests mirror the implementation ("calls A then B"). They break on safe refactors and pass when behaviour is wrong.
+- Prefer real objects or fakes for your own code, mock at the boundaries, and assert on outcomes rather than interactions.
+
+Q: Your CI has a few tests that fail randomly. What do you do?
+A: Treat flaky tests as **bugs**, because they teach people to ignore red builds.
+- Quarantine them quickly (so the main build is trustworthy) with an owner and a deadline.
+- Find the cause: shared state between tests, test-order dependence, real time and timeouts, async races, network calls, environment differences.
+- Fix by injecting clocks, awaiting conditions properly instead of sleeping, isolating data, and removing external dependencies.
+- Avoid blanket retries — they hide real race conditions in the product too.
+```
+
 ```recall
 Q: What are the three parts of a well-structured unit test?
 A: Arrange (set up inputs and dependencies), Act (call the code under test), Assert (check the outcome).

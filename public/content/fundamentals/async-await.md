@@ -57,6 +57,24 @@ Async is about *not waiting idly* on I/O (network, disk, database). It doesn't m
 - **`async void`** in C# outside event handlers — exceptions can't be caught by the caller.
 - **`forEach(async …)`** in JS — `forEach` doesn't wait; use `for…of` or `Promise.all(items.map(…))`.
 
+## Interview questions
+
+Open-ended questions you might be asked about this topic. Try answering out loud before revealing the model answer — they also appear in **Interview prep**.
+
+```interview
+Q: Explain how JavaScript handles asynchronous code on a single thread.
+A: The **event loop**: JavaScript runs one task at a time on the main thread.
+- Async operations (timers, network, I/O) are handled by the browser or Node runtime; their callbacks are queued when they complete.
+- After each task, the engine drains the **microtask queue** (promise callbacks, `await` continuations) before the next **macrotask** (timers, I/O, UI events) — so promise callbacks run before a `setTimeout(…, 0)`.
+- `await` pauses only the current async function; the thread keeps processing other work.
+- Long synchronous work blocks everything, including rendering — break it up or move it to a worker.
+
+Q: What's the difference between running async calls sequentially and concurrently, and how do you handle errors in each?
+A: Sequential `await`s wait for each call before starting the next; concurrent calls start together, e.g. `Promise.all([a(), b()])`.
+- `Promise.all` rejects as soon as one fails (others keep running but are ignored); `Promise.allSettled` waits for all and reports each result — useful when partial success is acceptable.
+- Use `try/catch` around `await`, and don't forget unhandled rejections from promises you start but never await.
+```
+
 ```recall
 Q: Does `await` block the thread?
 A: No. It suspends the async function and frees the thread to do other work until the awaited operation completes.

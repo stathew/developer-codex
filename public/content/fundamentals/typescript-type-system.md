@@ -106,6 +106,23 @@ Enable `"strict": true`. Without `strictNullChecks`, `null` and `undefined` slip
 
 TypeScript can't check data arriving from outside: API responses, `localStorage`, user input. A `fetch(...).then(r => r.json() as User)` is a **promise you made to the compiler**, not a check. Validate at the boundaries with a schema library such as Zod or Valibot, and infer types from the schema.
 
+## Interview questions
+
+Open-ended questions you might be asked about this topic. Try answering out loud before revealing the model answer — they also appear in **Interview prep**.
+
+```interview
+Q: How would you type the response of an API call safely in TypeScript?
+A: Types are erased at runtime, so `res.json() as User` is only a **promise to the compiler**, not a check.
+- Treat external data as `unknown` and **validate** it at the boundary with a schema library (Zod, Valibot), inferring the TypeScript type from the schema.
+- Alternatively generate types and clients from an OpenAPI spec — and still validate untrusted or third-party responses.
+- Inside the app, rely on the validated types; avoid `any`.
+
+Q: Explain union types and narrowing with an example.
+A: A **union** means a value is one of several types: `string | number`, or a set of object shapes.
+- **Narrowing** lets TypeScript refine the type inside checks: `typeof x === 'string'`, `instanceof`, `'prop' in x`, or a shared literal field.
+- A **discriminated union** (`{ kind: 'ok'; value } | { kind: 'error'; message }`) plus a `switch` on `kind` gives safe access to each variant's fields, and a `never` check makes the switch exhaustive — adding a variant becomes a compile error until handled.
+```
+
 ```recall
 Q: What is structural typing?
 A: Types are compatible if their shapes (properties and types) match, regardless of their declared names.
@@ -122,6 +139,6 @@ A: Assign the value to a variable of type never in the default branch; adding an
 Q: Why isn't `response.json() as User` type-safe?
 A: Types are erased at runtime; the assertion only tells the compiler to trust you. Validate external data (e.g. with Zod).
 
-Q: What does Partial<Omit<User, 'id'>> produce?
+Q: What does `Partial<Omit<User, 'id'>>` produce?
 A: A type with all of User's properties except id, each made optional.
 ```

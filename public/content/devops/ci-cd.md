@@ -80,6 +80,30 @@ The pipeline can deploy to production, so it's a high-value target:
 - Pin third-party actions to a full commit SHA, and keep `permissions:` minimal.
 - Require reviews and protected branches before deployment jobs run.
 
+## Interview questions
+
+Open-ended questions you might be asked about this topic. Try answering out loud before revealing the model answer — they also appear in **Interview prep**.
+
+```interview
+Q: Describe the CI/CD pipeline you'd set up for a new web service.
+A: **On every pull request**: restore from lock files, build, lint/format check, unit tests, static and dependency security scans, and maybe integration tests in containers.
+- **On merge to main**: build one versioned artefact (container image), push to a registry, deploy to staging, run smoke/E2E tests.
+- **Production**: promote the same artefact with approval (continuous delivery) or automatically (deployment), using canary or blue–green, then smoke tests and monitoring.
+- Infrastructure as code, secrets from a vault/OIDC, protected branches and fast feedback (under ~10 minutes for PR checks).
+
+Q: How do you deploy a new version with zero downtime, including database changes?
+A: **Application**: rolling, blue–green or canary deployments behind a load balancer with health checks, and graceful shutdown so in-flight requests finish.
+- **Database**: expand-and-contract migrations — add the new schema first, deploy code that works with both, backfill, switch reads, and remove the old schema in a later release.
+- Feature flags to decouple releasing features from deploying code; a tested rollback path.
+
+Q: A deployment has just broken production. What do you do?
+A: **Mitigate first, investigate second.**
+- Roll back (or flip the feature flag off) to restore service quickly — that's why build-once artefacts and fast rollbacks matter.
+- Communicate: tell stakeholders, open an incident channel, assign roles.
+- Once stable, find the root cause using logs, traces and the diff.
+- Run a **blameless postmortem**: what allowed it through (missing test, alert, review) and the follow-up actions to prevent recurrence.
+```
+
 ```recall
 Q: What's the difference between continuous delivery and continuous deployment?
 A: Continuous delivery keeps every passing change releasable with a manual go-live decision; continuous deployment releases every passing change automatically.

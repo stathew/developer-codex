@@ -28,10 +28,15 @@
     <strong>{{ user.dueCards().length }}</strong>
     <span>recall cards due</span>
   </a>
-  <div class="stat">
-    <strong>{{ content.totalCards() }}</strong>
-    <span>recall cards in the codex</span>
-  </div>
+  <a routerLink="/interview" class="stat">
+    @if (user.interviews()[0]; as last) {
+      <strong>{{ last.score }}%</strong>
+      <span>last interview prep score</span>
+    } @else {
+      <strong><app-icon name="target" [size]="26" /></strong>
+      <span>Interview prep: {{ content.totalCards() }} questions</span>
+    }
+  </a>
   <a routerLink="/library" class="stat">
     <strong>{{ user.bookmarks().length }}</strong>
     <span>bookmarks</span>

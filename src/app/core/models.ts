@@ -25,6 +25,8 @@ export interface ArticleMeta {
   path: string;
   related: string[];
   cards: Flashcard[];
+  /** Open-ended questions from interview blocks, used by interview prep (not the daily review deck). */
+  interviewCards?: Flashcard[];
 }
 
 export interface Category {
@@ -36,9 +38,20 @@ export interface Category {
   count: number;
 }
 
+/** A group of entries to draw interview questions from (public/content/interview-stacks.json). */
+export interface InterviewStack {
+  id: string;
+  title: string;
+  icon?: string;
+  tags?: string[];
+  categories?: string[];
+  slugs?: string[];
+}
+
 export interface Manifest {
   version: string;
   categories: Category[];
+  stacks?: InterviewStack[];
   articles: ArticleMeta[];
 }
 

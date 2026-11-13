@@ -115,6 +115,35 @@ catch (Exception ex) { logger.LogError(ex, "Authorisation check failed"); allowe
 
 **Prevent:** fail closed; handle errors centrally; use transactions so failures roll back cleanly; return generic error messages to users.
 
+## Interview questions
+
+Open-ended questions you might be asked about this topic. Try answering out loud before revealing the model answer — they also appear in **Interview prep**.
+
+```interview
+Q: How would you secure a new API endpoint end to end?
+A: Work through the layers:
+- **Transport**: HTTPS only.
+- **Authentication**: validate tokens properly (signature, issuer, audience, expiry) or sessions.
+- **Authorisation**: check the user may perform *this* action on *this* resource (ownership, roles) — deny by default.
+- **Input**: validate and constrain input; parameterised queries; limit payload sizes.
+- **Output**: return only needed fields; generic error messages; no stack traces.
+- **Abuse**: rate limiting; idempotency where relevant.
+- **Observability**: log security-relevant events without secrets; alert on anomalies.
+- **Testing**: include authorisation and negative tests; keep dependencies patched.
+
+Q: What is cross-site scripting (XSS), and how do modern frameworks protect against it?
+A: XSS is injecting **script into pages other users view**, letting an attacker act as the victim (steal tokens, make requests).
+- Angular and React **escape** interpolated values by default, so text renders as text.
+- Protection is lost when you bypass it: `innerHTML`/`[innerHTML]` with untrusted HTML, `bypassSecurityTrust…`, `dangerouslySetInnerHTML`, `javascript:` URLs, or building HTML strings.
+- Defence in depth: sanitise any HTML you must render, a strict Content Security Policy, HttpOnly cookies for session tokens.
+
+Q: How should an application store user passwords?
+A: **Never** store them in plain text or with reversible encryption, and never with fast hashes like MD5 or SHA-256.
+- Use a slow, salted password-hashing algorithm: **Argon2id**, bcrypt, scrypt or PBKDF2 with appropriate work factors.
+- Use your framework's identity library rather than rolling your own; allow long passwords; check against breached-password lists; add MFA.
+- Better still for many apps: delegate authentication to an identity provider.
+```
+
 ```recall
 Q: What is the #1 risk in the OWASP Top 10:2025?
 A: Broken Access Control — users acting outside their intended permissions (e.g. IDOR).

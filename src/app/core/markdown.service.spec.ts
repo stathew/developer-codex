@@ -101,6 +101,13 @@ describe('MarkdownService', () => {
       expect(cards[0].querySelector('.recall-a')?.textContent).toContain('Same effect');
     });
 
+    it('renders interview blocks like recall cards, labelled as interview questions', () => {
+      const { el } = render('````interview\nQ: Design a cache?\nA: Use:\n```ts\nconst x = 1;\n```\n````');
+      const card = el.querySelector('details.recall.interview')!;
+      expect(card.querySelector('.recall-tag')?.textContent).toBe('Interview');
+      expect(card.querySelector('.recall-a pre code')?.textContent).toContain('const x = 1;');
+    });
+
     it('turns GitHub-style alerts into callouts, including the AI type', () => {
       const { el } = render('> [!AI]\n> Check generated code.\n\n> [!WARNING]\n> Careful.\n\n> Plain quote');
       const callouts = el.querySelectorAll('blockquote.callout');

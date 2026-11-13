@@ -1,0 +1,19 @@
+[
+  { "id": "angular", "title": "Angular", "icon": "code", "tags": ["angular", "signals", "rxjs"] },
+  { "id": "react", "title": "React", "icon": "code", "tags": ["react", "hooks"] },
+  { "id": "dotnet", "title": ".NET & C#", "icon": "server", "tags": ["dotnet", "csharp", "aspnet-core", "ef-core", "blazor"] },
+  { "id": "java", "title": "Java & Spring", "icon": "server", "tags": ["java", "spring"] },
+  { "id": "typescript", "title": "TypeScript & JavaScript", "icon": "code", "tags": ["typescript", "javascript", "async"] },
+  { "id": "web", "title": "Web Fundamentals", "icon": "layers", "tags": ["browser", "css", "accessibility", "html", "webassembly"] },
+  { "id": "apis", "title": "APIs & Protocols", "icon": "server", "tags": ["api", "rest", "graphql", "grpc", "soap", "webhooks", "http"] },
+  { "id": "databases", "title": "SQL & Databases", "icon": "database", "categories": ["databases"], "tags": ["sql", "orm"] },
+  { "id": "system-design", "title": "System Design & Architecture", "icon": "compass", "tags": ["system-design", "architecture", "microservices", "caching", "events", "ddd"] },
+  { "id": "patterns", "title": "OOP, SOLID & Patterns", "icon": "layers", "categories": ["design"], "tags": ["oop", "solid"] },
+  { "id": "algorithms", "title": "Algorithms & Data Structures", "icon": "brain", "tags": ["algorithms", "data-structures", "complexity"] },
+  { "id": "security", "title": "Security", "icon": "shield", "categories": ["security"], "tags": ["security", "auth", "jwt", "oauth"] },
+  { "id": "testing", "title": "Testing", "icon": "check-circle", "categories": ["testing"] },
+  { "id": "devops", "title": "DevOps & Tooling", "icon": "git", "categories": ["devops"] },
+  { "id": "ai", "title": "AI-Assisted Engineering", "icon": "sparkles", "categories": ["ai-era"] },
+  { "id": "process", "title": "Agile & Process", "icon": "refresh", "categories": ["process"] },
+  { "id": "behavioural", "title": "Behavioural & Career", "icon": "library", "slugs": ["career/talking-about-your-experience", "career/questions-for-the-interviewer"] }
+]

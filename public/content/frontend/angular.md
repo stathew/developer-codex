@@ -92,6 +92,36 @@ From **v22** (June 2026), a major version ships roughly **every 12 months**, eac
 | Excellent CLI and automated upgrades | Historically larger bundles (much improved) |
 | Backed by Google, used heavily inside it | Smaller hiring pool than React in many markets |
 
+## Interview questions
+
+Open-ended questions you might be asked about this topic. Try answering out loud before revealing the model answer — they also appear in **Interview prep**.
+
+```interview
+Q: How does change detection work in modern Angular, and how is it different from the zone.js approach?
+A: With **zone.js**, Angular patched async APIs and, after any event or timer, checked the whole component tree (or OnPush subtrees) for changes.
+- With **signals and zoneless** change detection, Angular tracks which templates read which signals and only refreshes views whose signals changed — triggered by signal updates, events and explicit `markForCheck`.
+- Benefits: less work per update, smaller bundles, clearer stack traces. Implication: state should live in signals (or be pushed through `async`/`toSignal`) so Angular knows when to update.
+
+Q: When would you use a signal versus an RxJS observable?
+A: **Signals** for synchronous **state**: values that always have a current value and drive templates (`signal`, `computed`, `input()`).
+- **Observables** for **events and async streams over time**: debouncing input, combining HTTP calls, cancellation (`switchMap`), websockets.
+- Bridge them with `toSignal` and `toObservable`; `resource`/`httpResource` cover simple async loading with signals.
+
+Q: How would you structure a large Angular application?
+A: Organise by **feature**, not by file type.
+- Standalone components with lazy-loaded routes per feature area.
+- Separate presentational ("dumb") components from container/page components that talk to services.
+- Shared UI library for common components; core services provided in root.
+- State: signals in services for feature state; a store library only when complexity justifies it.
+- Enforce boundaries (lint rules or Nx module boundaries) and keep public APIs of features small.
+
+Q: An Angular page is slow. How would you improve it?
+A: **Profile first** (Angular DevTools profiler, Chrome Performance panel, bundle analysis).
+- Rendering: use signals/OnPush, `track` in `@for`, avoid heavy work or function calls in templates, virtualise long lists.
+- Loading: lazy-load routes, use `@defer` for below-the-fold or heavy components, optimise images (`NgOptimizedImage`), remove unused dependencies.
+- Data: cache and avoid duplicate HTTP calls; consider SSR/hydration for first paint.
+```
+
 ```recall
 Q: How does Angular differ from React in scope?
 A: Angular is a batteries-included framework (router, forms, HTTP, DI, CLI, testing built in); React is a UI library you combine with other libraries.

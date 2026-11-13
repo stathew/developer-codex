@@ -6,6 +6,7 @@ An encyclopedia-style knowledge base for full-stack developers, built to help yo
 - **Interactive entries.** Standalone `.html` pages (simulations, visualizers) run in a sandboxed frame and follow the app theme.
 - **Global search.** Press <kbd>Ctrl</kbd>/<kbd>⌘</kbd>+<kbd>K</kbd> or <kbd>/</kbd> anywhere. Fuzzy, prefix-matching full-text search over every section of every entry, with deep links to headings.
 - **Built-in retention.** `recall` blocks render as self-test cards and feed a Leitner spaced-repetition deck (`/review`).
+- **Interview prep.** Pick technology stacks and run practice or timed mock interviews drawn from the recall cards, with per-stack scores, history, and missed questions fed back into review.
 - **Progress tracking.** Studied entries, bookmarks, history and category coverage, stored locally with JSON export/import.
 
 Built with Angular 22 (standalone components, signals, zoneless), `marked`, `highlight.js` and `minisearch`.
@@ -46,6 +47,7 @@ The workflow builds with `--base-href /developer-codex/` and copies `index.html`
 ```text
 public/content/                 ← all codex content (see the in-app "Writing Codex Entries" guide)
   categories.json               ← category titles, icons, descriptions, order
+  interview-stacks.json         ← interview prep stacks (which tags/categories/entries each stack draws from)
   _shared/                      ← CSS/JS helpers for interactive HTML entries
   <category>/<entry>.md|.html
 scripts/

@@ -91,6 +91,33 @@ Return errors in a consistent shape, e.g. [RFC 9457 Problem Details](https://www
 
 Additive changes (new fields, new endpoints) shouldn't need a new version — design clients to ignore unknown fields. For breaking changes, a URL prefix (`/v2/`) is the most explicit and cache-friendly option.
 
+## Interview questions
+
+Open-ended questions you might be asked about this topic. Try answering out loud before revealing the model answer — they also appear in **Interview prep**.
+
+```interview
+Q: Design a REST API for a meeting-room booking system.
+A: **Model resources**: `rooms`, `bookings`, `users`.
+- `GET /rooms?capacity=6&available_from=…&available_to=…` — search with query filters.
+- `POST /bookings` → `201 Created` + `Location`; body has room, start, end.
+- `GET /bookings/{id}`, `PATCH /bookings/{id}` (reschedule), `DELETE /bookings/{id}` (cancel) — or `POST /bookings/{id}/cancellation` if cancellation has its own data.
+- Return **409 Conflict** for double bookings; validate with **400/422** and Problem Details.
+- Concurrency: enforce no-overlap in the database (constraint or transaction), not just in code. Support idempotency keys on create.
+- Pagination, auth (who can book/cancel which rooms), and time zones (store UTC, accept ISO 8601).
+
+Q: How do you evolve an API without breaking existing clients?
+A: Prefer **additive, backward-compatible changes**: new optional fields, new endpoints, new enum values clients are told to tolerate.
+- Never remove or rename fields, change types or meanings in place.
+- For breaking changes, version (`/v2/` or a header), run versions in parallel, announce deprecation with timelines (`Deprecation`/`Sunset` headers) and monitor usage of the old version.
+- Contract tests and OpenAPI diffs in CI catch accidental breaks.
+
+Q: How would you make a payment endpoint safe for clients to retry?
+A: Use an **idempotency key**.
+- The client generates a unique key per logical payment and sends it in a header.
+- The server stores the key with the request fingerprint and the response; repeats with the same key return the stored response instead of charging again.
+- Handle concurrent duplicates (unique constraint or lock on the key), reject the same key with a different payload, and expire keys after a sensible period.
+```
+
 ```recall
 Q: What does it mean for an HTTP method to be idempotent?
 A: Making the same request multiple times has the same effect on the server as making it once.

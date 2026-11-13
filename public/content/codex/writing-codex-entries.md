@@ -86,6 +86,33 @@ Good recall questions:
 - ask *why* and *when*, not just *what*;
 - are answerable without seeing the article.
 
+## Interview questions
+
+Recall cards test facts. For open-ended questions an interviewer might ask ("How would you design…", "Walk me through…"), use an `interview` block. It uses the same Q/A format and renders as collapsible questions in the entry. It feeds **Interview prep** but not the daily review deck:
+
+`````markdown
+```interview
+Q: How would you make a payment endpoint safe to retry?
+A: Use an idempotency key:
+- The client sends a unique key per payment…
+```
+`````
+
+If an answer contains its own code block, give the outer block one more backtick (start it with four backticks and `interview`) so the inner fence doesn't close it early. The indexer reports this mistake, with the line number, if you forget.
+
+## Interview stacks
+
+The **Interview prep** page draws questions from recall cards, grouped into stacks defined in `public/content/interview-stacks.json`. A stack includes any entry that matches one of its `categories`, `tags` or `slugs`:
+
+```json
+{ "id": "dotnet", "title": ".NET & C#", "icon": "server", "tags": ["dotnet", "csharp", "aspnet-core"] }
+```
+
+So tagging an entry well is all it takes for its recall cards to appear in the right stacks. The indexer fails the build if a stack refers to an unknown category or entry, or matches no cards at all.
+
+> [!WARNING]
+> Wrap code such as `List<T>` in backticks inside recall cards. Otherwise Markdown treats `<T>` as an HTML tag and it vanishes. The indexer catches this and fails the build.
+
 ## Interactive HTML entries
 
 For simulations and visualisations, add a standalone `.html` file. Put its front matter inside an HTML comment, and include the shared helpers to follow the app theme and auto-size the frame:
