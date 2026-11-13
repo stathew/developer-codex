@@ -1,12 +1,13 @@
 [
-  { "id": "ai-era", "title": "Engineering in the AI Era", "icon": "sparkles", "description": "Working effectively with AI assistants — and the human judgement they can't replace." },
-  { "id": "learning", "title": "Learning & Retention", "icon": "brain", "description": "Evidence-based techniques for learning faster and remembering longer." },
-  { "id": "fundamentals", "title": "Fundamentals", "icon": "layers", "description": "Algorithms, data structures and the computer-science core everything else rests on." },
-  { "id": "design", "title": "Software Design", "icon": "compass", "description": "OOP, design principles and patterns for code that stays easy to change." },
-  { "id": "frontend", "title": "Frontend", "icon": "code", "description": "Browsers, rendering, frameworks and building interfaces people can use." },
-  { "id": "backend", "title": "Backend & APIs", "icon": "server", "description": "Services, HTTP, API design, authentication and distributed-system basics." },
-  { "id": "databases", "title": "Databases", "icon": "database", "description": "Data modelling, SQL, indexing, transactions, ORMs and choosing the right store." },
-  { "id": "devops", "title": "DevOps & Tooling", "icon": "git", "description": "Version control, CI/CD, containers and the workflow around shipping code." },
-  { "id": "career", "title": "Career & Interviews", "icon": "library", "description": "Preparing for technical interviews and talking about your experience." },
-  { "id": "codex", "title": "About the Codex", "icon": "pen", "description": "How the codex works and how to write new entries." }
+  {"id": "ai-era", "title": "Engineering in the AI Era", "icon": "sparkles", "description": "Working effectively with AI assistants — and the human judgement they can't replace."},
+  {"id": "learning", "title": "Learning & Retention", "icon": "brain", "description": "Evidence-based techniques for learning faster and remembering longer."},
+  {"id": "fundamentals", "title": "Fundamentals", "icon": "layers", "description": "Algorithms, data structures and the computer-science core everything else rests on."},
+  {"id": "design", "title": "Software Design", "icon": "compass", "description": "OOP, design principles and patterns for code that stays easy to change."},
+  {"id": "frontend", "title": "Frontend", "icon": "code", "description": "Browsers, rendering, frameworks and building interfaces people can use."},
+  {"id": "backend", "title": "Backend & APIs", "icon": "server", "description": "Services, HTTP, API design, authentication and distributed-system basics."},
+  {"id": "databases", "title": "Databases", "icon": "database", "description": "Data modelling, SQL, indexing, transactions, ORMs and choosing the right store."},
+  {"id": "testing", "title": "Testing & Quality", "icon": "check-circle", "description": "Automated testing, test design and test-driven development — how you know the code works."},
+  {"id": "devops", "title": "DevOps & Tooling", "icon": "git", "description": "Version control, CI/CD, containers and the workflow around shipping code."},
+  {"id": "career", "title": "Career & Interviews", "icon": "library", "description": "Preparing for technical interviews and talking about your experience."},
+  {"id": "codex", "title": "About the Codex", "icon": "pen", "description": "How the codex works and how to write new entries."}
 ]

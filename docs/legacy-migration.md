@@ -48,16 +48,16 @@ Every entry created or changed from legacy notes has `status: needs-review` in i
 ### Backlog filled since migration
 
 - **Design patterns** (2026-11-13): Adapter, Builder, Observer, Proxy, Repository, Rules, Template Method → `design/*-pattern`, plus a `design/design-patterns-overview` hub. Drafted fresh (the legacy files were empty templates) and flagged `needs-review`.
+- **Testing** (2026-11-13): Automated Testing, Unit Testing, Test Cases and Test-Driven Development → new `testing/` category (Testing & Quality). TDD moved here from Development Lifecycle. Flagged `needs-review`.
 
 ### Not imported — empty or heading-only (content backlog)
 
 These existed only as titles or empty templates. They're good candidates for new entries:
 
 - **Databases:** Databases Overview, Relational Databases
-- **Development lifecycle:** Agile, Waterfall, Event-Driven Development, Test-Driven Development
+- **Development lifecycle:** Agile, Waterfall, Event-Driven Development
 - **Frameworks:** Angular, React, Blazor, Spring
 - **Protocols:** SOAP, gRPC, GraphQL
-- **Testing:** Automated Testing, Unit Testing, Test Cases
 - **Misc:** Application Containerisation, WebAssembly, Domain-Driven Design, Generics
 - **Tools:** Tools Overview, SVN
 - **Interview practice:** Algorithm Questions

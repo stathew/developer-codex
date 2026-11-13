@@ -4,7 +4,7 @@ summary: A practical checklist for reviewing code you didn't write — the failu
 difficulty: intermediate
 tags: [ai, code-review, security, testing]
 order: 2
-related: [ai-era/developing-in-the-age-of-ai, backend/authentication-sessions-vs-tokens, fundamentals/big-o-notation]
+related: [ai-era/developing-in-the-age-of-ai, testing/test-driven-development, testing/automated-testing, backend/authentication-sessions-vs-tokens]
 ---
 
 Review AI output the way you'd review a confident, fast, well-read colleague who has **never seen your codebase** and **never been paged**. The code is usually fluent; the failures are in the gaps.
