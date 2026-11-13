@@ -100,24 +100,35 @@ export class MarkdownService {
         if (/^([a-z][a-z0-9+.-]*:|\/\/)/i.test(href)) {
           return `<a href="${escapeHtml(href)}"${title} target="_blank" rel="noopener noreferrer" class="external">${text}</a>`;
         }
+        const route = self.appRoute(href);
+        if (route) {
+          // Relative href so it works under any <base href> (e.g. GitHub Pages sub-path); data-route drives in-app navigation.
+          return `<a href="${escapeHtml(route.slice(1))}" data-route="${escapeHtml(route)}"${title}>${text}</a>`;
+        }
         return `<a href="${escapeHtml(self.resolveLink(href))}"${title}>${text}</a>`;
       },
       image(token: Tokens.Image) {
-        const src = /^([a-z]+:|\/)/i.test(token.href) ? token.href : `content/${resolvePath(self.ctx.dir, token.href)}`;
+        const href = token.href;
+        const src = /^[a-z]+:/i.test(href) ? href : href.startsWith('/') ? href.slice(1) : `content/${resolvePath(self.ctx.dir, href)}`;
         const title = token.title ? ` title="${escapeHtml(token.title)}"` : '';
         return `<img src="${escapeHtml(src)}" alt="${escapeHtml(token.text)}"${title} loading="lazy">`;
       },
     };
   }
 
-  /** Maps entry links ("../backend/rest.md#x", "rest.md") to app routes ("/a/backend/rest#x"). */
-  private resolveLink(href: string): string {
-    if (href.startsWith('#') || href.startsWith('/')) return href;
+  /** Maps entry links ("../backend/rest.md#x") and absolute app links ("/review") to app routes ("/a/backend/rest#x"). */
+  private appRoute(href: string): string | null {
+    if (href.startsWith('/') && !href.startsWith('//')) return href;
     const [path, hash = ''] = href.split('#');
-    if (/\.(md|html)$/i.test(path)) {
-      const slug = resolvePath(this.ctx.dir, path).replace(/\.(md|html)$/i, '');
-      return `/a/${slug}${hash ? '#' + hash : ''}`;
-    }
+    if (!/\.(md|html)$/i.test(path)) return null;
+    const slug = resolvePath(this.ctx.dir, path).replace(/\.(md|html)$/i, '');
+    return `/a/${slug}${hash ? '#' + hash : ''}`;
+  }
+
+  /** Resolves links to other files (images, downloads) relative to the entry's folder. */
+  private resolveLink(href: string): string {
+    if (href.startsWith('#')) return href;
+    const [path, hash = ''] = href.split('#');
     return `content/${resolvePath(this.ctx.dir, path)}${hash ? '#' + hash : ''}`;
   }
 

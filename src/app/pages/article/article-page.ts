@@ -110,13 +110,14 @@ export class ArticlePage {
     const link = target.closest('a');
     if (!link || link.target === '_blank' || event.button !== 0 || event.ctrlKey || event.metaKey || event.shiftKey) return;
     const href = link.getAttribute('href') ?? '';
-    if (href.startsWith('#')) {
+    const route = link.dataset['route'];
+    if (route) {
+      event.preventDefault();
+      this.router.navigateByUrl(route);
+    } else if (href.startsWith('#')) {
       event.preventDefault();
       document.getElementById(href.slice(1))?.scrollIntoView({ behavior: 'smooth', block: 'start' });
       history.replaceState(history.state, '', `${location.pathname}${href}`);
-    } else if (href.startsWith('/')) {
-      event.preventDefault();
-      this.router.navigateByUrl(href);
     }
   }
 

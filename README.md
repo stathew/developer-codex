@@ -20,6 +20,14 @@ npm start          # indexes content, watches for content changes, runs ng serve
 npm run build      # indexes content and builds to dist/developer-codex
 ```
 
+## Deployment
+
+Every push to `master` builds the site and publishes it to GitHub Pages via `.github/workflows/deploy-pages.yml`:
+
+**https://stathew.github.io/developer-codex/**
+
+The workflow builds with `--base-href /developer-codex/` and copies `index.html` to `404.html` so deep links work without server-side routing. You can also run it manually from the repo's **Actions** tab.
+
 ## Project structure
 
 ```text
