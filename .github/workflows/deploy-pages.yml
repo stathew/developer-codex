@@ -25,6 +25,7 @@ jobs:
           node-version: 24
           cache: npm
       - run: npm ci
+      - run: npm test
       # Site is served from https://<user>.github.io/<repo>/
       - run: npm run build -- --base-href "/${{ github.event.repository.name }}/"
       # GitHub Pages has no SPA fallback: serve the app for unknown paths so deep links work.

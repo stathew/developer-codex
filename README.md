@@ -22,7 +22,7 @@ npm run build      # indexes content and builds to dist/developer-codex
 npm test           # content indexer tests (node:test) + app unit tests (Vitest)
 ```
 
-The content indexer also **checks every link and image** in Markdown entries (target entry, `#heading`, category, app route and file) plus `related` front matter. A broken link fails `npm run content` and `npm run build`, so it also stops a GitHub Pages deploy. In `npm start` (watch mode) it's reported in the terminal instead.
+The content indexer also **checks every link and image** in Markdown entries (target entry, `#heading`, category, app route and file) plus `related` front matter. A broken link fails `npm run content` and `npm run build`. In `npm start` (watch mode) it's reported in the terminal instead. The GitHub Pages deploy runs `npm test` before building, so a broken link **or** a failing unit test stops the deploy before it reaches production.
 
 ## Tests
 
@@ -36,11 +36,11 @@ The content indexer also **checks every link and image** in Markdown entries (ta
 
 ## Deployment
 
-Every push to `master` builds the site and publishes it to GitHub Pages via `.github/workflows/deploy-pages.yml`:
+Every push to `master` runs `npm test`, builds the site and publishes it to GitHub Pages via `.github/workflows/deploy-pages.yml`:
 
 **https://stathew.github.io/developer-codex/**
 
-The workflow builds with `--base-href /developer-codex/` and copies `index.html` to `404.html` so deep links work without server-side routing. You can also run it manually from the repo's **Actions** tab.
+The workflow fails (and nothing deploys) if any unit test fails or the content build reports a broken link. It builds with `--base-href /developer-codex/` and copies `index.html` to `404.html` so deep links work without server-side routing. You can also run it manually from the repo's **Actions** tab.
 
 ## Project structure
 
