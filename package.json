@@ -9,7 +9,7 @@
     "prebuild": "npm run content",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
-    "test:content": "node --test scripts/",
+    "test:content": "node --test scripts/*.test.mjs",
     "test:app": "ng test --watch=false",
     "test": "npm run test:content && npm run test:app"
   },
