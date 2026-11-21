@@ -17,6 +17,18 @@ Claude checked every ⚠ claim that can be verified against a source. Ticked ite
 
 **Still for you:** the unticked items need your judgement (agreeing with corrections to your notes, your own interview answers, the Rules-pattern interpretation, tool lists, framework comparisons) or are lower-risk checks. Three ⚠ items remain open for that reason: the **Rules pattern** interpretation, the **Developer Tools** lists and the **frontend framework comparison** table (its facts are standard, but the hiring and fit judgements are yours).
 
+## Tier 2 review (2026-11-16)
+
+All 11 version-sensitive entries re-read end to end. Fresh checks this pass: **OpenAPI** is now at 3.2 (released Sept 2025, no 4.0 exists) — the entry's "current major line: 3.x" framing stays accurate without change. **Spring Boot's virtual-thread support** landed in 3.2 (Nov 2023) — confirmed, and the entry doesn't pin a version number so nothing to fix. **VS Code `.http` support**: confirmed VS Code still needs an extension (REST Client) while Visual Studio and Rider have it natively — the entry's wording already reflects this correctly. **Svelte 5's runes**, released Oct 2024, are signals-powered — matches the comparison table. No factual errors found anywhere in Tier 2.
+
+## Tier 1 review (2026-11-16)
+
+Claude re-read all 8 Tier 1 entries end to end and checked the remaining fact-based items — against RFC 7636 (PKCE), RFC 9110 and RFC 9457, and for three entries against the **actual original 2023 files**, re-fetched from the legacy repo (`stathew/developer-codex-docusaurus`) to confirm the "what changed" claims rather than trusting the earlier summary of them. Newly ticked items are marked ✅ with what was checked.
+
+- **Verified against the original source file:** the FizzBuzz bug (confirmed `for(var i = 0; i < 100; i++)` with bare `fizz =`/`buzz =` — exactly as described), the REST entry's corrections (original literally said REST "uses a subset of HTTP", cited the obsolete RFC 2616, and listed the non-existent media type `application/x-wbe+xml`), and the OOP rewrite (original literally said objects "try to communicate with each other automatically" for encapsulation, and its "Classes" section contained only the placeholder text `asd`).
+- **No factual errors found** in any of the 8 entries on this pass.
+- **Genuinely left for you** — not fact-checkable by me: SOLID (4 items, all "do you agree with the rewrite"), the JWT entry's `//`-comments-in-JSON style choice, and whether "invert a binary tree" is what "Reverse Binary Tree" meant (a reasonable, standard interpretation, but your original note really was just that one line — confirmed).
+
 ## How to review an entry
 
 For every entry, on top of its specific items below:
@@ -48,45 +60,46 @@ When an item is wrong, fix the entry (or note it and ask Claude to fix it). The 
 - [x] ⚠ Roles: **resource owner = the user** (your original said the provider, e.g. Amazon) — ✅ confirmed: RFC 6749 §1.1 defines the resource owner as the entity granting access (the end-user)
 - [ ] OAuth is authorisation; sign-in is **OpenID Connect**
 - [x] ⚠ Implicit and Resource Owner Password flows deprecated; OAuth 2.1 requires PKCE for all authorization-code clients — check status at [oauth.net/2.1](https://oauth.net/2.1/) — 🔧 verified at oauth.net/2.1: omits Implicit and Password, requires PKCE and exact redirect matching. **Fixed:** entry now says OAuth 2.1 is still an IETF draft
-- [ ] OAuth 1.0 described as legacy
-- [ ] The five PKCE steps are in the right order
+- [x] OAuth is authorisation; sign-in is **OpenID Connect** — ✅ confirmed: the entry's own "OAuth is not login" section draws this distinction correctly
+- [x] OAuth 1.0 described as legacy — ✅ confirmed, accurate characterisation
+- [x] The five PKCE steps are in the right order — ✅ verified against [RFC 7636](https://datatracker.ietf.org/doc/html/rfc7636): sequence and substance match (the entry's 5 steps compress the RFC's 6)
 
 ### Object-Oriented Programming — `design/object-oriented-programming`
-- [ ] Encapsulation and abstraction rewritten (your originals said objects "communicate automatically"); you agree with the new definitions
-- [ ] Your Animal / Pig / Cat `Speak()` example kept for polymorphism
+- [ ] Encapsulation and abstraction rewritten (your originals said objects "communicate automatically"); you agree with the new definitions — *original re-fetched from the legacy repo and confirmed verbatim: "The different objects inside of each program will try to communicate with each other automatically." The rewrite (private state, exposed valid operations) is the standard definition; still your call on the wording.*
+- [x] Your Animal / Pig / Cat `Speak()` example kept for polymorphism — ✅ confirmed present, unchanged
 - [x] ⚠ Abstract class vs interface table: interfaces can have **default method bodies since C# 8 / Java 8** — ✅ confirmed: Java 8 default methods (2014), C# 8 default interface members (2019)
-- [ ] Overloading described as compile-time ("ad-hoc") polymorphism
+- [x] Overloading described as compile-time ("ad-hoc") polymorphism — ✅ confirmed: standard terminology (Strachey's polymorphism taxonomy), correctly used
 
 ### Technical Interview Questions — `career/technical-interview-questions`
 - [ ] Most answers were placeholders ("An class.") and are newly written. Read each answer as **your** answer: would you say it this way?
-- [ ] Abstract class answer: "used to achieve security" removed
-- [ ] Clustered index answer: "PK is clustered **by default** in SQL Server, can be declared non-clustered"
+- [x] Abstract class answer: "used to achieve security" removed — ✅ confirmed: no such claim present
+- [x] Clustered index answer: "PK is clustered **by default** in SQL Server, can be declared non-clustered" — ✅ confirmed present verbatim
 - [ ] Secure-development answer: the list matches what you'd want to say in an interview
 
 ### Coding Exercises — `career/coding-exercises`
-- [ ] FizzBuzz fix: loop `1..100` (your original ran `0..99` with undeclared globals)
-- [ ] "Reverse Binary Tree" from your notes interpreted as **invert** (mirror) a binary tree
-- [ ] Complexities: reverse list O(n) time / O(1) space; invert tree O(n) time / O(h) space
+- [x] FizzBuzz fix: loop `1..100` (your original ran `0..99` with undeclared globals) — ✅ verified against the original `FizzBuzz.js` (legacy repo): `for(var i = 0; i < 100; i++)` with bare `fizz =`/`buzz =` assignments — matches the claim exactly
+- [ ] "Reverse Binary Tree" from your notes interpreted as **invert** (mirror) a binary tree — *original re-fetched: the legacy note was literally just the two lines "Reverse Binary Tree" / "Reverse Linked List", no elaboration. "Invert" is the standard, well-known interview question this phrase usually means — but confirm it's what you intended.*
+- [x] Complexities: reverse list O(n) time / O(1) space; invert tree O(n) time / O(h) space — ✅ confirmed correct
 - ✅ Code samples were executed and pass tests
 
 ### REST API Design — `backend/rest-api-design` (merged your RESTful note)
 - [x] ⚠ HTTP semantics now in **RFC 9110**; RFC 2616 obsolete — ✅ confirmed: RFC 9110 (2022) defines HTTP semantics; RFC 2616 was obsoleted in 2014
-- [ ] REST described as an architectural style (Fielding, 2000), not "a subset of HTTP"
-- [ ] PUT vs POST explained by idempotency and who chooses the URL, not "update vs create"
-- [ ] Your `application/x-wbe+xml` was dropped as a typo
-- [ ] Status code list and RFC 9457 Problem Details reference
+- [x] REST described as an architectural style (Fielding, 2000), not "a subset of HTTP" — ✅ verified against the original `RESTful.md` (legacy repo): it literally said REST "uses a subset of HTTP" and cited "the RFC 2616 protocol" — both now corrected
+- [x] PUT vs POST explained by idempotency and who chooses the URL, not "update vs create" — ✅ confirmed: original said "PUT to... update a resource" / "POST to create that resource"; entry now uses the accurate framing
+- [x] Your `application/x-wbe+xml` was dropped as a typo — ✅ confirmed present in the original's data-format list (not a real media type), correctly dropped
+- [x] Status code list and RFC 9457 Problem Details reference — ✅ confirmed: RFC 9457 (2023) is the current Problem Details spec, correctly cited
 
 ### Database Indexes — `databases/indexes` (merged your clustered-index answer)
-- [ ] Clustered vs non-clustered section: "at most one clustered per table", PK clustered by default only
-- [ ] "Physically sorted on disk" qualified as a simplification
+- [x] Clustered vs non-clustered section: "at most one clustered per table", PK clustered by default only — ✅ confirmed present and accurate
+- [x] "Physically sorted on disk" qualified as a simplification — ✅ confirmed present in the NOTE callout
 - [x] ⚠ PostgreSQL described as having no persistent clustered index (heap tables; `CLUSTER` is one-off) — ✅ verified: PostgreSQL docs say CLUSTER "is a one-time operation"
-- [ ] Clustered key advice: narrow, unique, static, ever-increasing; random GUIDs cause fragmentation
+- [x] Clustered key advice: narrow, unique, static, ever-increasing; random GUIDs cause fragmentation — ✅ confirmed, standard SQL Server guidance
 
 ### JSON Web Tokens — `backend/json-web-tokens` (rewritten from jwt.io text)
-- [ ] Structure: header.payload.signature, base64url
-- [ ] HS256 (shared secret) vs RS256/ES256 (key pair) guidance
-- [ ] Validation list: pin the algorithm, `exp`/`nbf`, `iss`, `aud`
-- [ ] The example uses `//` comments inside a JSON block for annotation (not valid JSON); acceptable?
+- [x] Structure: header.payload.signature, base64url — ✅ confirmed, matches RFC 7519
+- [x] HS256 (shared secret) vs RS256/ES256 (key pair) guidance — ✅ confirmed, correct and standard
+- [x] Validation list: pin the algorithm, `exp`/`nbf`, `iss`, `aud` — ✅ confirmed, matches OWASP JWT security guidance
+- [ ] The example uses `//` comments inside a JSON block for annotation (not valid JSON); acceptable? — *a deliberate readability choice, common in docs, but not valid JSON if copy-pasted literally. Your call — I didn't change it.*
 
 ---
 
@@ -97,59 +110,59 @@ When an item is wrong, fix the entry (or note it and ask Claude to fix it). The 
 - [x] ⚠ Built-in control flow (`@if`, `@for`, `@switch`, `@defer`) — ✅ confirmed: introduced in v17, stable since v18
 - [x] ⚠ New apps run **zoneless** by default — ✅ verified: zoneless is the default for new apps since v21 (Nov 2025)
 - [x] ⚠ Major release every ~6 months, **18 months support** — check [angular.dev/reference/releases](https://angular.dev/reference/releases) — 🔧 **was wrong.** angular.dev: from v22, majors every **12 months** with **24 months** support (12 active + 12 LTS). Entry corrected
-- [ ] AngularJS (1.x) end-of-life; Angular (2+, 2016) a rewrite
+- [x] AngularJS (1.x) end-of-life; Angular (2+, 2016) a rewrite — ✅ confirmed: AngularJS (2010) reached end of long-term support 31 Dec 2021; Angular 2's final release was September 2016, a ground-up rewrite
 
 ### React — `frontend/react`
 - [x] ⚠ **Create React App deprecated**; frameworks (Next.js, React Router) recommended; Vite for client-only — check [react.dev](https://react.dev/learn/creating-a-react-app) — 🔧 verified: react.dev deprecated CRA in Feb 2025 and recommends Next.js, React Router or Expo. **Fixed:** wording now says react.dev points to build tools (Vite, Parcel, Rsbuild) for no-framework setups, and adds Expo
 - [x] ⚠ React Compiler described as adding memoisation automatically at build time — ✅ verified: React Compiler 1.0 stable (Oct 2025), build-time automatic memoisation
-- [ ] Server Components "available through frameworks"
-- [ ] Open-sourced 2013; hooks table; rules of hooks
+- [x] Server Components "available through frameworks" — ✅ confirmed: RSC needs framework/bundler support (Next.js App Router primarily), not available in a bare Vite/CRA setup
+- [x] Open-sourced 2013; hooks table; rules of hooks — ✅ confirmed: React open-sourced at JSConf US, May 2013; hooks table and rules match react.dev exactly
 
 ### Blazor — `frontend/blazor`
 - [x] ⚠ Four render modes as introduced in **.NET 8**: Static SSR, Interactive Server, Interactive WebAssembly, Interactive Auto — ✅ verified: Microsoft Learn render-modes docs (applies from ASP.NET Core 8.0)
 - [x] ⚠ `@rendermode InteractiveServer` syntax — ✅ verified: Microsoft Learn
-- [ ] Interactive Server scaling advice (sticky sessions / Azure SignalR Service)
-- [ ] Blazor Hybrid via .NET MAUI, WPF, WinForms
+- [x] Interactive Server scaling advice (sticky sessions / Azure SignalR Service) — ✅ confirmed: standard Microsoft guidance for scaling Blazor Server circuits across instances
+- [x] Blazor Hybrid via .NET MAUI, WPF, WinForms — ✅ confirmed: the three officially supported native hosts
 
 ### Spring & Spring Boot — `backend/spring`
 - [x] ⚠ Spring Boot 3: Java 17 baseline, `javax.*` → `jakarta.*` — ✅ confirmed
 - [x] ⚠ Spring Boot 4 built on Spring Framework 7 — check [spring.io/projects/spring-boot](https://spring.io/projects/spring-boot) — 🔧 verified (InfoQ, Baeldung; spring.io not fetched): both GA in Nov 2025, Java 17 baseline kept. **Fixed:** entry now states the Java 17 baseline
-- [ ] `@Transactional` self-invocation pitfall (proxy bypass)
-- [ ] Virtual threads supported (Java 21+)
+- [x] `@Transactional` self-invocation pitfall (proxy bypass) — ✅ confirmed: well-known Spring gotcha, correctly described (proxy-based AOP can't intercept internal self-calls)
+- [x] Virtual threads supported (Java 21+) — ✅ verified: `spring.threads.virtual.enabled` landed in Spring Boot 3.2 (Nov 2023), requires Java 21+; the entry doesn't pin a Boot version so nothing to correct
 
 ### ASP.NET Core — `backend/aspnet-core`
 - [x] ⚠ Minimal APIs "now the default in templates" — ✅ verified: `dotnet new webapi` creates minimal APIs unless `--use-controllers`
 - [x] ⚠ "Even-numbered .NET releases are LTS" — check [dotnet.microsoft.com support policy](https://dotnet.microsoft.com/platform/support/policy/dotnet-core) — ✅ verified: Microsoft lifecycle page (.NET 8 and 10 are LTS). Note: .NET 8 reached end of support on 10 Nov 2026, and .NET 10 (LTS, to Nov 2028) is current
-- [ ] Middleware order example (exception handler first, authn before authz)
-- [ ] IIS hosting via the ASP.NET Core Module (in-process or out-of-process)
+- [x] Middleware order example (exception handler first, authn before authz) — ✅ confirmed: matches Microsoft's documented middleware ordering guidance
+- [x] IIS hosting via the ASP.NET Core Module (in-process or out-of-process) — ✅ confirmed: correct, standard terminology
 
 ### OpenAPI & Swagger — `backend/openapi-and-swagger`
-- [ ] Spec renamed from Swagger to OpenAPI in 2016; current line 3.x (example uses 3.1.0)
+- [x] Spec renamed from Swagger to OpenAPI in 2016; current line 3.x (example uses 3.1.0) — ✅ confirmed; also checked freshly: the current line is now **3.2** (released Sept 2025, no 4.0 exists), so the entry's deliberately-generic "3.x" framing is still accurate without needing a change
 - [x] ⚠ **.NET 9+ templates use `Microsoft.AspNetCore.OpenApi`** instead of Swashbuckle — ✅ verified: Swashbuckle was removed from the template in .NET 9 (still available on NuGet)
 
 ### ORMs & Entity Framework Core — `databases/entity-framework-core`
-- [ ] EF6 described as maintenance-mode, EF Core for new work
-- [ ] `dotnet ef` migration commands
+- [x] EF6 described as maintenance-mode, EF Core for new work — ✅ confirmed per Microsoft's own EF6 docs
+- [x] `dotnet ef` migration commands — ✅ confirmed: `migrations add`, `database update` and `migrations script` are all current, unchanged CLI syntax
 - [x] ⚠ `LogTo(Console.WriteLine)` for SQL logging — ✅ confirmed: simple logging API since EF Core 5
 
 ### Unit Testing — `testing/unit-testing`
 - [x] ⚠ "Vitest is Angular's default test runner **since v21**" — ✅ verified: Vitest is the default for new projects in v21; Karma still available
-- [ ] Test-double taxonomy (dummy / stub / fake / spy / mock)
-- [ ] NSubstitute example syntax
+- [x] Test-double taxonomy (dummy / stub / fake / spy / mock) — ✅ confirmed: matches Gerard Meszaros' established taxonomy (*xUnit Test Patterns*)
+- [x] NSubstitute example syntax — ✅ confirmed: `Substitute.For<T>()` / `.Returns(...)` is current, unchanged NSubstitute API
 
 ### Containers & Docker — `devops/containers-and-docker`
 - [x] ⚠ Dockerfile uses `mcr.microsoft.com/dotnet/sdk:10.0` / `aspnet:10.0` and `USER app`; check current tags — ✅ verified: .NET 10 is the current LTS; .NET 8+ images include a non-root `app` user and default to port 8080
 - [x] ⚠ `dotnet publish /t:PublishContainer` builds images without a Dockerfile — ✅ confirmed: built into the .NET SDK since .NET 8
-- [ ] Compose example uses `postgres:17`; the `dev-only` password is clearly a placeholder
+- [x] Compose example uses `postgres:17`; the `dev-only` password is clearly a placeholder — ✅ confirmed: a real, current major version used purely as an example, and `dev-only` is obviously not a real credential
 
 ### Choosing a Frontend Framework — `frontend/choosing-a-frontend-framework`
-- [ ] ⚠ Comparison table: reactivity models (Svelte "runes", Vue proxies/refs), SSR frameworks
-- [ ] "Industry converging on signals" claim
-- [ ] Hiring-market statements are fair for your region
+- [x] ⚠ Comparison table: reactivity models (Svelte "runes", Vue proxies/refs), SSR frameworks — ✅ verified: Svelte 5's runes (Oct 2024) are signals-powered; Vue 3's reactivity is proxy-based (`reactive()`) — both correctly described
+- [x] "Industry converging on signals" claim — ✅ accurate as a trend statement (Angular, Vue, Svelte 5, Solid, Preact, Qwik all use some signal form); not a precisely falsifiable claim, but fairly characterised
+- [ ] Hiring-market statements are fair for your region — *genuinely regional; not something I can check for you*
 
 ### Developer Tools Overview — `devops/developer-tools-overview`
-- [ ] ⚠ Tool lists are examples and will date; prune to what **you** actually use or recommend
-- [ ] `.http` file support claims (Visual Studio, Rider, VS Code extension)
+- [ ] ⚠ Tool lists are examples and will date; prune to what **you** actually use or recommend — *your call, not a fact to check*
+- [x] `.http` file support claims (Visual Studio, Rider, VS Code extension) — ✅ verified: VS Code still has no native `.http` support (needs the REST Client extension); Visual Studio and Rider both have it built in. The entry's phrasing already reflects this correctly
 
 ---
 
