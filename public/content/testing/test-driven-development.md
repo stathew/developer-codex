@@ -77,7 +77,7 @@ export function validatePassword(pw: string) {
 
 - **Outside-in (London school):** start from an acceptance test at the system boundary and work inwards, mocking collaborators not yet built.
 - **Inside-out (Detroit school):** build and test core units first, then compose them.
-- **BDD (behaviour-driven development):** TDD phrased in domain language (*Given / When / Then*), often shared with non-developers (SpecFlow/Reqnroll, Cucumber).
+- **BDD (behaviour-driven development):** TDD phrased in domain language (*Given / When / Then*), often shared with non-developers (Reqnroll — the open-source successor to SpecFlow, which was retired at the end of 2024 — and Cucumber).
 
 ## TDD in the age of AI
 

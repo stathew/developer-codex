@@ -29,6 +29,14 @@ Claude re-read all 8 Tier 1 entries end to end and checked the remaining fact-ba
 - **No factual errors found** in any of the 8 entries on this pass.
 - **Genuinely left for you** — not fact-checkable by me: SOLID (4 items, all "do you agree with the rewrite"), the JWT entry's `//`-comments-in-JSON style choice, and whether "invert a binary tree" is what "Reverse Binary Tree" meant (a reasonable, standard interpretation, but your original note really was just that one line — confirmed).
 
+## Tier 3 review (2026-11-21)
+
+Claude re-read all 38 Tier 3 entries end to end and checked every fact-based claim — most against well-established, stable knowledge (GoF pattern taxonomy, DDD/Evans, MVC's Smalltalk origin, Royce's 1970 paper, the Agile Manifesto, SOAP/WSDL/gRPC/GraphQL fundamentals), and a few freshly against current sources where things could plausibly have drifted by 2026 (WasmGC's 2024 browser rollout, the Standard Webhooks site and header names, SQL Server 2025's native `VECTOR` type, and BDD tooling).
+
+- **One correction made:** the Test-Driven Development entry listed BDD tooling as "SpecFlow/Reqnroll" — but SpecFlow was retired by Tricentis at the end of 2024, and **Reqnroll** (its open-source successor, created by SpecFlow's original author) is now the one to recommend for new work. The entry now leads with Reqnroll and notes SpecFlow's retirement.
+- **No other factual errors found** across design patterns, DDD, WebAssembly, the API-style entries (REST/GraphQL/gRPC/SOAP/webhooks/gateway), databases, testing, SVN, Conventional Commits, Agile/Waterfall, or Algorithm Questions.
+- **Genuinely left for you** — not fact-checkable by me: the Rules pattern's title interpretation, the Repository-over-EF-Core stance, the API Gateway rename, and the Career & Interviews entries' personal/subjective items (your own STAR stories, personal-question answers, and the "why ask" culture notes) — these ask for your judgement or your own words, not a fact check.
+
 ## How to review an entry
 
 For every entry, on top of its specific items below:
@@ -171,152 +179,152 @@ When an item is wrong, fix the entry (or note it and ask Claude to fix it). The 
 ### Fundamentals
 
 **Async / Await** — `fundamentals/async-await`
-- [ ] `await` doesn't block the thread; async ≠ parallel
-- [ ] C# pitfalls: `.Result`/`.Wait()` deadlocks, `async void`
-- [ ] JS pitfall: `forEach(async …)` doesn't wait
+- [x] `await` doesn't block the thread; async ≠ parallel — ✅ confirmed: standard, correct description of the event-loop/task model in both JS and C#
+- [x] C# pitfalls: `.Result`/`.Wait()` deadlocks, `async void` — ✅ confirmed: both are well-documented, real footguns (sync-over-async deadlocks with a captured context; unobservable exceptions from `async void` outside event handlers)
+- [x] JS pitfall: `forEach(async …)` doesn't wait — ✅ confirmed: `Array.prototype.forEach` ignores returned promises, a very common real bug
 
 **Generics** — `fundamentals/generics`
-- [ ] Variance: covariance `out` / `? extends`, contravariance `in` / `? super`, PECS
-- [ ] C# reified vs Java erasure vs TypeScript compile-time only
-- [ ] TypeScript `pluck<T, K extends keyof T>` example
+- [x] Variance: covariance `out` / `? extends`, contravariance `in` / `? super`, PECS — ✅ confirmed: matches C#/Java's own terminology and Joshua Bloch's PECS mnemonic
+- [x] C# reified vs Java erasure vs TypeScript compile-time only — ✅ confirmed: standard, accurate characterisation of each language's generics implementation
+- [x] TypeScript `pluck<T, K extends keyof T>` example — ✅ verified: compiles under current TypeScript; correct use of `keyof` constraint
 
 ### Software Design
 
 **DRY** — `design/dry-principle`
-- [ ] Pragmatic Programmer quote and attribution (Hunt & Thomas, 1999)
-- [ ] Sandi Metz quote wording ("duplication is far cheaper than the wrong abstraction")
+- [x] Pragmatic Programmer quote and attribution (Hunt & Thomas, 1999) — ✅ confirmed: the quote and attribution match *The Pragmatic Programmer* (1999)
+- [x] Sandi Metz quote wording ("duplication is far cheaper than the wrong abstraction") — ✅ confirmed: matches Metz's well-known 2016 "the wrong abstraction" post
 
 **Design Patterns Overview** — `design/design-patterns-overview`
-- [ ] GoF: 1994, 23 patterns, three families; authors' names
-- [ ] Every pattern is placed in the right family
+- [x] GoF: 1994, 23 patterns, three families; authors' names — ✅ confirmed: Gamma, Helm, Johnson and Vlissides, *Design Patterns* (1994), 23 patterns in creational/structural/behavioural
+- [x] Every pattern is placed in the right family — ✅ confirmed: all three family tables match the standard GoF classification (Rules is correctly marked as not GoF)
 
 **Dependency Injection** — `design/dependency-injection`
-- [ ] .NET lifetimes table (transient / scoped / singleton) and the captive-dependency warning
-- [ ] "Scope validation catches captive dependencies in development"
+- [x] .NET lifetimes table (transient / scoped / singleton) and the captive-dependency warning — ✅ confirmed: matches Microsoft's own lifetime definitions and the documented captive-dependency problem
+- [x] "Scope validation catches captive dependencies in development" — ✅ confirmed: `ValidateScopes` (on by default in the Development environment since ASP.NET Core templates enabled it) throws when a singleton consumes a scoped service
 
 **Factory** — `design/factory-pattern`
-- [ ] Simple factory "not a GoF pattern"; Factory Method vs Abstract Factory distinction
+- [x] Simple factory "not a GoF pattern"; Factory Method vs Abstract Factory distinction — ✅ confirmed: Simple Factory isn't one of the 23 GoF patterns; the Factory Method/Abstract Factory distinction (one product vs families of products) matches the book
 
 **Singleton** — `design/singleton-pattern`
-- [ ] `Lazy<T>` thread-safe implementation; your GameState example kept
+- [x] `Lazy<T>` thread-safe implementation; your GameState example kept — ✅ confirmed: `Lazy<T>` is thread-safe by default (`LazyThreadSafetyMode.ExecutionAndPublication`), correctly used here
 
 **Strategy** — `design/strategy-pattern`
-- [ ] "Also known as Policy"; functions-as-strategies tip
+- [x] "Also known as Policy"; functions-as-strategies tip — ✅ confirmed: "Policy" is GoF's own alternate name for Strategy; the functions-as-strategies point is accurate for languages with first-class functions
 
 **Decorator** — `design/decorator-pattern`
-- [ ] Your intent text kept; examples (Java I/O, .NET Streams, `DelegatingHandler`)
-- [ ] Note that TS/Python `@decorator` syntax ≠ GoF Decorator
+- [x] Your intent text kept; examples (Java I/O, .NET Streams, `DelegatingHandler`) — ✅ confirmed: all three are genuine, standard real-world Decorator examples
+- [x] Note that TS/Python `@decorator` syntax ≠ GoF Decorator — ✅ confirmed: a commonly made distinction, correctly drawn
 
 **Adapter** — `design/adapter-pattern`
-- [ ] Comparison table vs Decorator / Proxy / Facade
+- [x] Comparison table vs Decorator / Proxy / Facade — ✅ confirmed: the four interfaces-exposed/purpose rows match the standard GoF distinctions
 
 **Builder** — `design/builder-pattern`
-- [ ] Fluent builder and test-data-builder examples
+- [x] Fluent builder and test-data-builder examples — ✅ confirmed: standard, correct fluent-builder shape; the test-data-builder pattern is accurately described
 
 **Observer** — `design/observer-pattern`
-- [ ] Observer vs pub/sub distinction; signals as a variation
+- [x] Observer vs pub/sub distinction; signals as a variation — ✅ confirmed: direct-subscription vs broker-mediated is the standard distinction; signals as fine-grained auto-subscribing observers is an accurate characterisation
 
 **Proxy** — `design/proxy-pattern`
-- [ ] Four proxy kinds; ORM lazy loading via proxies; Vue reactivity built on JS `Proxy`
+- [x] Four proxy kinds; ORM lazy loading via proxies; Vue reactivity built on JS `Proxy` — ✅ confirmed: virtual/protection/remote/caching matches GoF; EF Core and Hibernate both do generate lazy-loading proxy subclasses; Vue 3's reactivity is indeed built on the JS `Proxy` object
 
 **Repository** — `design/repository-pattern`
-- [ ] Attributed to Fowler's *PoEAA* and DDD
-- [ ] Your stance on the "repository over EF Core?" debate and generic repositories
+- [x] Attributed to Fowler's *PoEAA* and DDD — ✅ confirmed: Repository appears in Fowler's *Patterns of Enterprise Application Architecture* (2002) and in Evans' DDD
+- [ ] Your stance on the "repository over EF Core?" debate and generic repositories — *the entry takes a clear position (avoid generic repositories, use real repositories only with DDD-style aggregates); whether you agree is your call*
 
 **Rules** — `design/rules-pattern`
-- [ ] ⚠ **Is this the "Rules pattern" you meant?** Your stub had only the title; I interpreted it as the rules-engine pattern (rule classes + engine)
-- [ ] Example rules engines named (NRules, Microsoft RulesEngine, Drools)
+- [ ] ⚠ **Is this the "Rules pattern" you meant?** Your stub had only the title; I interpreted it as the rules-engine pattern (rule classes + engine) — *not fact-checkable; your call on whether this was the intended meaning*
+- [x] Example rules engines named (NRules, Microsoft RulesEngine, Drools) — ✅ confirmed: all three are real, current .NET/Java rules-engine libraries
 
 **Template Method** — `design/template-method-pattern`
-- [ ] Hollywood Principle; Template Method vs Strategy
+- [x] Hollywood Principle; Template Method vs Strategy — ✅ confirmed: "don't call us, we'll call you" is the standard framing; the inheritance-vs-composition distinction from Strategy is accurate
 
 **Model–View–Controller** — `design/model-view-controller`
-- [ ] Origin: Smalltalk, late 1970s (your note called it a web pattern)
-- [ ] MVC / MVP / MVVM / component comparison table
+- [x] Origin: Smalltalk, late 1970s (your note called it a web pattern) — ✅ confirmed: MVC originated at Xerox PARC in Smalltalk-79/80 (Trygve Reenskaug), well before the web
+- [x] MVC / MVP / MVVM / component comparison table — ✅ confirmed: standard, accurate characterisation of each pattern and where it's typically used
 
 **Domain-Driven Design** — `design/domain-driven-design`
-- [ ] Evans, 2003; strategic vs tactical split
-- [ ] Aggregate rules of thumb (small, reference by ID, one per transaction)
+- [x] Evans, 2003; strategic vs tactical split — ✅ confirmed: Eric Evans, *Domain-Driven Design: Tackling Complexity in the Heart of Software* (2003); the strategic/tactical split is the book's own structure
+- [x] Aggregate rules of thumb (small, reference by ID, one per transaction) — ✅ confirmed: matches the widely-cited Vernon/Evans aggregate design guidance
 
 ### Frontend
 
 **WebAssembly** — `frontend/webassembly`
-- [ ] Shipped in all major browsers 2017; W3C recommendation 2019
-- [ ] Real-world examples (Figma, Photoshop/AutoCAD web, ffmpeg.wasm, SQLite)
-- [ ] WasmGC (Kotlin, Dart), WASI and Component Model descriptions
+- [x] Shipped in all major browsers 2017; W3C recommendation 2019 — ✅ confirmed: Chrome/Firefox/Safari/Edge all shipped Wasm support in 2017; the W3C made it a formal Recommendation in December 2019
+- [x] Real-world examples (Figma, Photoshop/AutoCAD web, ffmpeg.wasm, SQLite) — ✅ confirmed: all genuine, widely-cited production uses of Wasm
+- [x] WasmGC (Kotlin, Dart), WASI and Component Model descriptions — ✅ verified fresh: WasmGC shipped in major engines in 2024 and Kotlin/Wasm and Dart both target it; WASI and the Component Model descriptions match current (Preview 2-era) framing
 
 ### Backend & APIs
 
 **Webhooks** — `backend/webhooks`
-- [ ] Signature verification over the raw body; timestamp replay window
-- [ ] Standard Webhooks link and header names
+- [x] Signature verification over the raw body; timestamp replay window — ✅ confirmed: HMAC-over-raw-body plus a timestamp tolerance window is the standard, correct defence against forged and replayed webhooks
+- [x] Standard Webhooks link and header names — ✅ verified fresh: `standardwebhooks.com` is the real Standard Webhooks site, and `Webhook-Id`/`Webhook-Timestamp`/`Webhook-Signature` (with a `v1,<base64 HMAC-SHA256>` signature format) are exactly its defined headers
 
 **API Gateway** — `backend/api-gateway`
-- [ ] Renamed from your "Gateway API" (which is a separate Kubernetes spec); you agree with the rename
-- [ ] BFF section; product list
+- [ ] Renamed from your "Gateway API" (which is a separate Kubernetes spec); you agree with the rename — *the Kubernetes Gateway API is indeed a distinct, real spec, confirming the rename is warranted; whether you're happy with the new title is your call*
+- [x] BFF section; product list — ✅ confirmed: Backend for Frontend is accurately described, and Azure API Management, AWS API Gateway, Google Apigee, YARP, Kong, NGINX, Envoy and Traefik are all real, current products in this space
 
 **API Styles Compared** — `backend/api-styles-compared`
-- [ ] Comparison table cells (transport, caching, streaming, browser support)
-- [ ] SSE vs WebSockets guidance
+- [x] Comparison table cells (transport, caching, streaming, browser support) — ✅ confirmed: each cell matches the individual REST/GraphQL/gRPC/SOAP entries and standard characterisations
+- [x] SSE vs WebSockets guidance — ✅ confirmed: one-way-vs-two-way is the correct basis for the recommendation
 
 **GraphQL** — `backend/graphql`
-- [ ] Facebook 2012, open-sourced 2015, GraphQL Foundation
-- [ ] DataLoader, persisted queries, depth/complexity limits
-- [ ] Errors often returned with HTTP 200
+- [x] Facebook 2012, open-sourced 2015, GraphQL Foundation — ✅ confirmed: Facebook developed it internally from 2012, open-sourced it in 2015, and stewardship moved to the Linux Foundation's GraphQL Foundation in 2019
+- [x] DataLoader, persisted queries, depth/complexity limits — ✅ confirmed: all three are standard, current mitigations for GraphQL's N+1 and cost problems
+- [x] Errors often returned with HTTP 200 — ✅ confirmed: a well-known GraphQL characteristic (partial `data` plus an `errors` array alongside a 200 status)
 
 **gRPC** — `backend/grpc`
-- [ ] Four call types; never reuse field numbers (`reserved`)
-- [ ] Browser options (gRPC-Web, Connect, JSON transcoding); L7 load balancing
+- [x] Four call types; never reuse field numbers (`reserved`) — ✅ confirmed: unary/server-streaming/client-streaming/bidirectional matches gRPC's own docs; field-number reuse is a well-documented Protocol Buffers footgun, `reserved` is the correct fix
+- [x] Browser options (gRPC-Web, Connect, JSON transcoding); L7 load balancing — ✅ confirmed: all three browser workarounds and the L4-vs-L7 load-balancing point are accurate and current
 
 **SOAP** — `backend/soap`
-- [ ] Acronym dropped in SOAP 1.2; `SOAPAction` header in 1.1
-- [ ] .NET: `dotnet-svcutil` for clients, **CoreWCF** for hosting
+- [x] Acronym dropped in SOAP 1.2; `SOAPAction` header in 1.1 — ✅ confirmed: SOAP 1.2 (2003) dropped the "Simple Object Access Protocol" expansion; `SOAPAction` is an HTTP-binding-specific header present in 1.1
+- [x] .NET: `dotnet-svcutil` for clients, **CoreWCF** for hosting — ✅ confirmed: `dotnet-svcutil` generates WCF-compatible clients on modern .NET; CoreWCF is the Microsoft-supported community port for hosting, since WCF server hosting isn't part of modern .NET
 
 **Event-Driven Architecture** — `backend/event-driven-architecture`
-- [ ] Events vs commands table; outbox pattern steps; saga definition
-- [ ] Broker vs stream examples (RabbitMQ / Service Bus vs Kafka / Event Hubs)
+- [x] Events vs commands table; outbox pattern steps; saga definition — ✅ confirmed: the table and the outbox/saga descriptions match standard, well-established EDA terminology
+- [x] Broker vs stream examples (RabbitMQ / Service Bus vs Kafka / Event Hubs) — ✅ confirmed: an accurate, current split between queue-based brokers and retained, replayable event logs
 
 ### Databases
 
 **Choosing a Database** — `databases/choosing-a-database`
-- [ ] Database-type examples are current
-- [ ] CAP theorem summary; vector-search support claims for PostgreSQL, SQL Server, MongoDB, Redis
+- [x] Database-type examples are current — ✅ confirmed: PostgreSQL/SQL Server/MySQL/SQLite, MongoDB/Cosmos DB/Firestore, Redis/Valkey/DynamoDB, Cassandra/ScyllaDB/Bigtable, Neo4j/Neptune, TimescaleDB/InfluxDB/Prometheus, Elasticsearch/OpenSearch, pgvector/Pinecone/Qdrant/Weaviate are all real, current products in each category
+- [x] CAP theorem summary; vector-search support claims for PostgreSQL, SQL Server, MongoDB, Redis — ✅ confirmed: the consistency/availability trade-off under partition is standard CAP framing; PostgreSQL (pgvector), SQL Server (native vector type, 2025), MongoDB (Atlas Vector Search) and Redis (RediSearch vector fields) all genuinely support vector indexes
 
 **Relational Databases & SQL** — `databases/relational-databases`
 - [x] ⚠ Isolation table: PostgreSQL's repeatable read also prevents phantoms; default levels (read committed for PostgreSQL / SQL Server / Oracle, repeatable read for MySQL InnoDB) — ✅ verified: PostgreSQL docs (no phantoms at RR; default Read Committed); MySQL 8.4 docs (InnoDB default REPEATABLE READ)
-- [ ] 3NF mnemonic; join table
+- [x] 3NF mnemonic; join table — ✅ confirmed: "the key, the whole key, and nothing but the key" is the standard 3NF mnemonic; the junction-table description for many-to-many is accurate
 
 ### Testing & Quality
 
 **Automated Testing** — `testing/automated-testing`
-- [ ] Pyramid vs trophy framing; mutation testing tools (Stryker, PIT)
+- [x] Pyramid vs trophy framing; mutation testing tools (Stryker, PIT) — ✅ confirmed: both framings are real, current testing-strategy models (the trophy is Kent C. Dodds'); Stryker (JS/.NET) and PIT (Java) are real, current mutation-testing tools
 
 **Writing Test Cases** — `testing/writing-test-cases`
-- [ ] Boundary values (17/18/19, 64/65/66); decision table rows
+- [x] Boundary values (17/18/19, 64/65/66); decision table rows — ✅ confirmed: correct application of boundary value analysis to an 18–65 range, and the decision table is internally consistent
 
 **Test-Driven Development** — `testing/test-driven-development`
-- [ ] Moved from your Development Lifecycle section to Testing; you agree
-- [ ] Kent Beck attribution; outside-in vs inside-out; BDD tooling (Reqnroll/SpecFlow, Cucumber)
+- [ ] Moved from your Development Lifecycle section to Testing; you agree — *organisational preference, not a fact to check*
+- [x] Kent Beck attribution; outside-in vs inside-out; BDD tooling (Reqnroll/SpecFlow, Cucumber) — 🔧 Kent Beck attribution and the London-school/Detroit-school (outside-in/inside-out) distinction confirmed accurate. **Fixed:** the entry listed "SpecFlow/Reqnroll" — but SpecFlow was retired at the end of 2024 and Reqnroll is its actively maintained open-source successor, so the entry now leads with Reqnroll and notes SpecFlow's retirement
 
 ### DevOps & Tooling
 
 **Conventional Commits** — `devops/conventional-commits`
-- [ ] Only `feat` and `fix` defined by the spec; other types from the Angular convention
-- [ ] Spec version link (v1.0.0)
+- [x] Only `feat` and `fix` defined by the spec; other types from the Angular convention — ✅ confirmed: the Conventional Commits v1.0.0 spec itself only requires `fix`/`feat` (plus `BREAKING CHANGE`); `docs`/`refactor`/`perf`/etc. come from the widely-adopted Angular commit convention
+- [x] Spec version link (v1.0.0) — ✅ confirmed: `conventionalcommits.org/en/v1.0.0/` is the current, correct spec version
 
 **Subversion (SVN)** — `devops/svn`
-- [ ] Created in 2000; global revision numbers; trunk/branches/tags convention
-- [ ] Migration tools (`git svn`, SubGit, svn2git)
+- [x] Created in 2000; global revision numbers; trunk/branches/tags convention — ✅ confirmed: Subversion's initial release was 2000 (as a CVS successor); global (repository-wide) revision numbers and the trunk/branches/tags layout convention are both accurate
+- [x] Migration tools (`git svn`, SubGit, svn2git) — ✅ confirmed: all three are real, current SVN-to-Git migration tools
 
 ### Process & Delivery
 
 **Agile, Scrum & Kanban** — `process/agile`
 - [x] ⚠ Scrum terms match the **2020 Scrum Guide** (accountabilities: Product Owner, Scrum Master, Developers; Product Goal; Definition of Done) — check [scrumguides.org](https://scrumguides.org/) — ✅ verified: scrumguides.org still offers the 2020 guide as the latest; terms match
-- [ ] Manifesto's four values listed correctly
+- [x] Manifesto's four values listed correctly — ✅ confirmed: matches the Manifesto for Agile Software Development (2001) verbatim
 
 **Waterfall & the V-Model** — `process/waterfall`
-- [ ] Royce 1970 framing (he warned against the purely sequential model)
-- [ ] V-model pairings
+- [x] Royce 1970 framing (he warned against the purely sequential model) — ✅ confirmed: Winston Royce's 1970 paper *Managing the Development of Large Software Systems* is the usual origin cited for "Waterfall", and it did argue the purely sequential version was risky — a widely-noted irony, accurately described here
+- [x] V-model pairings — ✅ confirmed: the requirements↔acceptance, system design↔system testing, architecture↔integration, module design↔unit testing pairings match the standard V-model diagram
 
 ### Career & Interviews
 
@@ -329,7 +337,7 @@ When an item is wrong, fix the entry (or note it and ask Claude to fix it). The 
 - [ ] Your text kept nearly verbatim; check the filled-in "why ask" notes for culture, dress code and remote working
 
 **Algorithm Questions** — `career/algorithm-questions`
-- [ ] Pattern cheat-sheet signals
+- [x] Pattern cheat-sheet signals — ✅ confirmed: each "signal → pattern" row (hash map, two pointers, sliding window, binary search, BFS/DFS, heap, DP, backtracking) matches standard interview-prep guidance
 - ✅ Code samples were executed and pass tests
 
 ---
