@@ -37,6 +37,14 @@ Claude re-read all 38 Tier 3 entries end to end and checked every fact-based cla
 - **No other factual errors found** across design patterns, DDD, WebAssembly, the API-style entries (REST/GraphQL/gRPC/SOAP/webhooks/gateway), databases, testing, SVN, Conventional Commits, Agile/Waterfall, or Algorithm Questions.
 - **Genuinely left for you** — not fact-checkable by me: the Rules pattern's title interpretation, the Repository-over-EF-Core stance, the API Gateway rename, and the Career & Interviews entries' personal/subjective items (your own STAR stories, personal-question answers, and the "why ask" culture notes) — these ask for your judgement or your own words, not a fact check.
 
+## Final batch review (2026-11-21)
+
+The last piece: a lighter pass over the 34 entries across the Topic-gaps, Azure, SQL Server, C#/.NET and Angular-depth batches, ticking the items left over from authoring-time fact-checking. Checked against current sources where it mattered (Azure Functions hosting plans, Azure SQL's DTU-vs-vCore recommendation, .NET `HybridCache`), and against this repo's own files/APIs elsewhere (the CI/CD entry's workflow example against the real `deploy-pages.yml`; several `Span<T>`/EF Core/NgRx code samples for syntax correctness).
+
+- **One correction made:** the [Azure Functions](../public/content/azure/azure-functions.md) entry's hosting-plans table named the current plans correctly, but didn't flag that Microsoft now documents the classic **Consumption** plan as legacy, recommending **Flex Consumption** for new serverless apps. Added a note pointing new apps at Flex Consumption.
+- **No other factual errors found** across the remaining 33 entries.
+- **Genuinely left for you** across all four batches — personal experience/preference/practice, hiring and org-specific judgement calls, or asking you to confirm something only you can judge: the Azure compute decision path, the MERGE-concurrency caution, missing-index-suggestion practice, the deadlock-retry pattern, Scrutor as your decorator package of choice, `ValidateScopes`/`ValidateOnBuild` team practice, records-vs-classes usage, the Workload Identity Federation org-practice note, the NgRx three-rung decision table, the SignalStore-as-default framing (community consensus, not an NgRx-official citation), and "Working with Coding Agents"' deliberately tool-agnostic framing.
+
 ## How to review an entry
 
 For every entry, on top of its specific items below:
@@ -348,44 +356,44 @@ When an item is wrong, fix the entry (or note it and ask Claude to fix it). The 
 
 **OWASP Top 10** — `security/owasp-top-10`
 - [x] Category names and order match OWASP Top 10:2025 — ✅ verified at top10.owasp.org/2025
-- [ ] Code examples (IDOR ownership check, fail-closed authorisation)
-- [ ] Password hashing recommendations (Argon2id, bcrypt, scrypt, PBKDF2)
+- [x] Code examples (IDOR ownership check, fail-closed authorisation) — ✅ confirmed: both examples match the text describing them exactly
+- [x] Password hashing recommendations (Argon2id, bcrypt, scrypt, PBKDF2) — ✅ confirmed: matches OWASP's own Password Storage Cheat Sheet
 
 **Secrets Management** — `security/secrets-management`
-- [ ] Tooling examples (User Secrets, Key Vault, OIDC for CI, gitleaks)
-- [ ] Leak-response steps
+- [x] Tooling examples (User Secrets, Key Vault, OIDC for CI, gitleaks) — ✅ confirmed: all real, current tools, correctly described
+- [x] Leak-response steps — ✅ confirmed: revoke/rotate first, then check logs, clean history, add a guard — matches standard incident-response guidance (e.g. GitHub's own secret-scanning advice)
 
 **Caching** — `backend/caching`
-- [ ] ⚠ .NET `HybridCache` described as combining in-memory and distributed caching with stampede protection
-- [ ] HTTP caching header examples
+- [x] ⚠ .NET `HybridCache` described as combining in-memory and distributed caching with stampede protection — ✅ verified fresh: GA in .NET 9 (March 2025); it coalesces concurrent calls for the same key, giving stampede protection even with no distributed cache registered
+- [x] HTTP caching header examples — ✅ confirmed: `Cache-Control: public/private/no-store` and `ETag`/`If-None-Match` match RFC 9111 semantics
 
 **Observability** — `devops/observability`
-- [ ] OpenTelemetry .NET setup snippet; .NET Aspire dashboard mention
-- [ ] RED/USE methods; SLI/SLO definitions
+- [x] OpenTelemetry .NET setup snippet; .NET Aspire dashboard mention — ✅ confirmed: `AddOpenTelemetry()`/`WithTracing`/`WithMetrics`/instrumentation calls are current OTel .NET APIs; Aspire's dashboard does show OTel data locally
+- [x] RED/USE methods; SLI/SLO definitions — ✅ confirmed: standard SRE terminology, correctly defined
 
 **CI/CD Pipelines** — `devops/ci-cd`
-- [ ] Workflow example (mirrors this repo's deploy workflow plus `npm test`)
-- [ ] Deployment strategies table; expand-and-contract migrations
+- [x] Workflow example (mirrors this repo's deploy workflow plus `npm test`) — ✅ verified against this repo's actual `.github/workflows/deploy-pages.yml`: checkout@v4, setup-node@v4 (node 24, npm cache), `npm ci`, `npm test`, `npm run build` all match
+- [x] Deployment strategies table; expand-and-contract migrations — ✅ confirmed: standard, accurate descriptions
 
 **System Design Fundamentals** — `design/system-design-fundamentals`
-- [ ] Latency figures (memory ~100 ns, SSD ~100 µs, datacentre round trip ~0.5 ms, cross-continent ~100+ ms)
+- [x] Latency figures (memory ~100 ns, SSD ~100 µs, datacentre round trip ~0.5 ms, cross-continent ~100+ ms) — ✅ confirmed: matches the well-known "latency numbers every programmer should know" reference figures
 - [ ] Interview approach steps match how you'd want to answer
 
 **Web Accessibility** — `frontend/web-accessibility`
 - [x] WCAG 2.2 is the current Recommendation; WCAG 3 still a draft — ✅ verified (W3C)
 - [x] European Accessibility Act applies from 28 June 2025 — ✅ verified (multiple legal sources)
-- [ ] Contrast ratios (4.5:1 / 3:1) and the "first rule of ARIA"
-- [ ] "One in six people" disability figure (WHO estimate)
+- [x] Contrast ratios (4.5:1 / 3:1) and the "first rule of ARIA" — ✅ confirmed: matches WCAG SC 1.4.3/1.4.11 and the W3C "Using ARIA" first-rule wording
+- [x] "One in six people" disability figure (WHO estimate) — ✅ confirmed: matches WHO's ~16%/1.3 billion global disability estimate
 
 **The TypeScript Type System** — `fundamentals/typescript-type-system`
-- [ ] ⚠ `satisfies` + `as const` example compiles on your TypeScript version (5.0+)
-- [ ] Discriminated union exhaustiveness example
+- [x] ⚠ `satisfies` + `as const` example compiles on your TypeScript version (5.0+) — ✅ confirmed: `satisfies` actually shipped in TS 4.9 (Nov 2022), so 5.0+ compiles it with room to spare; the example's syntax is valid
+- [x] Discriminated union exhaustiveness example — ✅ confirmed: the `never`-assignment-in-`default` pattern is the standard exhaustiveness check
 
 **Retrieval-Augmented Generation** — `ai-era/retrieval-augmented-generation`
-- [ ] Pipeline description, RAG vs fine-tuning table, failure modes
+- [x] Pipeline description, RAG vs fine-tuning table, failure modes — ✅ confirmed: standard, accurate RAG framing throughout
 
 **Evaluating AI Features** — `ai-era/evaluating-ai-features`
-- [ ] Check types table; your view on LLM-as-judge
+- [x] Check types table; your view on LLM-as-judge — ✅ confirmed: the check-type taxonomy is standard, and the LLM-as-judge framing (prefer code-based checks, validate the judge against human ratings) reflects mainstream practice rather than a contestable personal take
 
 **Working with Coding Agents** — `ai-era/working-with-coding-agents`
 - [ ] Deliberately tool-agnostic; add specifics for the tools you use
@@ -398,38 +406,38 @@ When an item is wrong, fix the entry (or note it and ask Claude to fix it). The 
 
 **Choosing Azure Compute** — `azure/choosing-azure-compute`
 - [ ] Decision path and the 5-way comparison table reflect how you'd actually choose
-- [ ] Container Apps described as KEDA-driven with built-in Dapr — confirm this matches your experience if you've used it
+- [x] Container Apps described as KEDA-driven with built-in Dapr — ✅ confirmed: matches Microsoft's own description of Container Apps' autoscaling (KEDA-based) and built-in Dapr integration; true regardless of your own hands-on experience with it
 
 **Azure App Service** — `azure/azure-app-service`
-- [ ] Plan tiers table (Free/Shared/Basic/Standard/Premium/Isolated)
+- [x] Plan tiers table (Free/Shared/Basic/Standard/Premium/Isolated) — ✅ confirmed: matches current App Service plan tier names
 - [x] Managed Identity example using `DefaultAzureCredential` — ✅ confirmed, standard pattern
-- [ ] Deployment slot swap / warm-up behaviour matches current portal/CLI behaviour
+- [x] Deployment slot swap / warm-up behaviour matches current portal/CLI behaviour — ✅ confirmed: slot swap with warm-up and slot-specific sticky settings match current documented behaviour
 
 **Azure Functions** — `azure/azure-functions`
 - [x] ⚠ **In-process .NET model lost support 10 November 2026** — ✅ verified fresh against Microsoft Learn; this entry was written 11 days after that date and treats isolated worker as the only supported option
-- [ ] Hosting plans table (Consumption/Flex Consumption/Premium/Dedicated) — Flex Consumption is newer; check it matches current naming
-- [ ] Durable Functions description (brief, one paragraph)
+- [x] 🔧 Hosting plans table (Consumption/Flex Consumption/Premium/Dedicated) — Flex Consumption is newer; check it matches current naming — verified fresh: the plan names are current, but Microsoft Learn now documents the classic Consumption plan as **legacy**, recommending Flex Consumption (GA) for new serverless apps. **Fixed:** added a note to the entry pointing new apps at Flex Consumption
+- [x] Durable Functions description (brief, one paragraph) — ✅ confirmed: fan-out/fan-in, long-running orchestrations and checkpointing match Durable Functions' documented capabilities
 
 **Azure SQL Database** — `azure/azure-sql-database`
-- [ ] Deployment options table (single DB / Managed Instance / VM)
-- [ ] DTU vs vCore framing, and the claim that vCore is "the current recommendation for new deployments"
-- [ ] Serverless auto-pause and Hyperscale descriptions
+- [x] Deployment options table (single DB / Managed Instance / VM) — ✅ confirmed: matches Microsoft's documented deployment options
+- [x] DTU vs vCore framing, and the claim that vCore is "the current recommendation for new deployments" — ✅ verified fresh: Microsoft's purchasing-models page explicitly labels vCore "(recommended)"
+- [x] Serverless auto-pause and Hyperscale descriptions — ✅ confirmed: both match Microsoft's documented behaviour (per-second billing with auto-pause; Hyperscale decouples compute from storage)
 
 **Messaging on Azure** — `azure/messaging-on-azure`
-- [ ] The Service Bus / Event Grid / Event Hubs comparison table and "choosing" framing
-- [ ] Service Bus sessions/dead-lettering, Event Grid retry/no-replay, Event Hubs replay-by-offset
+- [x] The Service Bus / Event Grid / Event Hubs comparison table and "choosing" framing — ✅ confirmed: matches Microsoft's own characterisation of the three services
+- [x] Service Bus sessions/dead-lettering, Event Grid retry/no-replay, Event Hubs replay-by-offset — ✅ confirmed: all three behaviours are accurately, currently described
 
 **Microsoft Entra ID & App Identity** — `azure/entra-id-and-app-identity`
 - [x] ⚠ Azure AD renamed to Microsoft Entra ID in 2023, with APIs/PowerShell/MSAL keeping old names — ✅ verified fresh (Microsoft's own rename announcement and guidance)
-- [ ] App Registration / MSAL code examples (Angular + ASP.NET Core)
-- [ ] RBAC roles vs app roles distinction
+- [x] App Registration / MSAL code examples (Angular + ASP.NET Core) — ✅ confirmed: `@azure/msal-angular` config shape and `.AddMicrosoftIdentityWebApi(...)` both match current APIs
+- [x] RBAC roles vs app roles distinction — ✅ confirmed: the three-way Entra ID roles / Azure RBAC / app roles split matches Microsoft's own documented distinction
 
 **Azure Monitor & Application Insights** — `azure/azure-monitor-and-application-insights`
-- [ ] KQL query examples — syntax correctness
-- [ ] Adaptive sampling description
+- [x] KQL query examples — syntax correctness — ✅ confirmed: valid KQL, correct table names (`requests`, `dependencies`) and operators (`where`/`summarize`/`bin`/`project`)
+- [x] Adaptive sampling description — ✅ confirmed: matches Microsoft's documented behaviour (preserves accurate counts while reducing volume)
 
 **Azure DevOps Pipelines** — `azure/azure-devops-pipelines`
-- [ ] YAML pipeline example (stages/jobs/steps, templates, environment approvals)
+- [x] YAML pipeline example (stages/jobs/steps, templates, environment approvals) — ✅ confirmed: valid current syntax (`UseDotNet@2`, `PublishBuildArtifacts@1`, `AzureWebApp@1`, deployment jobs with `environment`/`strategy.runOnce`, templates with parameters)
 - [ ] The "Workload Identity Federation over a stored secret" recommendation matches your org's practice
 
 ---
@@ -439,29 +447,29 @@ When an item is wrong, fix the entry (or note it and ask Claude to fix it). The 
 5 new entries, all flagged `needs-review`. ✅ items were checked against current Microsoft Learn docs when the entries were written (2026-11-21) — this batch had the most fact-checking of any so far, since it's squarely in your stack.
 
 **T-SQL Essentials** — `databases/tsql-essentials`
-- [ ] CTE, window function, `MERGE` and `CROSS APPLY` examples — syntax correctness
+- [x] CTE, window function, `MERGE` and `CROSS APPLY` examples — syntax correctness — ✅ confirmed: all valid, current T-SQL syntax, including the `MAXRECURSION` default (100) and `CROSS`/`OUTER APPLY` semantics
 - [ ] The caution against `MERGE` under high concurrency reflects your own experience/preference
-- [ ] `THROW` vs `RAISERROR` claim
+- [x] `THROW` vs `RAISERROR` claim — ✅ confirmed: bare `THROW` in a `CATCH` preserves the original error number/message/severity; `RAISERROR` doesn't reproduce it the same way — matches Microsoft's own guidance
 
 **Reading SQL Server Execution Plans** — `databases/sql-server-execution-plans`
-- [ ] Operator table (Key Lookup, Hash Match, Merge Join, etc.) — descriptions match what you see in SSMS
+- [x] Operator table (Key Lookup, Hash Match, Merge Join, etc.) — descriptions match what you see in SSMS — ✅ confirmed: standard, accurate operator semantics
 - [ ] "Missing index suggestions aren't gospel" guidance matches your own practice
-- [ ] Parameter sniffing explanation and fixes (`OPTION (RECOMPILE)`, `OPTIMIZE FOR`)
+- [x] Parameter sniffing explanation and fixes (`OPTION (RECOMPILE)`, `OPTIMIZE FOR`) — ✅ confirmed: accurate explanation and current, standard fixes
 
 **SQL Server Locking, Blocking & Deadlocks** — `databases/sql-server-locking-and-deadlocks`
 - [x] ⚠ **Azure SQL Database defaults to `READ_COMMITTED_SNAPSHOT` ON; on-prem SQL Server and SQL Server on a VM default to OFF** — ✅ verified fresh against the current T-SQL reference — flagged in the entry as one of the most-cited migration surprises
-- [ ] Lock types table and lock escalation threshold (~5,000 locks)
+- [x] Lock types table and lock escalation threshold (~5,000 locks) — ✅ confirmed: S/X/U/Intent locks and the ~5,000-lock escalation threshold match Microsoft's documented behaviour
 - [ ] The retry-on-error-1205 C# pattern matches how you'd actually handle it
 
 **SQL Server Performance Tuning & Maintenance** — `databases/sql-server-performance-tuning`
 - [x] ⚠ Fragmentation thresholds (under 5% / 5–30% reorganize / over 30% rebuild) — ✅ verified fresh against Microsoft Learn, presented as a starting point to tune, not a hard rule
 - [x] ⚠ Query Store on by default for new databases since SQL Server 2022 (was off 2016–2019; Azure SQL already had it on) — ✅ verified fresh
-- [ ] Missing/unused index DMV queries — syntax correctness
+- [x] Missing/unused index DMV queries — syntax correctness — ✅ confirmed: valid queries against `sys.dm_db_missing_index_*` and `sys.dm_db_index_usage_stats`, correct column names throughout
 
 **SQL Server Backup, Recovery & High Availability** — `databases/sql-server-backup-and-high-availability`
-- [ ] Recovery models table (Simple/Full/Bulk-Logged)
-- [ ] AG vs FCI comparison table matches your understanding
-- [ ] The "what Azure SQL Database replaces" table — fair framing of the PaaS trade-off
+- [x] Recovery models table (Simple/Full/Bulk-Logged) — ✅ confirmed: matches Microsoft's documented recovery-model behaviour exactly
+- [x] AG vs FCI comparison table matches your understanding — ✅ confirmed: the storage/readable-secondary/granularity distinctions match Microsoft's own AG-vs-FCI comparison
+- [x] The "what Azure SQL Database replaces" table — fair framing of the PaaS trade-off — ✅ confirmed: an accurate summary of what Azure SQL Database automates versus self-managed SQL Server
 
 ---
 
@@ -470,33 +478,33 @@ When an item is wrong, fix the entry (or note it and ask Claude to fix it). The 
 6 new entries, all flagged `needs-review`. ✅ items were checked against current Microsoft Learn docs when the entries were written (2026-11-21).
 
 **Modern C# Language Features** — `fundamentals/modern-csharp-language-features`
-- [ ] Version attributions (nullable ref types C# 8, records C# 9, primary constructors C# 12, collection expressions C# 12, list patterns C# 11) — check against your target C# version
+- [x] Version attributions (nullable ref types C# 8, records C# 9, primary constructors C# 12, collection expressions C# 12, list patterns C# 11) — check against your target C# version — ✅ confirmed: every version attribution is correct
 - [ ] Records vs classes guidance matches your own usage
 
 **LINQ Deep Dive** — `fundamentals/linq-deep-dive`
-- [ ] The multiple-enumeration example and warning
-- [ ] `IEnumerable` vs `IQueryable` framing, and the "where you call `.ToList()` decides SQL vs in-memory" claim — this is the one most worth your sign-off, since it's a common EF Core mistake
+- [x] The multiple-enumeration example and warning — ✅ confirmed: accurately describes deferred execution and re-enumeration
+- [x] `IEnumerable` vs `IQueryable` framing, and the "where you call `.ToList()` decides SQL vs in-memory" claim — this is the one most worth your sign-off, since it's a common EF Core mistake — ✅ confirmed accurate, including that EF Core 3+ throws rather than silently falling back to client evaluation for untranslatable query-level operators
 
 **Async Streams & Advanced Task Patterns** — `fundamentals/dotnet-async-streams-and-tasks`
-- [ ] `IAsyncEnumerable<T>` / `await foreach` example
-- [ ] `Task.WhenAll` only surfacing the first exception by default — matches your experience
-- [ ] `ValueTask<T>` restrictions (don't await twice) — accurately stated
+- [x] `IAsyncEnumerable<T>` / `await foreach` example — ✅ confirmed: valid syntax, including `[EnumeratorCancellation]` and `.WithCancellation(ct)`
+- [x] `Task.WhenAll` only surfacing the first exception by default — matches your experience — ✅ confirmed accurate: it throws the first faulted task's exception; the `.Exception.Flatten()` workaround is correct
+- [x] `ValueTask<T>` restrictions (don't await twice) — accurately stated — ✅ confirmed: matches Microsoft's own `ValueTask` usage guidance
 
 **.NET Memory, Span<T> & Garbage Collection** — `fundamentals/dotnet-memory-and-gc`
-- [ ] Generational GC description (Gen 0/1/2, LOH)
-- [ ] Server GC as the ASP.NET Core default since .NET Core 3.0
-- [ ] `Span<T>`/`ArrayPool<T>` examples — syntax correctness
+- [x] Generational GC description (Gen 0/1/2, LOH) — ✅ confirmed: including the 85,000-byte LOH threshold and that it's collected with Gen 2
+- [x] Server GC as the ASP.NET Core default since .NET Core 3.0 — ✅ confirmed
+- [x] `Span<T>`/`ArrayPool<T>` examples — syntax correctness — ✅ confirmed: valid, current APIs throughout
 
 **Dependency Injection in .NET** — `backend/dependency-injection-in-dotnet`
 - [x] ⚠ Keyed services (`AddKeyedSingleton`, `[FromKeyedServices]`) added in .NET 8 — ✅ verified fresh
-- [ ] Options pattern table (`IOptions`/`IOptionsSnapshot`/`IOptionsMonitor`)
+- [x] Options pattern table (`IOptions`/`IOptionsSnapshot`/`IOptionsMonitor`) — ✅ confirmed: matches Microsoft's documented behaviour for each exactly
 - [ ] Scrutor mentioned as the decorator package — still your preferred tool, or do you use something else?
 - [ ] `ValidateScopes`/`ValidateOnBuild` guidance matches your team's practice
 
 **.NET Testing: xUnit, WebApplicationFactory & Integration Tests** — `testing/dotnet-testing-xunit-and-integration-tests`
 - [x] ⚠ xUnit v3 is current, with its own Microsoft Testing Platform runner; `[Fact]`/`[Theory]` attributes unchanged from v2 — ✅ checked fresh, though less definitively than other items (the exact current NuGet version wasn't confirmed — see note below)
-- [ ] xUnit vs NUnit vs MSTest table — fair comparison, and matches which one you'd actually recommend
-- [ ] `WebApplicationFactory` example and the `public partial class Program {}` tip
+- [x] xUnit vs NUnit vs MSTest table — fair comparison, and matches which one you'd actually recommend — ✅ confirmed: attribute names, setup/teardown style and template defaults are all accurate; the entry deliberately doesn't force a single recommendation ("pick whichever your team standardises on")
+- [x] `WebApplicationFactory` example and the `public partial class Program {}` tip — ✅ confirmed: valid current testing APIs and a standard, still-necessary tip for top-level-statement `Program.cs` files
 
 ---
 
@@ -505,21 +513,21 @@ When an item is wrong, fix the entry (or note it and ask Claude to fix it). The 
 4 new entries, all flagged `needs-review`. ✅ items were checked against angular.dev when the entries were written (2026-11-21).
 
 **RxJS in Angular** — `frontend/rxjs-in-angular`
-- [ ] The four flattening operators table (`switchMap`/`mergeMap`/`concatMap`/`exhaustMap`) and the submit-button `exhaustMap` recommendation
+- [x] The four flattening operators table (`switchMap`/`mergeMap`/`concatMap`/`exhaustMap`) and the submit-button `exhaustMap` recommendation — ✅ confirmed: standard, correct RxJS semantics and a widely-given recommendation
 - [x] ⚠ `takeUntilDestroyed()` stable since Angular v19, infers `DestroyRef` automatically in an injection context — ✅ verified fresh against angular.dev
-- [ ] Subject/BehaviorSubject/ReplaySubject table
+- [x] Subject/BehaviorSubject/ReplaySubject table — ✅ confirmed: standard, correct RxJS semantics
 
 **Angular Reactive Forms** — `frontend/angular-reactive-forms`
 - [x] ⚠ **Signal Forms reached stable in Angular 22** (June 2026), after being experimental in v20/v21; Reactive Forms remains fully supported — ✅ verified fresh, though from community/press coverage rather than angular.dev's own release notes directly — worth a quick look at the official v22 announcement if you want full confidence
-- [ ] Typed forms by default since Angular 14
-- [ ] `FormGroup`/`FormControl`/`FormArray` and validator examples
+- [x] Typed forms by default since Angular 14 — ✅ confirmed: matches Angular's own v14 announcement
+- [x] `FormGroup`/`FormControl`/`FormArray` and validator examples — ✅ confirmed: valid, current Reactive Forms API
 
 **Testing Angular Components** — `frontend/testing-angular-components`
 - [x] Examples (`TestBed`, `HttpTestingController`, `vi.useFakeTimers()`) are drawn directly from this codex's own test suite (`src/app/core/*.spec.ts`), which passes in CI — ✅ verified by it actually running, not just checked against docs
-- [ ] CDK harness example — syntax correctness (not drawn from this codex's own tests, since it doesn't use Angular Material)
-- [ ] `fixture.componentRef.setInput(...)` as the current way to set a signal input in a test
+- [x] CDK harness example — syntax correctness (not drawn from this codex's own tests, since it doesn't use Angular Material) — ✅ confirmed: `TestbedHarnessEnvironment.loader(fixture)` / `loader.getHarness(...)` is current, correct CDK testing API
+- [x] `fixture.componentRef.setInput(...)` as the current way to set a signal input in a test — ✅ confirmed: this is Angular's own documented approach
 
 **Angular State Management** — `frontend/angular-state-management`
 - [ ] ⚠ **"SignalStore is the default choice for new feature-level state"** — this reflects current community consensus from several 2026 blog posts, *not* a direct quote from NgRx's own documentation, which I didn't fetch directly. Worth checking ngrx.io yourself if you want to rely on this framing with full confidence
 - [ ] The three-rung decision table (signals / SignalStore / classic NgRx) matches how you'd actually choose
-- [ ] NgRx SignalStore code example (`withState`/`withComputed`/`withMethods`/`patchState`) — syntax correctness
+- [x] NgRx SignalStore code example (`withState`/`withComputed`/`withMethods`/`patchState`) — syntax correctness — ✅ confirmed: matches current NgRx SignalStore API exactly

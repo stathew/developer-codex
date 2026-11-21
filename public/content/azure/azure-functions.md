@@ -41,6 +41,9 @@ Common triggers: **HTTP**, **Timer** (cron expression), **Queue/Service Bus**, *
 > [!WARNING]
 > Cold starts are the most common Functions complaint: after a period of inactivity on Consumption, the first request pays the cost of starting a new instance. If you need consistent low latency, use Flex Consumption with always-ready instances or the Premium plan.
 
+> [!NOTE]
+> Microsoft now documents the classic Consumption plan as **legacy**: for a new serverless function app, use **Flex Consumption** instead — it's generally available, offers faster scale-out and the same scale-to-zero billing, and is the recommended starting point.
+
 ## The isolated worker model
 
 .NET Azure Functions have two execution models, and as of **10 November 2026 the in-process model is out of support** — the isolated worker model is now the only supported way to write .NET functions. It runs your function in its own process rather than inside the Functions host, which means:
