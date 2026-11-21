@@ -1,6 +1,6 @@
 # Review checklist
 
-57 entries are flagged `status: needs-review`. This checklist lists the **specific claims to verify** in each one, so a review means checking facts rather than re-reading everything cold.
+91 entries are flagged `status: needs-review`. This checklist lists the **specific claims to verify** in each one, so a review means checking facts rather than re-reading everything cold.
 
 ## Pre-check results (2026-11-13)
 
@@ -45,6 +45,7 @@ When an item is wrong, fix the entry (or note it and ask Claude to fix it). The 
 1. **Tier 1: corrections to your original notes (8 entries).** I changed what you'd written, so make sure you agree.
 2. **Tier 2: version-sensitive (11 entries).** These are the most likely to drift; check against current docs.
 3. **Tier 3: conceptual (38 entries).** These are stable topics, and a lighter read is usually enough.
+4. **Topic-gaps, Azure, SQL Server, C#/.NET and Angular-depth batches (34 entries).** All newer and already fact-checked at write time (see each batch's intro and the ✅/⚠ items below) — a lighter pass, focused on the few items left unticked, matters most for these.
 
 ---
 
@@ -58,7 +59,6 @@ When an item is wrong, fix the entry (or note it and ask Claude to fix it). The 
 
 ### OAuth 2.0 & OpenID Connect — `backend/oauth-and-openid-connect`
 - [x] ⚠ Roles: **resource owner = the user** (your original said the provider, e.g. Amazon) — ✅ confirmed: RFC 6749 §1.1 defines the resource owner as the entity granting access (the end-user)
-- [ ] OAuth is authorisation; sign-in is **OpenID Connect**
 - [x] ⚠ Implicit and Resource Owner Password flows deprecated; OAuth 2.1 requires PKCE for all authorization-code clients — check status at [oauth.net/2.1](https://oauth.net/2.1/) — 🔧 verified at oauth.net/2.1: omits Implicit and Password, requires PKCE and exact redirect matching. **Fixed:** entry now says OAuth 2.1 is still an IETF draft
 - [x] OAuth is authorisation; sign-in is **OpenID Connect** — ✅ confirmed: the entry's own "OAuth is not login" section draws this distinction correctly
 - [x] OAuth 1.0 described as legacy — ✅ confirmed, accurate characterisation
@@ -381,3 +381,137 @@ When an item is wrong, fix the entry (or note it and ask Claude to fix it). The 
 
 **Working with Coding Agents** — `ai-era/working-with-coding-agents`
 - [ ] Deliberately tool-agnostic; add specifics for the tools you use
+
+---
+
+## Azure batch
+
+8 new entries, all flagged `needs-review`. ✅ items were checked against current Microsoft Learn docs when the entries were written (2026-11-21).
+
+**Choosing Azure Compute** — `azure/choosing-azure-compute`
+- [ ] Decision path and the 5-way comparison table reflect how you'd actually choose
+- [ ] Container Apps described as KEDA-driven with built-in Dapr — confirm this matches your experience if you've used it
+
+**Azure App Service** — `azure/azure-app-service`
+- [ ] Plan tiers table (Free/Shared/Basic/Standard/Premium/Isolated)
+- [x] Managed Identity example using `DefaultAzureCredential` — ✅ confirmed, standard pattern
+- [ ] Deployment slot swap / warm-up behaviour matches current portal/CLI behaviour
+
+**Azure Functions** — `azure/azure-functions`
+- [x] ⚠ **In-process .NET model lost support 10 November 2026** — ✅ verified fresh against Microsoft Learn; this entry was written 11 days after that date and treats isolated worker as the only supported option
+- [ ] Hosting plans table (Consumption/Flex Consumption/Premium/Dedicated) — Flex Consumption is newer; check it matches current naming
+- [ ] Durable Functions description (brief, one paragraph)
+
+**Azure SQL Database** — `azure/azure-sql-database`
+- [ ] Deployment options table (single DB / Managed Instance / VM)
+- [ ] DTU vs vCore framing, and the claim that vCore is "the current recommendation for new deployments"
+- [ ] Serverless auto-pause and Hyperscale descriptions
+
+**Messaging on Azure** — `azure/messaging-on-azure`
+- [ ] The Service Bus / Event Grid / Event Hubs comparison table and "choosing" framing
+- [ ] Service Bus sessions/dead-lettering, Event Grid retry/no-replay, Event Hubs replay-by-offset
+
+**Microsoft Entra ID & App Identity** — `azure/entra-id-and-app-identity`
+- [x] ⚠ Azure AD renamed to Microsoft Entra ID in 2023, with APIs/PowerShell/MSAL keeping old names — ✅ verified fresh (Microsoft's own rename announcement and guidance)
+- [ ] App Registration / MSAL code examples (Angular + ASP.NET Core)
+- [ ] RBAC roles vs app roles distinction
+
+**Azure Monitor & Application Insights** — `azure/azure-monitor-and-application-insights`
+- [ ] KQL query examples — syntax correctness
+- [ ] Adaptive sampling description
+
+**Azure DevOps Pipelines** — `azure/azure-devops-pipelines`
+- [ ] YAML pipeline example (stages/jobs/steps, templates, environment approvals)
+- [ ] The "Workload Identity Federation over a stored secret" recommendation matches your org's practice
+
+---
+
+## SQL Server & Azure SQL batch
+
+5 new entries, all flagged `needs-review`. ✅ items were checked against current Microsoft Learn docs when the entries were written (2026-11-21) — this batch had the most fact-checking of any so far, since it's squarely in your stack.
+
+**T-SQL Essentials** — `databases/tsql-essentials`
+- [ ] CTE, window function, `MERGE` and `CROSS APPLY` examples — syntax correctness
+- [ ] The caution against `MERGE` under high concurrency reflects your own experience/preference
+- [ ] `THROW` vs `RAISERROR` claim
+
+**Reading SQL Server Execution Plans** — `databases/sql-server-execution-plans`
+- [ ] Operator table (Key Lookup, Hash Match, Merge Join, etc.) — descriptions match what you see in SSMS
+- [ ] "Missing index suggestions aren't gospel" guidance matches your own practice
+- [ ] Parameter sniffing explanation and fixes (`OPTION (RECOMPILE)`, `OPTIMIZE FOR`)
+
+**SQL Server Locking, Blocking & Deadlocks** — `databases/sql-server-locking-and-deadlocks`
+- [x] ⚠ **Azure SQL Database defaults to `READ_COMMITTED_SNAPSHOT` ON; on-prem SQL Server and SQL Server on a VM default to OFF** — ✅ verified fresh against the current T-SQL reference — flagged in the entry as one of the most-cited migration surprises
+- [ ] Lock types table and lock escalation threshold (~5,000 locks)
+- [ ] The retry-on-error-1205 C# pattern matches how you'd actually handle it
+
+**SQL Server Performance Tuning & Maintenance** — `databases/sql-server-performance-tuning`
+- [x] ⚠ Fragmentation thresholds (under 5% / 5–30% reorganize / over 30% rebuild) — ✅ verified fresh against Microsoft Learn, presented as a starting point to tune, not a hard rule
+- [x] ⚠ Query Store on by default for new databases since SQL Server 2022 (was off 2016–2019; Azure SQL already had it on) — ✅ verified fresh
+- [ ] Missing/unused index DMV queries — syntax correctness
+
+**SQL Server Backup, Recovery & High Availability** — `databases/sql-server-backup-and-high-availability`
+- [ ] Recovery models table (Simple/Full/Bulk-Logged)
+- [ ] AG vs FCI comparison table matches your understanding
+- [ ] The "what Azure SQL Database replaces" table — fair framing of the PaaS trade-off
+
+---
+
+## C#/.NET language batch
+
+6 new entries, all flagged `needs-review`. ✅ items were checked against current Microsoft Learn docs when the entries were written (2026-11-21).
+
+**Modern C# Language Features** — `fundamentals/modern-csharp-language-features`
+- [ ] Version attributions (nullable ref types C# 8, records C# 9, primary constructors C# 12, collection expressions C# 12, list patterns C# 11) — check against your target C# version
+- [ ] Records vs classes guidance matches your own usage
+
+**LINQ Deep Dive** — `fundamentals/linq-deep-dive`
+- [ ] The multiple-enumeration example and warning
+- [ ] `IEnumerable` vs `IQueryable` framing, and the "where you call `.ToList()` decides SQL vs in-memory" claim — this is the one most worth your sign-off, since it's a common EF Core mistake
+
+**Async Streams & Advanced Task Patterns** — `fundamentals/dotnet-async-streams-and-tasks`
+- [ ] `IAsyncEnumerable<T>` / `await foreach` example
+- [ ] `Task.WhenAll` only surfacing the first exception by default — matches your experience
+- [ ] `ValueTask<T>` restrictions (don't await twice) — accurately stated
+
+**.NET Memory, Span<T> & Garbage Collection** — `fundamentals/dotnet-memory-and-gc`
+- [ ] Generational GC description (Gen 0/1/2, LOH)
+- [ ] Server GC as the ASP.NET Core default since .NET Core 3.0
+- [ ] `Span<T>`/`ArrayPool<T>` examples — syntax correctness
+
+**Dependency Injection in .NET** — `backend/dependency-injection-in-dotnet`
+- [x] ⚠ Keyed services (`AddKeyedSingleton`, `[FromKeyedServices]`) added in .NET 8 — ✅ verified fresh
+- [ ] Options pattern table (`IOptions`/`IOptionsSnapshot`/`IOptionsMonitor`)
+- [ ] Scrutor mentioned as the decorator package — still your preferred tool, or do you use something else?
+- [ ] `ValidateScopes`/`ValidateOnBuild` guidance matches your team's practice
+
+**.NET Testing: xUnit, WebApplicationFactory & Integration Tests** — `testing/dotnet-testing-xunit-and-integration-tests`
+- [x] ⚠ xUnit v3 is current, with its own Microsoft Testing Platform runner; `[Fact]`/`[Theory]` attributes unchanged from v2 — ✅ checked fresh, though less definitively than other items (the exact current NuGet version wasn't confirmed — see note below)
+- [ ] xUnit vs NUnit vs MSTest table — fair comparison, and matches which one you'd actually recommend
+- [ ] `WebApplicationFactory` example and the `public partial class Program {}` tip
+
+---
+
+## Angular-depth batch
+
+4 new entries, all flagged `needs-review`. ✅ items were checked against angular.dev when the entries were written (2026-11-21).
+
+**RxJS in Angular** — `frontend/rxjs-in-angular`
+- [ ] The four flattening operators table (`switchMap`/`mergeMap`/`concatMap`/`exhaustMap`) and the submit-button `exhaustMap` recommendation
+- [x] ⚠ `takeUntilDestroyed()` stable since Angular v19, infers `DestroyRef` automatically in an injection context — ✅ verified fresh against angular.dev
+- [ ] Subject/BehaviorSubject/ReplaySubject table
+
+**Angular Reactive Forms** — `frontend/angular-reactive-forms`
+- [x] ⚠ **Signal Forms reached stable in Angular 22** (June 2026), after being experimental in v20/v21; Reactive Forms remains fully supported — ✅ verified fresh, though from community/press coverage rather than angular.dev's own release notes directly — worth a quick look at the official v22 announcement if you want full confidence
+- [ ] Typed forms by default since Angular 14
+- [ ] `FormGroup`/`FormControl`/`FormArray` and validator examples
+
+**Testing Angular Components** — `frontend/testing-angular-components`
+- [x] Examples (`TestBed`, `HttpTestingController`, `vi.useFakeTimers()`) are drawn directly from this codex's own test suite (`src/app/core/*.spec.ts`), which passes in CI — ✅ verified by it actually running, not just checked against docs
+- [ ] CDK harness example — syntax correctness (not drawn from this codex's own tests, since it doesn't use Angular Material)
+- [ ] `fixture.componentRef.setInput(...)` as the current way to set a signal input in a test
+
+**Angular State Management** — `frontend/angular-state-management`
+- [ ] ⚠ **"SignalStore is the default choice for new feature-level state"** — this reflects current community consensus from several 2026 blog posts, *not* a direct quote from NgRx's own documentation, which I didn't fetch directly. Worth checking ngrx.io yourself if you want to rely on this framing with full confidence
+- [ ] The three-rung decision table (signals / SignalStore / classic NgRx) matches how you'd actually choose
+- [ ] NgRx SignalStore code example (`withState`/`withComputed`/`withMethods`/`patchState`) — syntax correctness
