@@ -4,7 +4,7 @@ summary: SQL Server as a managed Azure service — deployment options, DTU vs vC
 difficulty: intermediate
 tags: [azure, cloud, sql, mssql, databases]
 order: 3
-related: [databases/relational-databases, databases/indexes, azure/entra-id-and-app-identity, azure/choosing-azure-compute]
+related: [databases/relational-databases, databases/sql-server-backup-and-high-availability, databases/sql-server-locking-and-deadlocks, azure/entra-id-and-app-identity]
 status: needs-review
 reviewNotes: New entry. Service-tier and HA facts checked against current Microsoft Learn guidance on 2026-11-21.
 ---

@@ -4,7 +4,7 @@ summary: Tables, keys and relationships, normalisation, joins, and transactions 
 difficulty: beginner
 tags: [sql, databases, relational, transactions, normalisation]
 order: 1
-related: [databases/choosing-a-database, databases/indexes, azure/azure-sql-database]
+related: [databases/choosing-a-database, databases/tsql-essentials, databases/sql-server-locking-and-deadlocks, azure/azure-sql-database]
 status: needs-review
 reviewNotes: New entry drafted from the empty 2023 Relational Databases stub (no content).
 ---

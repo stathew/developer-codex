@@ -4,7 +4,7 @@ summary: What an object-relational mapper does, how EF Core maps classes to tabl
 difficulty: intermediate
 tags: [orm, ef-core, dotnet, sql, databases]
 order: 3
-related: [databases/indexes, design/repository-pattern, backend/aspnet-core]
+related: [databases/indexes, databases/sql-server-execution-plans, design/repository-pattern, backend/aspnet-core]
 status: needs-review
 reviewNotes: Built from the 2023 Entity Framework note (one line) plus the empty EF Core and ORM stubs. Updated to EF Core — EF6 is legacy .NET Framework tech — and added mapping, migrations, tracking and N+1 guidance.
 ---
