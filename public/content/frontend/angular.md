@@ -4,7 +4,7 @@ summary: Google's batteries-included TypeScript framework — components, templa
 difficulty: intermediate
 tags: [angular, typescript, frontend, spa]
 order: 4
-related: [frontend/angular-signals, frontend/choosing-a-frontend-framework, design/dependency-injection, frontend/react]
+related: [frontend/angular-signals, frontend/rxjs-in-angular, frontend/angular-reactive-forms, frontend/angular-state-management]
 status: needs-review
 reviewNotes: New entry drafted from the empty 2023 Angular stub (no content). Version-specific claims (standalone default, built-in control flow, zoneless default, Vitest) describe recent Angular; check them against the current release notes. Release cadence verified against angular.dev on 2026-11-13 and corrected (12-month majors from v22).
 ---
