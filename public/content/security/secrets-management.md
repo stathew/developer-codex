@@ -4,7 +4,7 @@ summary: Keeping API keys, connection strings and certificates out of code and l
 difficulty: intermediate
 tags: [security, secrets, devops, configuration]
 order: 2
-related: [security/owasp-top-10, devops/ci-cd, devops/containers-and-docker]
+related: [security/owasp-top-10, devops/ci-cd, devops/containers-and-docker, azure/entra-id-and-app-identity]
 status: needs-review
 reviewNotes: New entry from the topic-gaps batch.
 ---

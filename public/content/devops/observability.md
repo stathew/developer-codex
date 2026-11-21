@@ -4,7 +4,7 @@ summary: Understanding what your system is doing in production — logs, metrics
 difficulty: intermediate
 tags: [observability, logging, monitoring, opentelemetry, devops]
 order: 5
-related: [devops/ci-cd, backend/event-driven-architecture, security/owasp-top-10]
+related: [devops/ci-cd, backend/event-driven-architecture, azure/azure-monitor-and-application-insights]
 status: needs-review
 reviewNotes: New entry from the topic-gaps batch.
 ---

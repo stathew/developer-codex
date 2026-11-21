@@ -4,7 +4,7 @@ summary: Delegated authorization with OAuth 2.0, sign-in with OpenID Connect, th
 difficulty: intermediate
 tags: [oauth, oidc, security, auth, backend]
 order: 4
-related: [backend/json-web-tokens, backend/authentication-sessions-vs-tokens]
+related: [backend/json-web-tokens, backend/authentication-sessions-vs-tokens, azure/entra-id-and-app-identity]
 status: needs-review
 reviewNotes: Imported from the 2023 OAuth note. Corrected the roles (the resource owner is the user, not the provider), clarified that OAuth is authorization and sign-in is OpenID Connect, marked OAuth 1.0 as legacy and added OAuth 2.1 guidance and flows.
 ---

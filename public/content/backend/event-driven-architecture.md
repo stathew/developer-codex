@@ -4,7 +4,7 @@ summary: Systems that communicate by publishing and reacting to events — event
 difficulty: advanced
 tags: [architecture, events, messaging, microservices, kafka, backend]
 order: 14
-related: [backend/webhooks, design/observer-pattern, design/domain-driven-design, backend/api-styles-compared]
+related: [backend/webhooks, design/observer-pattern, design/domain-driven-design, azure/messaging-on-azure]
 status: needs-review
 reviewNotes: New entry drafted from the empty 2023 Event Driven Development stub (filed under Development Lifecycle › Programming Approaches); written as event-driven architecture.
 ---

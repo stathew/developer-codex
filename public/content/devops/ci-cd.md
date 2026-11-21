@@ -4,7 +4,7 @@ summary: Continuous integration, delivery and deployment — pipeline stages, a 
 difficulty: intermediate
 tags: [ci-cd, devops, github-actions, deployment, automation]
 order: 3
-related: [devops/git-essentials, devops/containers-and-docker, testing/automated-testing, security/secrets-management]
+related: [devops/git-essentials, devops/containers-and-docker, azure/azure-devops-pipelines, security/secrets-management]
 status: needs-review
 reviewNotes: New entry from the topic-gaps batch. The workflow example mirrors this codex's own deploy workflow plus a test step.
 ---

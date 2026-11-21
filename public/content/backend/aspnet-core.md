@@ -4,7 +4,7 @@ summary: Microsoft's cross-platform web framework on modern .NET — minimal API
 difficulty: intermediate
 tags: [dotnet, csharp, aspnet-core, backend, iis]
 order: 8
-related: [design/dependency-injection, backend/spring, frontend/blazor, databases/entity-framework-core]
+related: [design/dependency-injection, backend/spring, azure/azure-app-service, databases/entity-framework-core]
 status: needs-review
 reviewNotes: Built from the 2023 .NET Web Framework and IIS stubs (one line each). Updated from .NET Framework-era terminology to ASP.NET Core on modern cross-platform .NET; IIS kept as a hosting option alongside Kestrel.
 ---
