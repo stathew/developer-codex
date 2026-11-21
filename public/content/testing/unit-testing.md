@@ -4,7 +4,7 @@ summary: Writing fast, focused tests for individual units of code — Arrange-Ac
 difficulty: beginner
 tags: [testing, unit-testing, mocking, csharp, typescript]
 order: 2
-related: [testing/automated-testing, testing/test-driven-development, testing/writing-test-cases, design/dependency-injection]
+related: [testing/automated-testing, testing/dotnet-testing-xunit-and-integration-tests, testing/writing-test-cases, design/dependency-injection]
 status: needs-review
 reviewNotes: New entry drafted from the empty 2023 Unit Testing stub (no content).
 ---

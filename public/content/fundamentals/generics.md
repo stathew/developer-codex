@@ -4,7 +4,7 @@ summary: Writing type-safe code that works with many types — type parameters, 
 difficulty: intermediate
 tags: [generics, types, csharp, java, typescript]
 order: 4
-related: [design/object-oriented-programming, design/repository-pattern, fundamentals/data-structures]
+related: [design/object-oriented-programming, fundamentals/dotnet-memory-and-gc, fundamentals/data-structures]
 status: needs-review
 reviewNotes: New entry drafted from the empty 2023 Generics stub (no content).
 ---

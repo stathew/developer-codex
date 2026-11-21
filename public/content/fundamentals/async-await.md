@@ -4,7 +4,7 @@ summary: Writing non-blocking code that reads like sequential code — what awai
 difficulty: intermediate
 tags: [async, concurrency, javascript, csharp]
 order: 3
-related: [frontend/browser-rendering-pipeline, backend/aspnet-core]
+related: [frontend/browser-rendering-pipeline, fundamentals/dotnet-async-streams-and-tasks, backend/aspnet-core]
 status: needs-review
 reviewNotes: Expanded from the 2023 Async/Await note (one-sentence overview kept in spirit). Added how await works in JavaScript and C#, sequential vs concurrent execution, and common pitfalls.
 ---
