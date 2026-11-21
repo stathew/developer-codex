@@ -272,6 +272,24 @@ describe('findUnescapedTags', () => {
   });
 });
 
+describe('analyzeMarkdown unescaped tags', () => {
+  test('flags an unescaped tag in a heading', () => {
+    const result = analyzeMarkdown(['## Span<T> and slicing', '', 'Some text.'].join('\n'));
+    assert.equal(result.problems.length, 1);
+    assert.equal(result.problems[0].line, 1);
+    assert.match(result.problems[0].message, /<T>/);
+  });
+
+  test('flags an unescaped tag in prose but not inside backticks or code fences', () => {
+    const result = analyzeMarkdown(
+      ['A `List<Cat>` is fine, but List<Animal> is not.', '', '```ts', 'const x: Map<string, User> = new Map();', '```'].join('\n'),
+    );
+    assert.equal(result.problems.length, 1);
+    assert.equal(result.problems[0].line, 1);
+    assert.match(result.problems[0].message, /<Animal>/);
+  });
+});
+
 describe('interview blocks', () => {
   test('are collected separately from recall cards and indexed for search', () => {
     const result = analyzeMarkdown(

@@ -198,6 +198,14 @@ export function analyzeMarkdown(body) {
 
     links.push(...extractLinks(line, index + 1));
 
+    const unescapedTags = findUnescapedTags(line);
+    if (unescapedTags.length) {
+      problems.push({
+        line: index + 1,
+        message: `contains ${unescapedTags.join(' ')} — wrap code in backticks or it renders as HTML`,
+      });
+    }
+
     const heading = /^(#{1,6})\s+(.+?)\s*#*\s*$/.exec(line);
     if (heading) {
       const anchor = slug(heading[2]);
@@ -340,7 +348,7 @@ export function validateStacks(stacks, articles, categoryIds) {
   return { errors, warnings };
 }
 
-/** Text in recall cards that Markdown would swallow as an HTML tag (e.g. List<T> outside backticks). */
+/** Text that Markdown would swallow as an HTML tag (e.g. List<T> outside backticks) — checked in prose, headings and recall/interview cards. */
 export function findUnescapedTags(text) {
   return text.replace(/`[^`]*`/g, '').match(/<\/?[A-Za-z][^>]*>/g) ?? [];
 }
